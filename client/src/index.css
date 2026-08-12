@@ -2413,15 +2413,15 @@
     overflow-x: hidden;
   }
 
-  .site-header {
+  .site-nav {
     padding: 0.75rem 0.85rem;
   }
 
-  .brand-lockup__wordmark small {
+  .brand-lockup > span:last-child small {
     display: none;
   }
 
-  .brand-lockup__wordmark strong {
+  .brand-lockup > span:last-child strong {
     font-size: 0.82rem;
   }
 
@@ -2609,8 +2609,18 @@
     text-overflow: ellipsis;
   }
 
+  /* Keep company names out of the orbit on touch screens. The selected badge
+     is the only one allowed to reveal its name; details continue in the drawer. */
   .orbit-badge .orbit-tooltip {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(5px);
+  }
+
+  .orbit-badge--selected .orbit-tooltip {
     opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
   }
 
   .orbit-annotation {
@@ -2778,4 +2788,21 @@
   .portrait-rings span {
     animation: none !important;
   }
+}
+
+@media (max-width: 768px) {
+  .orbit-section {
+    background-image: none !important;
+    background-color: #07090e !important;
+    padding: 3rem 0.75rem !important;
+  }
+  .orbit-stage {
+    background: rgba(11, 17, 32, 0.95) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+}
+
+.orbit-section {
+  background: #070b14 !important;
 }

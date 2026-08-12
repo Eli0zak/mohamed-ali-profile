@@ -995,7 +995,7 @@ export default function Home() {
 
         <section className="signal-section container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>
 
-        <section id="companies" className="orbit-section section-dark" style={{ backgroundImage: `linear-gradient(180deg, rgba(7,11,20,.88), rgba(7,11,20,.97)), url(${asset.orbit})` }}>
+        <section id="companies" className="orbit-section section-dark">
           <div className="container">
             <SectionIntro eyebrow={homeCopy[language].orbit.eyebrow} title={homeCopy[language].orbit.title} copy={homeCopy[language].orbit.copy} language={language} />
             <div className="orbit-layout">

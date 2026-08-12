@@ -155,36 +155,39 @@ export default function CareerGateway() {
 
       {/* Navigation Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-[#07090e]/80 border-b border-[#1f2937]/50">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 min-h-20 py-3 flex flex-wrap items-center justify-between gap-3">
+          <Link href="/" className="flex items-center gap-3 group min-w-0">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#d4af37] to-[#854d0e] p-[1px] shadow-lg shadow-[#d4af37]/10 group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-[#07090e] rounded-[11px] flex items-center justify-center font-bold text-[#d4af37]">
                 MA
               </div>
             </div>
-            <div>
-              <span className="font-semibold text-lg tracking-tight text-white block">Mohamed Ali</span>
-              <span className="text-xs text-[#94a3b8] uppercase tracking-widest block">Growth Systems</span>
+            <div className="min-w-0">
+              <span className="font-semibold text-lg tracking-tight text-white block truncate">Mohamed Ali</span>
+              <span className="text-xs text-[#94a3b8] uppercase tracking-widest block truncate">Growth Systems</span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <Link href="/admin/career-roster" className="text-xs font-semibold text-[#d4af37] hover:underline flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151]">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+            <Link href="/admin/career-roster" aria-label={lang === "en" ? "Admin Roster" : "لوحة المشرف"} className="text-xs font-semibold text-[#d4af37] hover:underline flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151]">
               <Briefcase className="w-3.5 h-3.5" />
-              <span>{lang === "en" ? "Admin Roster" : "لوحة المشرف"}</span>
+              <span className="hidden sm:inline">{lang === "en" ? "Admin Roster" : "لوحة المشرف"}</span>
             </Link>
 
-            <Link href="/" className="text-sm font-medium text-[#94a3b8] hover:text-[#d4af37] transition-colors flex items-center gap-1.5">
+            <Link href="/" aria-label={isRtl ? "العودة للرئيسية" : "Back to Portfolio"} className="text-sm font-medium text-[#94a3b8] hover:text-[#d4af37] transition-colors flex items-center gap-1.5 whitespace-nowrap">
               {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-              {isRtl ? "العودة للرئيسية" : "Back to Portfolio"}
+              <span className="hidden sm:inline">{isRtl ? "العودة للرئيسية" : "Back to Portfolio"}</span>
+              <span className="sm:hidden">{isRtl ? "عودة" : "Back"}</span>
             </Link>
 
             <button
               onClick={() => setLang((current) => toggleLanguage(current))}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151] hover:border-[#d4af37]/50 text-xs font-medium text-white transition-all shadow-sm"
+              aria-label={lang === "en" ? "Switch to Arabic" : "Switch to English"}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151] hover:border-[#d4af37]/50 text-xs font-medium text-white transition-all shadow-sm"
             >
               <Globe2 className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span>{lang === "en" ? "العربية" : "English"}</span>
+              <span className="hidden sm:inline">{lang === "en" ? "العربية" : "English"}</span>
+              <span className="sm:hidden">{lang === "en" ? "AR" : "EN"}</span>
             </button>
           </div>
         </div>
