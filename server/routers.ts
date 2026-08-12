@@ -8,6 +8,7 @@ import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 import { storagePut } from "./storage";
 import { isCareerAdmin } from "./careerAdmin";
+import { syncSubmissionToGoogleSheet } from "./googleSheetsSync";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -82,8 +83,19 @@ export const appRouter = router({
           status: "New",
         });
 
-        // Also log/sync submission for Google Sheets primary data source feed
-        console.log(`[Google Sheets Sync] New candidate submission synced for ${input.fullName} (${input.email}) -> Sheet Primary Source updated.`);
+        // Sync to Google Sheets via webhook or logging pipeline
+        await syncSubmissionToGoogleSheet({
+          fullName: input.fullName,
+          phoneNumber: input.phoneNumber,
+          email: input.email,
+          field: input.field,
+          yearsOfExperience: input.yearsOfExperience,
+          availability: input.availability,
+          trainingSectorExperience: input.trainingSectorExperience,
+          cvUrl: input.cvUrl,
+          cvFileName: input.cvFileName,
+          message: input.message,
+        });
 
         return { success: true };
       }),
