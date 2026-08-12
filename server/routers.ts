@@ -6,6 +6,8 @@ import { getDb } from "./db";
 import { careerSubmissions } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
+import { storagePut } from "./storage";
+import { isCareerAdmin } from "./careerAdmin";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -22,6 +24,30 @@ export const appRouter = router({
   }),
 
   career: router({
+    uploadCv: publicProcedure
+      .input(
+        z.object({
+          fileName: z.string().min(1),
+          contentType: z.string().min(1),
+          data: z.string().min(1),
+        }),
+      )
+      .mutation(async ({ input }) => {
+        const extension = input.fileName.toLowerCase().match(/\.(pdf|docx?|)$/)?.[1];
+        if (!extension) {
+          throw new Error("Only PDF, DOC, and DOCX files are supported");
+        }
+
+        const buffer = Buffer.from(input.data, "base64");
+        if (buffer.byteLength > 10 * 1024 * 1024) {
+          throw new Error("CV file must be 10MB or smaller");
+        }
+
+        const safeFileName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const uploaded = await storagePut(`career-cvs/${Date.now()}-${safeFileName}`, buffer, input.contentType);
+        return { ...uploaded, fileName: input.fileName };
+      }),
+
     submitCv: publicProcedure
       .input(
         z.object({
@@ -59,7 +85,7 @@ export const appRouter = router({
       }),
 
     listSubmissions: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") {
+      if (!isCareerAdmin(ctx.user)) {
         throw new Error("Unauthorized access");
       }
       const db = await getDb();
@@ -76,7 +102,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") {
+        if (!isCareerAdmin(ctx.user)) {
           throw new Error("Unauthorized access");
         }
         const db = await getDb();

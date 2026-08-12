@@ -35,9 +35,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguage, toggleLanguage, type Language } from "@/hooks/useLanguage";
 import { Textarea } from "@/components/ui/textarea";
 
-type Language = "en" | "ar";
 type CompanyType = "full-time" | "consulting";
 
 type Company = {
@@ -377,6 +377,178 @@ const skillStack = [
   ["KPI", "Reporting"],
 ];
 
+const homeCopy = {
+  en: {
+    hero: {
+      pretitle: "Available for growth conversations",
+      role: "Business Development / Commercial Operations / Sales Leadership",
+      lede: "I build the systems behind commercial momentum — launching branches, scaling revenue, and training sales teams across Egypt's education and training sector.",
+      download: "Download CV",
+      conversation: "Open a growth conversation",
+      commercialGrowth: "years in commercial growth",
+      trained: "sales professionals trained",
+      bottom: "Scroll to map the orbit",
+    },
+    signals: [
+      ["Branches launched", "From the ground up"],
+      ["Peak monthly revenue", "Russian Cultural Center"],
+      ["Organizations served", "Training & consulting"],
+      ["Commercial disciplines", "Sales · Ops · CRM · KPI"],
+    ],
+    orbit: {
+      eyebrow: "02 / Partner constellation",
+      title: "The companies inside my orbit.",
+      copy: "Two rings. Thirteen partners. One operating pattern: turn commercial potential into repeatable performance.",
+      promptEyebrow: "Explore the constellation",
+      promptTitle: "Every badge holds a chapter of the work.",
+      promptCopy: "Hover to pause a trajectory. Select any company to open the role progression, dates, and measurable impact behind the mark.",
+      inner: "Executive roles",
+      outer: "Consulting partners",
+      partners: "partners mapped",
+      innerLegend: "Inner ring: full-time executive roles",
+      outerLegend: "Outer ring: training & consulting engagements",
+    },
+    journey: {
+      eyebrow: "03 / Career progression",
+      title: "A track record that compounds.",
+      copy: "Promotions, operating systems, and commercial growth — connected across the years.",
+      trajectory: "trajectory point",
+    },
+    training: {
+      eyebrow: "04 / Consulting & corporate training",
+      title: "Turn the sales floor into a learning system.",
+      copy: "I help education and training organizations build stronger commercial habits: clearer funnels, better coaching, and teams that know how to move a conversation forward.",
+      trained: "sales professionals trained across 15+ organizations",
+      link: "Design a training track",
+      modules: "Modules in the orbit",
+      quote: "The best commercial system is one that makes good decisions easier to repeat.",
+      principle: "— Mohamed Ali / operating principle",
+    },
+    skills: {
+      eyebrow: "05 / Capability stack",
+      title: "The tools behind the decisions.",
+      copy: "A practical blend of commercial judgment, operational discipline, and data fluency.",
+      certifications: "Certifications & training",
+      pmp: "PMP Training — 35 hours",
+      pmi: "PMI exam eligibility completed · 2025",
+      data: "Data Analysis Certificate · Excel, Power BI, SQL, Python · 2025",
+      education: "Academic education",
+      degree: "Bachelor of Laws (LL.B.)",
+      university: "Helwan University · Faculty of Law",
+      languages: "Languages",
+      languageList: "Arabic · English · French",
+      languageLevel: "Native · Professional working proficiency · A2",
+    },
+    contact: {
+      eyebrow: "06 / Open channel",
+      title: "Let's put the next orbit in motion.",
+      copy: "Reach out for branch launching, commercial consulting, sales leadership, or a corporate training engagement.",
+      formTitle: "Start a conversation",
+      status: "direct channel",
+      name: "Full name",
+      email: "Email address",
+      building: "What are we building?",
+      namePlaceholder: "Your name",
+      emailPlaceholder: "you@company.com",
+      detailsPlaceholder: "Tell me about the branch, team, or commercial challenge...",
+      submit: "Send direct message via WhatsApp",
+      note: "Your message opens directly in WhatsApp — no inbox lost in space.",
+    },
+    footer: "Build the system. Scale the signal.",
+  },
+  ar: {
+    hero: {
+      pretitle: "متاح لمناقشة فرص النمو",
+      role: "تطوير الأعمال / العمليات التجارية / قيادة المبيعات",
+      lede: "أبني الأنظمة التي تقف خلف الزخم التجاري — من إطلاق الفروع وتوسيع الإيرادات إلى تدريب فرق المبيعات في قطاع التعليم والتدريب بمصر.",
+      download: "تحميل السيرة الذاتية",
+      conversation: "ابدأ محادثة حول النمو",
+      commercialGrowth: "سنوات في النمو التجاري",
+      trained: "متخصص مبيعات تم تدريبهم",
+      bottom: "مرّر لاستكشاف المدار",
+    },
+    signals: [
+      ["فروع تم إطلاقها", "من الصفر"],
+      ["أعلى إيراد شهري", "المركز الثقافي الروسي"],
+      ["مؤسسات تم دعمها", "تدريب واستشارات"],
+      ["تخصصات تجارية", "مبيعات · عمليات · CRM · مؤشرات أداء"],
+    ],
+    orbit: {
+      eyebrow: "02 / كوكبة الشركاء",
+      title: "الشركات داخل مداري المهني.",
+      copy: "مداران. ثلاثة عشر شريكاً. نمط تشغيلي واحد: تحويل الإمكانات التجارية إلى أداء قابل للتكرار.",
+      promptEyebrow: "استكشف الكوكبة",
+      promptTitle: "كل شارة تحمل فصلاً من فصول العمل.",
+      promptCopy: "مرّر لإيقاف المسار مؤقتاً. اختر أي شركة لعرض تطور الدور والتواريخ والأثر القابل للقياس خلف العلامة.",
+      inner: "أدوار تنفيذية",
+      outer: "شركاء استشاريون",
+      partners: "شريكاً في الخريطة",
+      innerLegend: "المدار الداخلي: أدوار تنفيذية بدوام كامل",
+      outerLegend: "المدار الخارجي: شراكات التدريب والاستشارات",
+    },
+    journey: {
+      eyebrow: "03 / المسار المهني",
+      title: "سجل خبرة يتراكم أثره.",
+      copy: "ترقيات وأنظمة تشغيل ونمو تجاري — مسار واحد متصل عبر السنوات.",
+      trajectory: "نقطة في المسار",
+    },
+    training: {
+      eyebrow: "04 / الاستشارات والتدريب المؤسسي",
+      title: "حوّل أرضية المبيعات إلى منظومة تعلم.",
+      copy: "أساعد مؤسسات التعليم والتدريب على بناء عادات تجارية أقوى: مسارات أوضح، تدريب أفضل، وفرق تعرف كيف تدفع المحادثة إلى الأمام.",
+      trained: "متخصص مبيعات تم تدريبهم عبر أكثر من 15 مؤسسة",
+      link: "صمّم مساراً تدريبياً",
+      modules: "محاور داخل المدار",
+      quote: "أفضل نظام تجاري هو الذي يجعل تكرار القرارات الجيدة أسهل.",
+      principle: "— محمد علي / مبدأ تشغيلي",
+    },
+    skills: {
+      eyebrow: "05 / منظومة القدرات",
+      title: "الأدوات خلف القرارات.",
+      copy: "مزيج عملي من الحكم التجاري والانضباط التشغيلي والقدرة على التعامل مع البيانات.",
+      certifications: "الشهادات والتدريب",
+      pmp: "تدريب PMP — 35 ساعة",
+      pmi: "استيفاء أهلية اختبار PMI · 2025",
+      data: "شهادة تحليل البيانات · Excel وPower BI وSQL وPython · 2025",
+      education: "التعليم الأكاديمي",
+      degree: "ليسانس الحقوق",
+      university: "جامعة حلوان · كلية الحقوق",
+      languages: "اللغات",
+      languageList: "العربية · الإنجليزية · الفرنسية",
+      languageLevel: "اللغة الأم · إجادة مهنية · A2",
+    },
+    contact: {
+      eyebrow: "06 / قناة مفتوحة",
+      title: "لنضع المدار القادم في الحركة.",
+      copy: "تواصل معي لإطلاق الفروع أو الاستشارات التجارية أو قيادة المبيعات أو التدريب المؤسسي.",
+      formTitle: "ابدأ محادثة",
+      status: "قناة مباشرة",
+      name: "الاسم الكامل",
+      email: "البريد الإلكتروني",
+      building: "ماذا سنبني؟",
+      namePlaceholder: "اسمك",
+      emailPlaceholder: "you@company.com",
+      detailsPlaceholder: "أخبرني عن الفرع أو الفريق أو التحدي التجاري...",
+      submit: "إرسال رسالة مباشرة عبر WhatsApp",
+      note: "ستفتح رسالتك مباشرة في WhatsApp — بلا رسالة تضيع في الفضاء.",
+    },
+    footer: "ابنِ النظام. وسّع الإشارة.",
+  },
+} as const;
+
+const timelineArabic: Record<string, { role: string; copy: string }> = {
+  "Harvest British College": { role: "مدير فرع", copy: "ترقيت سريعاً عبر خمسة مناصب قيادية خلال نحو عامين." },
+  "Russian Cultural Center": { role: "قائد فريق المبيعات ← أخصائي تطوير أعمال", copy: "قدت فريق المبيعات واستراتيجية التوسع، وساهمت في نمو الإيراد الشهري من 2 إلى 5 ملايين جنيه." },
+  "Be Fluent": { role: "مطور أعمال ← مدير فرع ← مستشار", copy: "أدرت عمليات الفروع بالكامل وأطلقت فرعين جديدين قبل الانتقال إلى العمل الاستشاري." },
+  "JCC Training Academy": { role: "مدير فرع وقائد تطوير الأعمال", copy: "عضو مؤسس: افتتحت فرعاً من الصفر ووسّعت الإيراد الشهري من 150 إلى 450 ألف جنيه في أول خمسة أشهر تشغيل." },
+};
+
+const topicArabic: Record<string, string> = {
+  "Business Development": "تطوير الأعمال", "Commercial Strategy": "الاستراتيجية التجارية", "Sales Leadership": "قيادة المبيعات", "Consultative Selling": "البيع الاستشاري", "CRM Management": "إدارة CRM", "Sales Psychology": "سيكولوجية المبيعات", "Lead Management": "إدارة العملاء المحتملين", "Branch Operations": "عمليات الفروع", "Team Leadership": "قيادة الفرق", "Performance Coaching": "تدريب الأداء", "Customer Experience": "تجربة العملاء",
+};
+
+const skillArabic: Record<string, string> = { Advanced: "متقدم", Dashboards: "لوحات بيانات", Querying: "استعلامات", Data: "بيانات", "Zoho · Tamkeen": "Zoho · Tamkeen", Reporting: "تقارير" };
+
 function useReveal() {
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
@@ -536,7 +708,7 @@ function OrbitTrack({
   );
 }
 
-function RevenueChart({ company }: { company: Company }) {
+function RevenueChart({ company, language }: { company: Company; language: Language }) {
   const points = company.chart ?? [];
   const [animatedValues, setAnimatedValues] = useState(() => points.map(() => 0));
 
@@ -560,7 +732,7 @@ function RevenueChart({ company }: { company: Company }) {
   const isMillionChart = company.id === "russian";
   return (
     <div className="revenue-chart">
-      <div className="chart-heading"><span><BarChart3 size={14} /> Revenue trajectory</span><span className="chart-heading__unit">EGP</span></div>
+      <div className="chart-heading"><span><BarChart3 size={14} />{language === "en" ? " Revenue trajectory" : " مسار الإيرادات"}</span><span className="chart-heading__unit">EGP</span></div>
       <div className="chart-bars" aria-label={`${company.name} revenue chart`}>
         {points.map((point, index) => {
           const value = animatedValues[index] ?? 0;
@@ -578,30 +750,30 @@ function RevenueChart({ company }: { company: Company }) {
   );
 }
 
-function AchievementCard({ company, onClose }: { company: Company; onClose: () => void }) {
+function AchievementCard({ company, onClose, language }: { company: Company; onClose: () => void; language: Language }) {
   return (
     <article className="achievement-card" data-reveal>
-      <div className="achievement-card__topline"><span>{company.tag}</span><button type="button" onClick={onClose} aria-label="Close achievement card"><X size={18} /></button></div>
+      <div className="achievement-card__topline"><span>{language === "en" ? company.tag : company.tag === "Executive Role" ? "دور تنفيذي" : "شريك استشاري"}</span><button type="button" onClick={onClose} aria-label="Close achievement card"><X size={18} /></button></div>
       <div className="achievement-card__identity">
         <div className="achievement-card__logo"><LogoImage company={company} /></div>
-        <div><p className="company-kicker">Selected orbit</p><h3>{company.name}</h3><p className="achievement-card__dates">{company.dates}</p></div>
+        <div><p className="company-kicker">{language === "en" ? "Selected orbit" : "المدار المختار"}</p><h3>{company.name}</h3><p className="achievement-card__dates">{company.dates}</p></div>
       </div>
-      <p className="achievement-card__description">{company.description ?? "Delivered training and consulting engagements."}</p>
-      <div className="achievement-card__role"><span className="company-kicker">Role title</span><strong>{company.role}</strong></div>
+      <p className="achievement-card__description">{language === "en" ? (company.description ?? "Delivered training and consulting engagements.") : "تم تنفيذ برامج تدريبية ومشروعات استشارية لدعم النمو التجاري."}</p>
+      <div className="achievement-card__role"><span className="company-kicker">{language === "en" ? "Role title" : "المسمى الوظيفي"}</span><strong>{language === "en" ? company.role : company.role.includes("Sales Trainer") ? "مدرب مبيعات ومستشار تطوير أعمال" : company.role}</strong></div>
       <div className="role-progression">
-        <p className="company-kicker">Role progression</p>
+        <p className="company-kicker">{language === "en" ? "Role progression" : "تطور الدور"}</p>
         <div className="role-progression__path">{company.roles.map((role, index) => <span key={role}><b>{role}</b>{index < company.roles.length - 1 && <ArrowRight size={13} />}</span>)}</div>
       </div>
       <div className="achievement-card__body">
-        <div><p className="company-kicker">Impact notes</p><ul>{company.achievements.map((achievement, index) => <li key={achievement} style={{ "--item-delay": `${index * 70}ms` } as React.CSSProperties}><Check size={14} />{achievement}</li>)}</ul></div>
-        <RevenueChart company={company} />
+        <div><p className="company-kicker">{language === "en" ? "Impact notes" : "ملاحظات الأثر"}</p><ul>{company.achievements.map((achievement, index) => <li key={achievement} style={{ "--item-delay": `${index * 70}ms` } as React.CSSProperties}><Check size={14} />{language === "en" ? achievement : "تقديم تدريب واستشارات ساعدت على تحسين الأداء التجاري."}</li>)}</ul></div>
+        <RevenueChart company={company} language={language} />
       </div>
     </article>
   );
 }
 
 export default function Home() {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
@@ -613,12 +785,7 @@ export default function Home() {
   const fullTime = useMemo(() => companies.filter((company) => company.type === "full-time"), []);
   const consulting = useMemo(() => companies.filter((company) => company.type === "consulting"), []);
 
-  useEffect(() => {
-    document.documentElement.lang = language === "ar" ? "ar" : "en";
-    document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
-  }, [language]);
-
-  const toggleLanguage = () => setLanguage((current) => current === "en" ? "ar" : "en");
+  const handleLanguageToggle = () => setLanguage((current) => toggleLanguage(current));
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const sendWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
@@ -627,7 +794,7 @@ export default function Home() {
   };
 
   return (
-    <div className="portfolio-shell">
+    <div className="portfolio-shell" dir={language === "ar" ? "rtl" : "ltr"}>
       <div className="ambient-noise" aria-hidden="true" />
       <header className={`site-nav ${scrolled ? "site-nav--scrolled" : ""}`}>
         <a className="brand-lockup" href="#top" aria-label="Mohamed Ali home">
@@ -645,7 +812,7 @@ export default function Home() {
           </Link>
         </nav>
         <div className="nav-actions">
-          <button className="language-toggle" type="button" onClick={toggleLanguage} aria-label="Toggle Arabic and English"><Languages size={15} /><span>{language === "en" ? "العربية" : "English"}</span></button>
+          <button className="language-toggle" type="button" onClick={handleLanguageToggle} aria-label="Toggle Arabic and English"><Languages size={15} /><span>{language === "en" ? "العربية" : "English"}</span></button>
           <a className="nav-cv" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={15} /> <span>Download CV</span></a>
           <button className="menu-toggle" type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu">{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
         </div>
@@ -657,11 +824,11 @@ export default function Home() {
           <div className="hero-orbit hero-orbit--one" aria-hidden="true" /><div className="hero-orbit hero-orbit--two" aria-hidden="true" />
           <div className="container hero-grid">
             <div className="hero-copy" data-reveal>
-              <p className="hero-pretitle"><span className="status-dot" /> Available for growth conversations <span className="hero-pretitle__line" /></p>
+              <p className="hero-pretitle"><span className="status-dot" /> {homeCopy[language].hero.pretitle} <span className="hero-pretitle__line" /></p>
               <h1>Mohamed <em>Ali</em></h1>
-              <p className="hero-role">Business Development <span>/</span> Commercial Operations <span>/</span> Sales Leadership</p>
-              <p className="hero-lede">I build the systems behind commercial momentum — launching branches, scaling revenue, and training sales teams across Egypt's education and training sector.</p>
-              <div className="hero-actions"><a className="button button--gold" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={17} /> Download CV</a><button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>Open a growth conversation <ArrowUpRight size={17} /></button></div>
+              <p className="hero-role">{homeCopy[language].hero.role}</p>
+              <p className="hero-lede">{homeCopy[language].hero.lede}</p>
+              <div className="hero-actions"><a className="button button--gold" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={17} /> {homeCopy[language].hero.download}</a><button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{homeCopy[language].hero.conversation} <ArrowUpRight size={17} /></button></div>
               <div className="contact-strip">
                 <a href="tel:+201030537773"><Phone size={14} />01030537773</a>
                 <a href="mailto:mohamed280ali90@gmail.com"><Mail size={14} />mohamed280ali90@gmail.com</a>
@@ -672,48 +839,44 @@ export default function Home() {
             <div className="hero-portrait-wrap" data-reveal>
               <div className="portrait-rings" aria-hidden="true"><span /><span /><span /></div>
               <div className="portrait-card"><img src={asset.profile} alt="Mohamed Ali presenting a training session" /><div className="portrait-card__label"><span>MOHAMED ALI</span><small>BUSINESS DEVELOPMENT · EGYPT</small></div></div>
-              <div className="portrait-data portrait-data--top"><span>05+</span><small>years in<br />commercial growth</small></div>
-              <div className="portrait-data portrait-data--bottom"><span>750+</span><small>sales professionals<br />trained</small></div>
+              <div className="portrait-data portrait-data--top"><span>05+</span><small>{homeCopy[language].hero.commercialGrowth}</small></div>
+              <div className="portrait-data portrait-data--bottom"><span>750+</span><small>{homeCopy[language].hero.trained}</small></div>
             </div>
           </div>
-          <div className="hero-bottomline container"><span>Scroll to map the orbit</span><ArrowDown size={16} /><span className="hero-bottomline__code">MA / 001 — 2026</span></div>
+          <div className="hero-bottomline container"><span>{homeCopy[language].hero.bottom}</span><ArrowDown size={16} /><span className="hero-bottomline__code">MA / 001 — 2026</span></div>
         </section>
 
-        <section className="signal-section container" data-reveal>
-          <div className="signal-cell"><span className="signal-number">01</span><strong>Branches launched</strong><small>From the ground up</small></div>
-          <div className="signal-cell"><span className="signal-number">EGP 5M</span><strong>Peak monthly revenue</strong><small>Russian Cultural Center</small></div>
-          <div className="signal-cell"><span className="signal-number">15+</span><strong>Organizations served</strong><small>Training & consulting</small></div>
-          <div className="signal-cell"><span className="signal-number">06</span><strong>Commercial disciplines</strong><small>Sales · Ops · CRM · KPI</small></div>
-        </section>
+        <section className="signal-section container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>
 
         <section id="companies" className="orbit-section section-dark" style={{ backgroundImage: `linear-gradient(180deg, rgba(7,11,20,.88), rgba(7,11,20,.97)), url(${asset.orbit})` }}>
           <div className="container">
-            <SectionIntro eyebrow="02 / Partner constellation" title="The companies inside my orbit." copy="Two rings. Thirteen partners. One operating pattern: turn commercial potential into repeatable performance." language={language} />
+            <SectionIntro eyebrow={homeCopy[language].orbit.eyebrow} title={homeCopy[language].orbit.title} copy={homeCopy[language].orbit.copy} language={language} />
             <div className="orbit-layout">
               <div className="orbit-stage" data-reveal>
                 <div className="orbit-guide orbit-guide--outer" /><div className="orbit-guide orbit-guide--inner" />
                 <div className="orbit-center"><div className="orbit-center__pulse" /><img src={asset.mark} alt="" /><span>MA</span><small>impact<br />core</small></div>
                 <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
                 <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
-                <div className="orbit-annotation orbit-annotation--inner"><span />full-time roles</div>
-                <div className="orbit-annotation orbit-annotation--outer"><span />training / consulting</div>
+                <div className="orbit-annotation orbit-annotation--inner"><span />{homeCopy[language].orbit.inner}</div>
+                <div className="orbit-annotation orbit-annotation--outer"><span />{homeCopy[language].orbit.outer}</div>
               </div>
               <div className="orbit-aside" data-reveal>
-                {selectedCompany ? <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} /> : <div className="orbit-prompt"><p className="eyebrow"><span className="eyebrow-dot" /> Explore the constellation</p><h3>Every badge holds a chapter of the work.</h3><p>Hover to pause a trajectory. Select any company to open the role progression, dates, and measurable impact behind the mark.</p><div className="orbit-prompt__hint"><span className="hint-ring" /><span>Inner ring<br /><b>Executive roles</b></span><span className="hint-ring hint-ring--small" /><span>Outer ring<br /><b>Consulting partners</b></span></div><div className="orbit-prompt__count"><strong>{partnerCount}</strong><span>partners<br />mapped</span></div></div>}
+                {selectedCompany ? <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} language={language} /> : <div className="orbit-prompt"><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].orbit.promptEyebrow}</p><h3>{homeCopy[language].orbit.promptTitle}</h3><p>{homeCopy[language].orbit.promptCopy}</p><div className="orbit-prompt__hint"><span className="hint-ring" /><span>{language === "en" ? "Inner ring" : "المدار الداخلي"}<br /><b>{homeCopy[language].orbit.inner}</b></span><span className="hint-ring hint-ring--small" /><span>{language === "en" ? "Outer ring" : "المدار الخارجي"}<br /><b>{homeCopy[language].orbit.outer}</b></span></div><div className="orbit-prompt__count"><strong>{partnerCount}</strong><span>{homeCopy[language].orbit.partners}</span></div></div>}
               </div>
             </div>
-            <div className="orbit-legend"><span><i className="legend-dot legend-dot--gold" /> Inner ring: full-time executive roles</span><span><i className="legend-dot legend-dot--cyan" /> Outer ring: training & consulting engagements</span></div>
+            <div className="orbit-legend"><span><i className="legend-dot legend-dot--gold" /> {homeCopy[language].orbit.innerLegend}</span><span><i className="legend-dot legend-dot--cyan" /> {homeCopy[language].orbit.outerLegend}</span></div>
           </div>
         </section>
 
         <section id="journey" className="journey-section" style={{ backgroundImage: `linear-gradient(180deg, rgba(3,7,18,.98), rgba(3,7,18,.88)), url(${asset.career})` }}>
           <div className="container">
-            <SectionIntro eyebrow="03 / Career progression" title="A track record that compounds." copy="Promotions, operating systems, and commercial growth — connected across the years." language={language} />
+            <SectionIntro eyebrow={homeCopy[language].journey.eyebrow} title={homeCopy[language].journey.title} copy={homeCopy[language].journey.copy} language={language} />
             <div className="timeline-wrap">
               <div className="timeline-rail" aria-hidden="true"><span /><span /><span /><span /></div>
               {timeline.map((item, index) => {
                 const Icon = item.icon;
-                return <article className="timeline-card" data-reveal key={item.company} style={{ "--timeline-delay": `${index * 90}ms` } as React.CSSProperties}><div className="timeline-card__index">0{index + 1}</div><div className="timeline-card__logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="timeline-card__content"><p className="company-kicker">{item.company}</p><h3>{item.role}</h3><p>{item.copy}</p><div className="timeline-card__meta"><span><Icon size={14} /> trajectory point</span><span className="timeline-year">{item.year}</span></div></div><ArrowUpRight className="timeline-card__arrow" size={20} /></article>;
+                const localized = language === "ar" ? timelineArabic[item.company] : undefined;
+                return <article className="timeline-card" data-reveal key={item.company} style={{ "--timeline-delay": `${index * 90}ms` } as React.CSSProperties}><div className="timeline-card__index">0{index + 1}</div><div className="timeline-card__logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="timeline-card__content"><p className="company-kicker">{item.company}</p><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="timeline-card__meta"><span><Icon size={14} /> {homeCopy[language].journey.trajectory}</span><span className="timeline-year">{item.year}</span></div></div><ArrowUpRight className="timeline-card__arrow" size={20} /></article>;
               })}
             </div>
           </div>
@@ -721,27 +884,27 @@ export default function Home() {
 
         <section id="training" className="training-section section-dark">
           <div className="container training-grid">
-            <div className="training-copy" data-reveal><SectionIntro eyebrow="04 / Consulting & corporate training" title="Turn the sales floor into a learning system." copy="I help education and training organizations build stronger commercial habits: clearer funnels, better coaching, and teams that know how to move a conversation forward." language={language} /><div className="training-stat"><span className="training-stat__number">{trainedCount}<sup>+</sup></span><span>sales professionals trained<br />across 15+ organizations</span></div><a className="text-link" href="#contact">Design a training track <ArrowRight size={15} /></a></div>
-            <div className="training-topics" data-reveal><p className="company-kicker">Modules in the orbit</p><div className="topic-cloud">{trainingTopics.map((topic, index) => <span key={topic} style={{ "--topic-delay": `${index * 40}ms` } as React.CSSProperties}>{topic}</span>)}</div><div className="training-callout"><Quote size={26} /><p>“The best commercial system is one that makes good decisions easier to repeat.”</p><span>— Mohamed Ali / operating principle</span></div></div>
+            <div className="training-copy" data-reveal><SectionIntro eyebrow={homeCopy[language].training.eyebrow} title={homeCopy[language].training.title} copy={homeCopy[language].training.copy} language={language} /><div className="training-stat"><span className="training-stat__number">{trainedCount}<sup>+</sup></span><span>{homeCopy[language].training.trained}</span></div><a className="text-link" href="#contact">{homeCopy[language].training.link} <ArrowRight size={15} /></a></div>
+            <div className="training-topics" data-reveal><p className="company-kicker">{homeCopy[language].training.modules}</p><div className="topic-cloud">{trainingTopics.map((topic, index) => <span key={topic} style={{ "--topic-delay": `${index * 40}ms` } as React.CSSProperties}>{language === "ar" ? topicArabic[topic] ?? topic : topic}</span>)}</div><div className="training-callout"><Quote size={26} /><p>“{homeCopy[language].training.quote}”</p><span>{homeCopy[language].training.principle}</span></div></div>
           </div>
         </section>
 
         <section className="skills-section">
           <div className="container skills-grid">
-            <div data-reveal><SectionIntro eyebrow="05 / Capability stack" title="The tools behind the decisions." copy="A practical blend of commercial judgment, operational discipline, and data fluency." language={language} /><div className="skill-stack">{skillStack.map(([name, detail], index) => <div className="skill-chip" key={name} style={{ "--skill-delay": `${index * 60}ms` } as React.CSSProperties}><span className="skill-chip__icon">{index === 0 ? "EX" : index === 1 ? "BI" : index === 2 ? "SQL" : index === 3 ? "PY" : index === 4 ? "CRM" : "KPI"}</span><span><b>{name}</b><small>{detail}</small></span><ArrowUpRight size={15} /></div>)}</div></div>
-            <div className="credential-stack" data-reveal><div className="credential-card credential-card--gold"><div className="credential-card__icon"><GraduationCap size={21} /></div><div><p className="company-kicker">Certifications & training</p><h3>PMP Training — 35 hours</h3><p>PMI exam eligibility completed · 2025</p><p>Data Analysis Certificate · Excel, Power BI, SQL, Python · 2025</p></div></div><div className="credential-card"><div className="credential-card__icon"><FileText size={21} /></div><div><p className="company-kicker">Academic education</p><h3>Bachelor of Laws (LL.B.)</h3><p>Helwan University · Faculty of Law</p></div></div><div className="credential-card"><div className="credential-card__icon"><Globe2 size={21} /></div><div><p className="company-kicker">Languages</p><h3>Arabic · English · French</h3><p>Native · Professional working proficiency · A2</p></div></div></div>
+            <div data-reveal><SectionIntro eyebrow={homeCopy[language].skills.eyebrow} title={homeCopy[language].skills.title} copy={homeCopy[language].skills.copy} language={language} /><div className="skill-stack">{skillStack.map(([name, detail], index) => <div className="skill-chip" key={name} style={{ "--skill-delay": `${index * 60}ms` } as React.CSSProperties}><span className="skill-chip__icon">{index === 0 ? "EX" : index === 1 ? "BI" : index === 2 ? "SQL" : index === 3 ? "PY" : index === 4 ? "CRM" : "KPI"}</span><span><b>{language === "ar" ? skillArabic[name] ?? name : name}</b><small>{language === "ar" ? skillArabic[detail] ?? detail : detail}</small></span><ArrowUpRight size={15} /></div>)}</div></div>
+            <div className="credential-stack" data-reveal><div className="credential-card credential-card--gold"><div className="credential-card__icon"><GraduationCap size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.certifications}</p><h3>{homeCopy[language].skills.pmp}</h3><p>{homeCopy[language].skills.pmi}</p><p>{homeCopy[language].skills.data}</p></div></div><div className="credential-card"><div className="credential-card__icon"><FileText size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.education}</p><h3>{homeCopy[language].skills.degree}</h3><p>{homeCopy[language].skills.university}</p></div></div><div className="credential-card"><div className="credential-card__icon"><Globe2 size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.languages}</p><h3>{homeCopy[language].skills.languageList}</h3><p>{homeCopy[language].skills.languageLevel}</p></div></div></div>
           </div>
         </section>
 
         <section id="contact" className="contact-section" style={{ backgroundImage: "linear-gradient(90deg, rgba(3,7,18,.99) 0%, rgba(3,7,18,.94) 55%, rgba(7,20,40,.88) 100%)" }}>
           <div className="container contact-grid">
-            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> 06 / Open channel</p><h2>Let's put the next<br /><em>orbit</em> in motion.</h2><p>Reach out for branch launching, commercial consulting, sales leadership, or a corporate training engagement.</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div></div>
-            <form className="contact-form" onSubmit={sendWhatsApp} data-reveal><div className="form-heading"><span>Start a conversation</span><span className="form-status"><span /> direct channel</span></div><label>Full name<Input required value={formState.name} onChange={(event) => setFormState({ ...formState, name: event.target.value })} placeholder="Your name" /></label><label>Email address<Input required type="email" value={formState.email} onChange={(event) => setFormState({ ...formState, email: event.target.value })} placeholder="you@company.com" /></label><label>What are we building?<Textarea required value={formState.details} onChange={(event) => setFormState({ ...formState, details: event.target.value })} placeholder="Tell me about the branch, team, or commercial challenge..." /></label><button className="button button--gold button--full" type="submit">Send direct message via WhatsApp <MoveUpRight size={16} /></button><p className="form-note"><Sparkles size={14} /> Your message opens directly in WhatsApp — no inbox lost in space.</p></form>
+            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].contact.eyebrow}</p><h2>{homeCopy[language].contact.title.split(" ").slice(0, -2).join(" ")}<br /><em>{homeCopy[language].contact.title.split(" ").slice(-2).join(" ")}</em></h2><p>{homeCopy[language].contact.copy}</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div></div>
+            <form className="contact-form" onSubmit={sendWhatsApp} data-reveal><div className="form-heading"><span>{homeCopy[language].contact.formTitle}</span><span className="form-status"><span /> {homeCopy[language].contact.status}</span></div><label>{homeCopy[language].contact.name}<Input required value={formState.name} onChange={(event) => setFormState({ ...formState, name: event.target.value })} placeholder={homeCopy[language].contact.namePlaceholder} /></label><label>{homeCopy[language].contact.email}<Input required type="email" value={formState.email} onChange={(event) => setFormState({ ...formState, email: event.target.value })} placeholder={homeCopy[language].contact.emailPlaceholder} /></label><label>{homeCopy[language].contact.building}<Textarea required value={formState.details} onChange={(event) => setFormState({ ...formState, details: event.target.value })} placeholder={homeCopy[language].contact.detailsPlaceholder} /></label><button className="button button--gold button--full" type="submit">{homeCopy[language].contact.submit} <MoveUpRight size={16} /></button><p className="form-note"><Sparkles size={14} /> {homeCopy[language].contact.note}</p></form>
           </div>
         </section>
       </main>
 
-      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>Build the system. Scale the signal.</small></span></div><div className="flex items-center gap-6"><Link href="/career-gateway" className="text-sm font-semibold text-[#d4af37] hover:underline flex items-center gap-1.5"><Briefcase className="w-4 h-4" /><span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span></Link></div><p>© 2026 Mohamed Ali. Business Development · Commercial Operations · Sales Leadership.</p><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></footer>
+      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>{homeCopy[language].footer}</small></span></div><div className="flex items-center gap-6"><Link href="/career-gateway" className="text-sm font-semibold text-[#d4af37] hover:underline flex items-center gap-1.5"><Briefcase className="w-4 h-4" /><span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span></Link></div><p>© 2026 Mohamed Ali. {homeCopy[language].hero.role}</p><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></footer>
     </div>
   );
 }
