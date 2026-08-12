@@ -901,7 +901,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.25 PM_81417173.jpeg" alt="Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.25 PM.jpeg" alt="Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
@@ -912,7 +912,7 @@ export default function Home() {
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.26 PM_bc5b583c.jpeg" alt="Contracts & Partnerships" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg" alt="Contracts & Partnerships" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
@@ -923,7 +923,7 @@ export default function Home() {
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.28 PM (1)_a3e2faf5.jpeg" alt="Stage Presentation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.28 PM (1).jpeg" alt="Stage Presentation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
