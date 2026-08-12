@@ -891,6 +891,49 @@ export default function Home() {
             <div className="training-copy" data-reveal><SectionIntro eyebrow={homeCopy[language].training.eyebrow} title={homeCopy[language].training.title} copy={homeCopy[language].training.copy} language={language} /><div className="training-stat"><span className="training-stat__number">{trainedCount}<sup>+</sup></span><span>{homeCopy[language].training.trained}</span></div><a className="text-link" href="#contact">{homeCopy[language].training.link} <ArrowRight size={15} /></a></div>
             <div className="training-topics" data-reveal><p className="company-kicker">{homeCopy[language].training.modules}</p><div className="topic-cloud">{trainingTopics.map((topic, index) => <span key={topic} style={{ "--topic-delay": `${index * 40}ms` } as React.CSSProperties}>{language === "ar" ? topicArabic[topic] ?? topic : topic}</span>)}</div><div className="training-callout"><Quote size={26} /><p>“{homeCopy[language].training.quote}”</p><span>{homeCopy[language].training.principle}</span></div></div>
           </div>
+          <div className="container mt-16">
+            <div className="text-center mb-10" data-reveal>
+              <p className="eyebrow inline-flex items-center gap-2"><span className="eyebrow-dot" /> {language === "ar" ? "توثيق ميداني وشراكات" : "Field Evidence & Partnerships"}</p>
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-2">
+                {language === "ar" ? "أبرز المحطات التدريبية والتعاقدات الرسمية" : "Key Training Sessions & Official Contracts"}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal>
+              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
+                <div className="aspect-video overflow-hidden relative">
+                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.25 PM_81417173.jpeg" alt="Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                </div>
+                <div className="p-4">
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">MEC Academy / AISPRINT</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "محاضرات الإرشاد والـ Sales Funnel" : "Mentorship & Sales Funnel Sessions"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "إرشاد وتدريب مباشر لفرق العمل والطلاب على آليات تحويل العملاء." : "Direct training and mentorship on lead conversion and sales pipelines."}</p>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
+                <div className="aspect-video overflow-hidden relative">
+                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.26 PM_bc5b583c.jpeg" alt="Contracts & Partnerships" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                </div>
+                <div className="p-4">
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Corporate Protocols</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "توقيع التعاقدات والشراكات الاستراتيجية" : "Strategic Partnerships & Contracts"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "توثيق اتفاقيات التعاون وبروتوكولات العمل المؤسسي." : "Formalizing institutional agreements and operational protocols."}</p>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
+                <div className="aspect-video overflow-hidden relative">
+                  <img src="/manus-storage/WhatsApp Image 2026-08-12 at 8.15.28 PM (1)_a3e2faf5.jpeg" alt="Stage Presentation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                </div>
+                <div className="p-4">
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Keynote & Workshops</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "الفعاليات الكبرى والورش التفاعلية" : "Keynote Events & Interactive Workshops"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "تمثيل المؤسسات وتقديم عروض قيادية أمام مئات المتخصصين." : "Representing institutions and delivering leadership keynotes."}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="skills-section">
