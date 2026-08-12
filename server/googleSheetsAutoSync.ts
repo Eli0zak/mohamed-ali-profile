@@ -16,7 +16,7 @@ export interface SubmissionData {
   status?: string;
 }
 
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwJ8aui4Q6Ccl1XvkWGiL09EwCxMprWUYKklDQ2TpkxlSZHrReuquGOZ60e3yewAI5a3Q/exec";
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbziXsCWZAD39pSvuM-8jF-Pz_rFYknWM1oWejqWBSBW4zNvFz3W1X13nQJLPBGoOQZOlQ/exec";
 
 export async function appendToGoogleSheet(sub: SubmissionData) {
   const timestamp = new Date(sub.createdAt || Date.now()).toISOString();
@@ -70,10 +70,10 @@ export async function appendToGoogleSheet(sub: SubmissionData) {
       }),
     });
     const text = await response.text();
-    console.log("[Google Sheets Webhook] Response received:", text);
+    console.log("[Google Sheets Webhook New] Response received:", text);
     return { success: true, webhookResponse: text };
   } catch (err) {
-    console.error("[Google Sheets Webhook Error]:", err);
+    console.error("[Google Sheets Webhook New Error]:", err);
     return { success: false, error: String(err) };
   }
 }
