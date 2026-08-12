@@ -2806,3 +2806,138 @@
 .orbit-section {
   background: #070b14 !important;
 }
+
+
+/* FINAL MOBILE UX FIXES — keep desktop geometry unchanged while making dense sections resilient on narrow screens. */
+@media (max-width: 767px) {
+  .orbit-mobile-drawer {
+    height: min(82dvh, 720px);
+    max-height: calc(100dvh - 0.75rem);
+    min-height: 0;
+    padding: 0 0.9rem calc(1rem + env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .orbit-mobile-drawer .achievement-card {
+    min-width: 0;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .orbit-mobile-drawer .achievement-card__identity > div:last-child,
+  .orbit-mobile-drawer .achievement-card__body,
+  .orbit-mobile-drawer .revenue-chart {
+    min-width: 0;
+  }
+
+  .orbit-mobile-drawer .achievement-card__body li {
+    overflow-wrap: anywhere;
+  }
+
+  .contact-grid,
+  .skills-grid {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .contact-copy,
+  .contact-form,
+  .skills-grid > * {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .contact-copy h2,
+  .contact-copy p,
+  .contact-details,
+  .contact-details a,
+  .contact-details span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .contact-form {
+    padding: 1.25rem;
+  }
+
+  .form-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    max-width: 100%;
+  }
+
+  .form-note {
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+
+  .skill-stack {
+    width: min(100%, 30rem);
+    grid-template-columns: minmax(0, 1fr);
+    margin-inline: auto;
+  }
+
+  .skill-chip {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .skill-chip > span:not(.skill-chip__icon) {
+    min-width: 0;
+  }
+
+  .skill-chip b,
+  .skill-chip small {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .credential-stack {
+    width: min(100%, 30rem);
+    margin-inline: auto;
+  }
+
+  .credential-card {
+    min-width: 0;
+  }
+
+  .site-footer .container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
+    align-items: start;
+    gap: 1.15rem;
+  }
+
+  .footer-brand,
+  .site-footer .container > div:nth-child(2),
+  .site-footer p,
+  .site-footer .container > a {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .site-footer .container > div:nth-child(2) {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .site-footer p {
+    margin: 0;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer .container > a {
+    width: 36px;
+  }
+}
