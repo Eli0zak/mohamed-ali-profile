@@ -2371,3 +2371,411 @@
   .proof-orbit__halo--two,
   .proof-detail__panel { animation: none; }
 }
+
+
+/* MOBILE UX POLISH — touch-first orbit interaction without changing desktop geometry. */
+@media (max-width: 1024px) {
+  .desktop-nav--open {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    right: 0.85rem;
+    left: 0.85rem;
+    z-index: 80;
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    background: rgba(5, 10, 20, 0.97);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(18px);
+  }
+
+  .desktop-nav--open a {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0.7rem 0.85rem;
+    border-radius: 0.7rem;
+  }
+
+  .desktop-nav--open a:hover,
+  .desktop-nav--open a:focus-visible {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (max-width: 767px) {
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .site-header {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .brand-lockup__wordmark small {
+    display: none;
+  }
+
+  .brand-lockup__wordmark strong {
+    font-size: 0.82rem;
+  }
+
+  .nav-actions {
+    gap: 0.4rem;
+  }
+
+  .language-toggle,
+  .nav-cv {
+    min-height: 38px;
+    padding: 0.45rem 0.55rem;
+  }
+
+  .language-toggle span,
+  .nav-cv span {
+    display: none;
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding: 7.2rem 0.85rem 3.25rem;
+  }
+
+  .hero-grid {
+    gap: 2rem;
+  }
+
+  .hero-copy {
+    min-width: 0;
+  }
+
+  .hero-copy h1 {
+    max-width: 100%;
+    font-size: clamp(3.15rem, 15vw, 4.7rem);
+    line-height: 0.93;
+  }
+
+  .hero-lede,
+  .hero-role {
+    max-width: 34rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    margin-top: 1.35rem;
+  }
+
+  .hero-actions .button {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .contact-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem 0.9rem;
+    margin-top: 1.35rem;
+    font-size: 0.72rem;
+  }
+
+  .contact-strip a,
+  .contact-strip span {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .contact-strip a:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+
+  .hero-portrait-wrap {
+    margin-top: 0.25rem;
+  }
+
+  .portrait-card {
+    width: min(72vw, 270px);
+    height: min(92vw, 350px);
+  }
+
+  .portrait-rings {
+    width: min(88vw, 340px);
+    height: min(88vw, 340px);
+  }
+
+  .portrait-data {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .portrait-data--top {
+    right: max(0px, calc(50% - 47vw));
+  }
+
+  .portrait-data--bottom {
+    left: max(0px, calc(50% - 47vw));
+  }
+
+  .hero-bottomline {
+    gap: 0.65rem;
+    margin-top: 2.6rem;
+    font-size: 0.68rem;
+  }
+
+  .hero-bottomline__code {
+    white-space: nowrap;
+  }
+
+  .orbit-section {
+    padding: 4.5rem 0.75rem;
+  }
+
+  .orbit-layout {
+    gap: 1rem;
+  }
+
+  .orbit-stage {
+    height: min(96vw, 430px);
+    min-height: 330px;
+    border-radius: 1.15rem;
+  }
+
+  .orbit-guide--inner {
+    width: min(64vw, 260px);
+    height: min(64vw, 260px);
+  }
+
+  .orbit-guide--outer {
+    width: min(90vw, 365px);
+    height: min(90vw, 365px);
+  }
+
+  .orbit-center {
+    width: 70px;
+    height: 70px;
+  }
+
+  .orbit-center img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .orbit-track--inner .orbit-badge {
+    --orbit-radius: min(31vw, 130px) !important;
+  }
+
+  .orbit-track--outer .orbit-badge {
+    --orbit-radius: min(44vw, 184px) !important;
+  }
+
+  .orbit-badge {
+    width: 46px;
+    height: 46px;
+    margin-left: -23px;
+    margin-top: -23px;
+    touch-action: manipulation;
+  }
+
+  .orbit-badge:hover {
+    transform: none !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .orbit-badge:active,
+  .orbit-badge:focus-visible,
+  .orbit-badge--selected {
+    transform: scale(1.18) !important;
+    z-index: 25;
+    box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.12), 0 0 28px var(--badge-color, #fbbf24);
+  }
+
+  .orbit-badge--dimmed {
+    opacity: 0.2;
+    filter: saturate(0.35);
+  }
+
+  .orbit-tooltip {
+    bottom: -28px;
+    max-width: 100px;
+    overflow: hidden;
+    font-size: 0.58rem;
+    text-overflow: ellipsis;
+  }
+
+  .orbit-badge .orbit-tooltip {
+    opacity: 1;
+  }
+
+  .orbit-annotation {
+    bottom: 0.75rem;
+    max-width: 42%;
+    font-size: 0.58rem;
+    line-height: 1.25;
+  }
+
+  .orbit-annotation--outer {
+    right: 0.75rem;
+    left: auto;
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .orbit-aside {
+    min-height: 0;
+    padding: 1.25rem;
+    border-radius: 1.1rem;
+  }
+
+  .orbit-prompt h3 {
+    font-size: 1.15rem;
+  }
+
+  .orbit-prompt p {
+    font-size: 0.86rem;
+    margin-bottom: 1rem;
+  }
+
+  .orbit-prompt__hint {
+    gap: 0.75rem;
+    padding: 0.8rem;
+    font-size: 0.7rem;
+  }
+
+  .orbit-mobile-drawer {
+    max-height: min(82dvh, 720px);
+    padding: 0 0.9rem 1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #08101f;
+    border-color: rgba(251, 191, 36, 0.22);
+  }
+
+  .orbit-mobile-drawer .achievement-card {
+    max-height: none;
+    margin: 0;
+    padding: 0.35rem 0 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .orbit-mobile-drawer .achievement-card__topline {
+    margin-bottom: 0.85rem;
+  }
+
+  .orbit-mobile-drawer .achievement-card__identity {
+    gap: 0.75rem;
+  }
+
+  .orbit-mobile-drawer .achievement-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .orbit-mobile-drawer .achievement-card__body li {
+    font-size: 0.78rem;
+  }
+
+  .orbit-mobile-drawer .chart-bars {
+    height: 80px;
+  }
+
+  .orbit-mobile-drawer .chart-bar-track {
+    height: 55px;
+  }
+
+  .orbit-legend {
+    gap: 0.55rem;
+    padding: 0.75rem;
+    font-size: 0.65rem;
+    line-height: 1.35;
+  }
+
+  .proof-orbit {
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem 0.8rem 1rem;
+  }
+
+  .proof-orbit__legend {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    padding: 0.7rem;
+    font-size: 0.62rem;
+    line-height: 1.4;
+  }
+
+  .proof-node {
+    min-width: 0;
+    touch-action: manipulation;
+  }
+
+  .proof-detail--open {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: flex-end;
+    margin: 0;
+    padding: 0.65rem;
+    background: rgba(2, 5, 12, 0.78);
+    backdrop-filter: blur(9px);
+    overflow: hidden;
+  }
+
+  .proof-detail--open .proof-detail__panel {
+    width: 100%;
+    max-height: min(88dvh, 760px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 1.1rem;
+    border-color: rgba(56, 189, 248, 0.24);
+  }
+
+  .proof-detail__media img {
+    max-height: 34dvh;
+    height: auto;
+    min-height: 170px;
+  }
+
+  .proof-detail__zoom {
+    min-height: 42px;
+    justify-content: center;
+  }
+
+  .proof-detail__controls button,
+  .proof-detail__close,
+  .proof-detail__rail-item {
+    touch-action: manipulation;
+  }
+
+  .proof-detail__rail-item {
+    min-width: 150px;
+  }
+
+  .training-section,
+  .skills-section,
+  .contact-section {
+    overflow-x: clip;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-badge,
+  .orbit-guide::after,
+  .hero-orbit,
+  .portrait-rings span {
+    animation: none !important;
+  }
+}

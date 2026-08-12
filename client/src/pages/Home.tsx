@@ -43,8 +43,10 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { useLanguage, toggleLanguage, type Language } from "@/hooks/useLanguage";
+import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
 
 type CompanyType = "full-time" | "consulting";
@@ -762,21 +764,25 @@ function OrbitBadge({
   ring,
   onPause,
   onSelect,
+  selectedCompanyId,
 }: {
   company: Company;
   index: number;
   ring: "inner" | "outer";
   onPause: (id: string | null) => void;
   onSelect: (company: Company) => void;
+  selectedCompanyId: string | null;
 }) {
   const total = ring === "inner" ? 5 : 8;
   const duration = ring === "inner" ? 32 : 25;
   const radius = ring === "inner" ? "150px" : "235px";
   const angle = (index / total) * 360;
+  const isSelected = selectedCompanyId === company.id;
+  const isDimmed = selectedCompanyId !== null && !isSelected;
   return (
     <button
       type="button"
-      className={`orbit-badge orbit-badge--${ring}`}
+      className={`orbit-badge orbit-badge--${ring} ${isSelected ? "orbit-badge--selected" : ""} ${isDimmed ? "orbit-badge--dimmed" : ""}`}
       style={{
         "--orbit-radius": radius,
         "--orbit-angle": `${angle}deg`,
@@ -804,12 +810,14 @@ function OrbitTrack({
   paused,
   onPause,
   onSelect,
+  selectedCompanyId,
 }: {
   companies: Company[];
   ring: "inner" | "outer";
   paused: boolean;
   onPause: (id: string | null) => void;
   onSelect: (company: Company) => void;
+  selectedCompanyId: string | null;
 }) {
   const duration = ring === "inner" ? 32 : 25;
   return (
@@ -822,7 +830,7 @@ function OrbitTrack({
       aria-label={`${ring === "inner" ? "Executive roles" : "Training and consulting partners"} orbit`}
     >
       {companies.map((company, index) => (
-        <OrbitBadge key={company.id} company={company} index={index} ring={ring} onPause={onPause} onSelect={onSelect} />
+        <OrbitBadge key={company.id} company={company} index={index} ring={ring} onPause={onPause} onSelect={onSelect} selectedCompanyId={selectedCompanyId} />
       ))}
     </div>
   );
@@ -902,6 +910,7 @@ export default function Home() {
   const [proofOrbitFocused, setProofOrbitFocused] = useState(false);
   const [formState, setFormState] = useState({ name: "", email: "", details: "" });
   const scrolled = useScrollState();
+  const isMobile = useIsMobile();
   useReveal();
   const trainedCount = useCountUp(750);
   const partnerCount = useCountUp(13, 1100);
@@ -993,8 +1002,8 @@ export default function Home() {
               <div className="orbit-stage" data-reveal>
                 <div className="orbit-guide orbit-guide--outer" /><div className="orbit-guide orbit-guide--inner" />
                 <div className="orbit-center"><div className="orbit-center__pulse" /><img src={asset.mark} alt="" /><span>MA</span><small>impact<br />core</small></div>
-                <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
-                <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
+                <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
+                <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
                 <div className="orbit-annotation orbit-annotation--inner"><span />{homeCopy[language].orbit.inner}</div>
                 <div className="orbit-annotation orbit-annotation--outer"><span />{homeCopy[language].orbit.outer}</div>
               </div>
@@ -1002,6 +1011,12 @@ export default function Home() {
                 {selectedCompany ? <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} language={language} /> : <div className="orbit-prompt"><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].orbit.promptEyebrow}</p><h3>{homeCopy[language].orbit.promptTitle}</h3><p>{homeCopy[language].orbit.promptCopy}</p><div className="orbit-prompt__hint"><span className="hint-ring" /><span>{language === "en" ? "Inner ring" : "المدار الداخلي"}<br /><b>{homeCopy[language].orbit.inner}</b></span><span className="hint-ring hint-ring--small" /><span>{language === "en" ? "Outer ring" : "المدار الخارجي"}<br /><b>{homeCopy[language].orbit.outer}</b></span></div><div className="orbit-prompt__count"><strong>{partnerCount}</strong><span>{homeCopy[language].orbit.partners}</span></div></div>}
               </div>
             </div>
+            {isMobile && <Drawer open={Boolean(selectedCompany)} onOpenChange={(open) => { if (!open) setSelectedCompany(null); }}>
+              <DrawerContent className="orbit-mobile-drawer">
+                <DrawerHeader className="sr-only"><DrawerTitle>{language === "ar" ? "تفاصيل الشركة" : "Company details"}</DrawerTitle><DrawerDescription>{language === "ar" ? "تفاصيل الإنجاز المختار" : "Selected achievement details"}</DrawerDescription></DrawerHeader>
+                {selectedCompany && <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} language={language} />}
+              </DrawerContent>
+            </Drawer>}
             <div className="orbit-legend"><span><i className="legend-dot legend-dot--gold" /> {homeCopy[language].orbit.innerLegend}</span><span><i className="legend-dot legend-dot--cyan" /> {homeCopy[language].orbit.outerLegend}</span></div>
           </div>
         </section>
