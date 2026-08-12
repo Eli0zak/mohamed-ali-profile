@@ -8,7 +8,7 @@ import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 import { storagePut } from "./storage";
 import { isCareerAdmin } from "./careerAdmin";
-import { syncSubmissionToGoogleSheet } from "./googleSheetsSync";
+import { appendToGoogleSheet } from "./googleSheetsAutoSync";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -83,8 +83,8 @@ export const appRouter = router({
           status: "New",
         });
 
-        // Sync to Google Sheets via webhook or logging pipeline
-        await syncSubmissionToGoogleSheet({
+        // Sync to Google Sheets and local sheet CSV sink
+        await appendToGoogleSheet({
           fullName: input.fullName,
           phoneNumber: input.phoneNumber,
           email: input.email,
@@ -95,6 +95,7 @@ export const appRouter = router({
           cvUrl: input.cvUrl,
           cvFileName: input.cvFileName,
           message: input.message,
+          status: "New"
         });
 
         return { success: true };
