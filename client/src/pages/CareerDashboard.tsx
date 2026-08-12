@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import {
+  buildCareerStats,
+  filterCareerSubmissions,
+} from "@/lib/careerStats";
 import { 
-  ArrowLeft, ArrowRight, Briefcase, CheckCircle2, Clock, Download, 
-  ExternalLink, FileText, Filter, Globe2, Loader2, Mail, Phone, Search, ShieldAlert, User, Check, Lock, KeyRound, AlertCircle 
+  ArrowLeft, ArrowRight, BarChart3, Briefcase, CalendarDays, CheckCircle2, Clock, Download,
+  ExternalLink, FileCheck2, FileText, Filter, Globe2, Loader2, Mail, Phone, Search, ShieldAlert, User, UserPlus, Users, Check, Lock, KeyRound, AlertCircle, X
+
 } from "lucide-react";
 
 export default function CareerDashboard() {
@@ -14,6 +19,8 @@ export default function CareerDashboard() {
   const [authError, setAuthError] = useState(false);
 
   const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [statsFilter, setStatsFilter] = useState<"all" | "new" | "week" | "cv">("all");
+  const referenceNow = useMemo(() => new Date(), []);
   
   const { data: submissions, isLoading, refetch } = trpc.career.listSubmissions.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -25,6 +32,27 @@ export default function CareerDashboard() {
       refetch();
     }
   });
+
+  const stats = useMemo(
+    () => buildCareerStats(submissions ?? [], referenceNow),
+    [submissions, referenceNow],
+  );
+
+  const handleStatsCardClick = (filter: "all" | "new" | "week" | "cv") => {
+    if (statsFilter === filter) {
+      setStatsFilter("all");
+      setStatusFilter("All");
+      return;
+    }
+
+    setStatsFilter(filter);
+    setStatusFilter(filter === "new" ? "New" : "All");
+  };
+
+  const handleStatusFilterClick = (status: string) => {
+    setStatusFilter(status);
+    setStatsFilter("all");
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +126,16 @@ export default function CareerDashboard() {
     );
   }
 
-  const filteredSubmissions = (submissions || []).filter(sub => {
-    if (statusFilter === "All") return true;
-    return sub.status === statusFilter;
+  const filteredSubmissions = filterCareerSubmissions(submissions || [], statsFilter, referenceNow).filter((sub) => {
+    return statusFilter === "All" || sub.status === statusFilter;
   });
+
+  const chartMax = Math.max(...stats.dailySubmissions.map((point) => point.count), 1);
+  const activeFilterLabel =
+    statsFilter === "new" ? "New submissions" :
+    statsFilter === "week" ? "Last 7 days" :
+    statsFilter === "cv" ? "CVs uploaded" :
+    statusFilter !== "All" ? statusFilter : null;
 
   return (
     <div className="min-h-screen bg-[#07090e] text-[#f1f5f9] font-sans p-6 md:p-10">
@@ -138,6 +172,94 @@ export default function CareerDashboard() {
           </div>
         </div>
 
+        {/* Live Stats Overview — admin-only, derived from the loaded MySQL submissions */}
+        <section aria-labelledby="career-roster-stats-title" className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4af37] font-semibold">Live overview</p>
+              <h2 id="career-roster-stats-title" className="text-xl font-semibold text-white">Recruitment pulse</h2>
+              <p className="text-xs text-[#94a3b8] mt-1">Calculated from the current candidate records on every load.</p>
+            </div>
+            {activeFilterLabel && (
+              <button
+                type="button"
+                onClick={() => {
+                  setStatsFilter("all");
+                  setStatusFilter("All");
+                }}
+                className="inline-flex items-center gap-1.5 self-start sm:self-auto text-xs text-[#fde047] hover:text-white transition-colors"
+                aria-label="Clear active dashboard filter"
+              >
+                <X className="w-3.5 h-3.5" />
+                Clear filter: {activeFilterLabel}
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            {[
+              { key: "all" as const, label: "Total submissions", value: stats.total, icon: Users, accent: "text-[#fde047]", helper: "All-time records" },
+              { key: "new" as const, label: "New submissions", value: stats.newSubmissions, icon: UserPlus, accent: "text-blue-400", helper: "Status: New" },
+              { key: "week" as const, label: "This week", value: stats.thisWeek, icon: CalendarDays, accent: "text-emerald-400", helper: "Last 7 calendar days" },
+              { key: "cv" as const, label: "CVs uploaded", value: stats.cvsUploaded, icon: FileCheck2, accent: "text-violet-400", helper: "Valid file links" },
+            ].map((card) => {
+              const Icon = card.icon;
+              const isActive = statsFilter === card.key;
+              return (
+                <button
+                  type="button"
+                  key={card.key}
+                  onClick={() => handleStatsCardClick(card.key)}
+                  aria-pressed={isActive}
+                  className={`group text-left rounded-2xl border p-4 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/80 ${
+                    isActive
+                      ? "bg-[#d4af37]/10 border-[#d4af37]/70 shadow-lg shadow-[#d4af37]/10"
+                      : "bg-[#111827]/80 border-[#1f2937] hover:border-[#d4af37]/50 hover:bg-[#151f30]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <span className={`w-9 h-9 rounded-xl bg-[#07090e] border border-[#273244] flex items-center justify-center ${card.accent}`}>
+                      <Icon className="w-4 h-4" />
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wider text-[#64748b] group-hover:text-[#94a3b8] transition-colors">View</span>
+                  </div>
+                  <div className="mt-4 text-3xl font-bold text-white tabular-nums">{isLoading ? "—" : card.value}</div>
+                  <div className="mt-1 text-sm font-medium text-[#e2e8f0]">{card.label}</div>
+                  <div className="mt-1 text-[11px] text-[#64748b]">{card.helper}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="rounded-2xl border border-[#1f2937] bg-[#111827]/80 p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-[#d4af37]" />
+                <div>
+                  <h3 className="text-sm font-semibold text-white">Daily submissions</h3>
+                  <p className="text-[11px] text-[#64748b]">Last 7 calendar days, based on submission timestamps</p>
+                </div>
+              </div>
+              <span className="text-xs text-[#94a3b8] tabular-nums">{isLoading ? "Loading…" : `${stats.thisWeek} total`}</span>
+            </div>
+            <div className="grid grid-cols-7 gap-2 sm:gap-3 items-end h-32" role="img" aria-label="Bar chart of submissions for the last seven calendar days">
+              {stats.dailySubmissions.map((point) => (
+                <div key={point.key} className="h-full flex flex-col items-center justify-end gap-2 min-w-0">
+                  <span className="text-[11px] font-semibold text-[#e2e8f0] tabular-nums">{isLoading ? "—" : point.count}</span>
+                  <div className="w-full max-w-12 h-20 rounded-lg bg-[#07090e] border border-[#1f2937] flex items-end overflow-hidden">
+                    <div
+                      className="w-full rounded-t-md bg-gradient-to-t from-[#b8860b] to-[#fde047] transition-[height] duration-300"
+                      style={{ height: isLoading ? "0%" : `${Math.max((point.count / chartMax) * 100, point.count > 0 ? 10 : 0)}%` }}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <span className="text-[10px] text-[#64748b] truncate max-w-full">{point.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Filters & Controls */}
         <div className="flex flex-wrap items-center justify-between gap-4 bg-[#111827]/80 border border-[#1f2937] rounded-2xl p-4">
           <div className="flex items-center gap-2">
@@ -148,7 +270,7 @@ export default function CareerDashboard() {
             {["All", "New", "Reviewed", "Shortlisted", "Contacted", "Archived"].map(st => (
               <button
                 key={st}
-                onClick={() => setStatusFilter(st)}
+                onClick={() => handleStatusFilterClick(st)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   statusFilter === st 
                     ? "bg-[#d4af37] text-[#07090e] font-bold shadow-md shadow-[#d4af37]/20" 
