@@ -33,6 +33,8 @@ import {
   Phone,
   Play,
   Quote,
+  Send,
+  Share2,
   Sparkles,
   Target,
   TrendingUp,
@@ -903,6 +905,12 @@ function AchievementCard({ company, onClose, language }: { company: Company; onC
 export default function Home() {
   const [language, setLanguage] = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const triggerCopyFeedback = (key: string) => {
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2500);
+  };
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
@@ -1093,8 +1101,98 @@ export default function Home() {
 
         <section className="skills-section">
           <div className="container skills-grid">
-            <div data-reveal><SectionIntro eyebrow={homeCopy[language].skills.eyebrow} title={homeCopy[language].skills.title} copy={homeCopy[language].skills.copy} language={language} /><div className="skill-stack">{skillStack.map(([name, detail], index) => <div className="skill-chip" key={name} tabIndex={0} role="region" aria-label={name} style={{ "--skill-delay": `${index * 60}ms` } as React.CSSProperties}><span className="skill-chip__icon">{index === 0 ? "EX" : index === 1 ? "BI" : index === 2 ? "SQL" : index === 3 ? "PY" : index === 4 ? "CRM" : "KPI"}</span><span><b>{language === "ar" ? skillArabic[name] ?? name : name}</b><small>{language === "ar" ? skillArabic[detail] ?? detail : detail}</small></span><ArrowUpRight size={15} /></div>)}</div></div>
-            <div className="credential-stack" data-reveal><div className="credential-card credential-card--gold" tabIndex={0} role="region" aria-label="Certifications"><div className="credential-card__icon"><GraduationCap size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.certifications}</p><h3>{homeCopy[language].skills.pmp}</h3><p>{homeCopy[language].skills.pmi}</p><p>{homeCopy[language].skills.data}</p></div></div><div className="credential-card" tabIndex={0} role="region" aria-label="Education"><div className="credential-card__icon"><FileText size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.education}</p><h3>{homeCopy[language].skills.degree}</h3><p>{homeCopy[language].skills.university}</p></div></div><div className="credential-card" tabIndex={0} role="region" aria-label="Languages"><div className="credential-card__icon"><Globe2 size={21} /></div><div><p className="company-kicker">{homeCopy[language].skills.languages}</p><h3>{homeCopy[language].skills.languageList}</h3><p>{homeCopy[language].skills.languageLevel}</p></div></div></div>
+            <div data-reveal><SectionIntro eyebrow={homeCopy[language].skills.eyebrow} title={homeCopy[language].skills.title} copy={homeCopy[language].skills.copy} language={language} /><div className="skill-stack">{skillStack.map(([name, detail], index) => {
+                  const skillTitle = language === "ar" ? skillArabic[name] ?? name : name;
+                  const skillDesc = language === "ar" ? skillArabic[detail] ?? detail : detail;
+                  return (
+                    <div className="skill-chip" key={name} tabIndex={0} role="region" aria-label={name} style={{ "--skill-delay": `${index * 60}ms` } as React.CSSProperties}>
+                      <span className="skill-chip__icon">{index === 0 ? "EX" : index === 1 ? "BI" : index === 2 ? "SQL" : index === 3 ? "PY" : index === 4 ? "CRM" : "KPI"}</span>
+                      <span><b>{skillTitle}</b><small>{skillDesc}</small></span>
+                      <div className="skill-chip__actions">
+                        <button
+                          type="button"
+                          className={`skill-share-btn ${copiedKey === `skill-${name}` ? "skill-share-btn--copied" : ""}`}
+                          title={language === "ar" ? "مشاركة القدرة" : "Share capability"}
+                          aria-label={`Share ${skillTitle}`}
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            const shareText = `Mohamed Ali Capability: ${skillTitle} - ${skillDesc}\n${window.location.href}`;
+                            try {
+                              if (navigator.share) {
+                                await navigator.share({ title: skillTitle, text: shareText, url: window.location.href });
+                              } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                                await navigator.clipboard.writeText(shareText);
+                                triggerCopyFeedback(`skill-${name}`);
+                              } else {
+                                const textArea = document.createElement("textarea");
+                                textArea.value = shareText;
+                                document.body.appendChild(textArea);
+                                textArea.select();
+                                document.execCommand("copy");
+                                document.body.removeChild(textArea);
+                                triggerCopyFeedback(`skill-${name}`);
+                              }
+                            } catch (err) {
+                              console.warn("Share or copy action was cancelled or failed:", err);
+                            }
+                          }}
+                        >
+                          {copiedKey === `skill-${name}` ? <Check size={14} className="text-amber-400" /> : <Share2 size={14} />}
+                        </button>
+                        <ArrowUpRight size={15} />
+                      </div>
+                    </div>
+                  );
+                })}</div></div>
+            <div className="credential-stack" data-reveal>
+              {[
+                { title: homeCopy[language].skills.pmp, desc: `${homeCopy[language].skills.pmi} | ${homeCopy[language].skills.data}`, icon: GraduationCap, isGold: true, label: "Certifications" },
+                { title: homeCopy[language].skills.degree, desc: `${homeCopy[language].skills.university} - ${homeCopy[language].skills.education}`, icon: FileText, isGold: false, label: "Education" },
+                { title: homeCopy[language].skills.languageList, desc: homeCopy[language].skills.languageLevel, icon: Globe2, isGold: false, label: "Languages" },
+              ].map((cred, idx) => {
+                const CredIcon = cred.icon;
+                return (
+                  <div key={idx} className={`credential-card ${cred.isGold ? "credential-card--gold" : ""}`} tabIndex={0} role="region" aria-label={cred.label}>
+                    <div className="credential-card__icon"><CredIcon size={21} /></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="company-kicker">{cred.label}</p>
+                      <h3>{cred.title}</h3>
+                      <p>{cred.desc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className={`skill-share-btn ${copiedKey === `cred-${idx}` ? "skill-share-btn--copied" : ""}`}
+                      title={language === "ar" ? "مشاركة الإنجاز" : "Share credential"}
+                      aria-label={`Share ${cred.title}`}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        const shareText = `Mohamed Ali Credential: ${cred.title} - ${cred.desc}\n${window.location.href}`;
+                        try {
+                          if (navigator.share) {
+                            await navigator.share({ title: cred.title, text: shareText, url: window.location.href });
+                          } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText(shareText);
+                            triggerCopyFeedback(`cred-${idx}`);
+                          } else {
+                            const textArea = document.createElement("textarea");
+                            textArea.value = shareText;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand("copy");
+                            document.body.removeChild(textArea);
+                            triggerCopyFeedback(`cred-${idx}`);
+                          }
+                        } catch (err) {
+                          console.warn("Share or copy action was cancelled or failed:", err);
+                        }
+                      }}
+                    >
+                      {copiedKey === `cred-${idx}` ? <Check size={14} className="text-amber-400" /> : <Share2 size={14} />}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </section>
 

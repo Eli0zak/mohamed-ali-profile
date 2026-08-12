@@ -2996,3 +2996,42 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(251, 191, 36, 0.08);
   outline: none;
 }
+
+/* CAPABILITY STACK SHARE BUTTON */
+.skill-chip__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+}
+
+.skill-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.skill-share-btn:hover {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+  transform: scale(1.08);
+}
+
+.skill-share-btn:active {
+  transform: scale(0.94);
+}
+
+.skill-share-btn--copied {
+  background: rgba(251, 191, 36, 0.2) !important;
+  border-color: rgba(251, 191, 36, 0.6) !important;
+  transform: scale(1.1);
+}
