@@ -11,6 +11,8 @@ import {
 
 } from "lucide-react";
 
+type BroadcastAudienceType = "all" | "field";
+
 type BroadcastForm = {
   jobTitle: string;
   jobDetails: string;
@@ -18,7 +20,13 @@ type BroadcastForm = {
   contactEmail: string;
   contactLinkedin: string;
   otherInstructions: string;
+  audienceType: BroadcastAudienceType;
+  audienceField: string;
 };
+
+function isValidRecipientEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 const emptyBroadcastForm: BroadcastForm = {
   jobTitle: "",
@@ -27,6 +35,8 @@ const emptyBroadcastForm: BroadcastForm = {
   contactEmail: "",
   contactLinkedin: "",
   otherInstructions: "",
+  audienceType: "all",
+  audienceField: "",
 };
 
 export default function CareerDashboard() {
@@ -74,6 +84,33 @@ export default function CareerDashboard() {
     },
   });
 
+  const broadcastTestMutation = trpc.career.sendBroadcastTest.useMutation({
+    onSuccess: (result) => {
+      refetchBroadcastHistory();
+      setBroadcastNotice({
+        type: result.success ? "success" : "error",
+        text: result.success
+          ? `Test email sent to ${result.testRecipient}. Check the inbox before sending to candidates.`
+          : "The test email could not be delivered to the owner inbox.",
+      });
+    },
+    onError: (error) => {
+      setBroadcastNotice({ type: "error", text: error.message || "Test email failed. No candidate messages were sent." });
+    },
+  });
+
+  const fieldOptions = useMemo(
+    () => Array.from(new Set((submissions ?? []).map((submission) => submission.field.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b)),
+    [submissions],
+  );
+
+  const broadcastRecipientEstimate = useMemo(() => {
+    const candidateSubmissions = broadcastForm.audienceType === "field"
+      ? (submissions ?? []).filter((submission) => submission.field.trim().toLocaleLowerCase() === broadcastForm.audienceField.trim().toLocaleLowerCase())
+      : (submissions ?? []);
+    return new Set(candidateSubmissions.map((submission) => submission.email.trim().toLowerCase()).filter(isValidRecipientEmail)).size;
+  }, [broadcastForm.audienceField, broadcastForm.audienceType, submissions]);
+
   const stats = useMemo(
     () => buildCareerStats(submissions ?? [], referenceNow),
     [submissions, referenceNow],
@@ -103,17 +140,43 @@ export default function CareerDashboard() {
       return;
     }
 
-    const recipientEstimate = new Set(
-      submissions
-        .map((submission) => submission.email.trim().toLowerCase())
-        .filter((email) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)),
-    ).size;
+    if (broadcastForm.audienceType === "field" && !broadcastForm.audienceField.trim()) {
+      setBroadcastNotice({ type: "error", text: "Choose a field before reviewing the broadcast." });
+      return;
+    }
+    if (broadcastRecipientEstimate === 0) {
+      setBroadcastNotice({ type: "error", text: "No valid candidate emails match this audience." });
+      return;
+    }
+    const audienceLabel = broadcastForm.audienceType === "field"
+      ? `${broadcastRecipientEstimate} candidate${broadcastRecipientEstimate === 1 ? "" : "s"} in ${broadcastForm.audienceField}`
+      : `${broadcastRecipientEstimate} unique candidate email${broadcastRecipientEstimate === 1 ? "" : "s"}`;
     const confirmed = window.confirm(
-      `Send this opportunity to ${recipientEstimate} unique candidate email address${recipientEstimate === 1 ? "" : "es"}? This action will send real emails.`,
+      `This will be sent to ${audienceLabel}. Confirm? This action will send real emails.`,
     );
     if (!confirmed) return;
 
     broadcastMutation.mutate({
+      jobTitle: broadcastForm.jobTitle.trim(),
+      jobDetails: broadcastForm.jobDetails.trim(),
+      contactName: broadcastForm.contactName.trim(),
+      contactEmail: broadcastForm.contactEmail.trim(),
+      contactLinkedin: broadcastForm.contactLinkedin.trim(),
+      otherInstructions: broadcastForm.otherInstructions.trim(),
+      audienceType: broadcastForm.audienceType,
+      audienceField: broadcastForm.audienceType === "field" ? broadcastForm.audienceField.trim() : undefined,
+    });
+  };
+
+  const handleBroadcastTest = () => {
+    setBroadcastNotice(null);
+    if (!broadcastForm.jobTitle.trim() || broadcastForm.jobTitle.trim().length < 3 || !broadcastForm.jobDetails.trim() || broadcastForm.jobDetails.trim().length < 10) {
+      setBroadcastNotice({ type: "error", text: "Enter a valid job title and at least 10 characters of job details before sending a test." });
+      return;
+    }
+    const confirmed = window.confirm("Send a design test email to mohamed280ali90@gmail.com only? No candidate will receive this test.");
+    if (!confirmed) return;
+    broadcastTestMutation.mutate({
       jobTitle: broadcastForm.jobTitle.trim(),
       jobDetails: broadcastForm.jobDetails.trim(),
       contactName: broadcastForm.contactName.trim(),
@@ -221,7 +284,14 @@ export default function CareerDashboard() {
             <p className="text-sm text-[#94a3b8]">Centralized secure record of all candidate CV submissions across your partner organizations.</p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center flex-wrap gap-3">
+            <a
+              href="#job-opportunity-broadcast-section"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-[#07090e] text-xs font-bold shadow-lg shadow-[#d4af37]/20 flex items-center gap-2 hover:opacity-95 transition-all"
+            >
+              <Send className="w-4 h-4" />
+              <span>Broadcast Job Opportunity</span>
+            </a>
             <button
               onClick={() => {
                 setIsAuthenticated(false);
@@ -234,9 +304,6 @@ export default function CareerDashboard() {
             <Link href="/career-gateway" className="px-4 py-2 rounded-xl bg-[#111827] border border-[#374151] hover:border-[#d4af37]/50 text-xs font-medium text-white transition-all flex items-center gap-2">
               <ExternalLink className="w-4 h-4 text-[#d4af37]" />
               <span>Open Candidate Form</span>
-            </Link>
-            <Link href="/" className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-[#07090e] text-xs font-bold shadow-lg shadow-[#d4af37]/20">
-              Back to Site
             </Link>
           </div>
         </div>
@@ -330,7 +397,7 @@ export default function CareerDashboard() {
         </section>
 
         {/* Job Opportunity Broadcast — admin-only */}
-        <section aria-labelledby="broadcast-title" className="rounded-2xl border border-[#d4af37]/25 bg-[#111827]/80 p-4 sm:p-6 shadow-xl shadow-black/10">
+        <section id="job-opportunity-broadcast-section" aria-labelledby="broadcast-title" className="rounded-2xl border border-[#d4af37]/25 bg-[#111827]/80 p-4 sm:p-6 shadow-xl shadow-black/10">
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
             <div className="max-w-2xl">
               <div className="flex items-center gap-2">
@@ -387,6 +454,35 @@ export default function CareerDashboard() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Send to</span>
+                <select
+                  value={broadcastForm.audienceType}
+                  onChange={(event) => setBroadcastForm((current) => ({
+                    ...current,
+                    audienceType: event.target.value as BroadcastAudienceType,
+                    audienceField: event.target.value === "all" ? "" : (current.audienceField || fieldOptions[0] || ""),
+                  }))}
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white outline-none transition-colors focus:border-[#d4af37]"
+                >
+                  <option value="all">All Candidates</option>
+                  <option value="field">Filter by Field/Specialization</option>
+                </select>
+              </label>
+              {broadcastForm.audienceType === "field" && (
+                <label className="space-y-1.5">
+                  <span className="text-xs font-semibold text-[#cbd5e1]">Field / Specialization</span>
+                  <select
+                    required
+                    value={broadcastForm.audienceField}
+                    onChange={(event) => setBroadcastForm((current) => ({ ...current, audienceField: event.target.value }))}
+                    className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white outline-none transition-colors focus:border-[#d4af37]"
+                  >
+                    <option value="" disabled>Select a stored field</option>
+                    {fieldOptions.map((field) => <option key={field} value={field}>{field}</option>)}
+                  </select>
+                </label>
+              )}
+              <label className="space-y-1.5">
                 <span className="text-xs font-semibold text-[#cbd5e1]">Contact email</span>
                 <input
                   type="email"
@@ -423,13 +519,22 @@ export default function CareerDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
               <button
                 type="submit"
-                disabled={broadcastMutation.isPending || isLoading || !submissions?.length}
+                disabled={broadcastMutation.isPending || broadcastTestMutation.isPending || isLoading || broadcastRecipientEstimate === 0}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] px-5 py-3 text-sm font-bold text-[#07090e] shadow-lg shadow-[#d4af37]/15 transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {broadcastMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 {broadcastMutation.isPending ? "Sending..." : "Review and broadcast"}
               </button>
-              <span className="text-[11px] text-[#64748b]">Estimated recipients: {isLoading ? "—" : new Set((submissions ?? []).map((submission) => submission.email.trim().toLowerCase()).filter((email) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))).size}</span>
+              <button
+                type="button"
+                onClick={handleBroadcastTest}
+                disabled={broadcastMutation.isPending || broadcastTestMutation.isPending || isLoading}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d4af37]/50 bg-[#d4af37]/5 px-4 py-3 text-xs font-semibold text-[#fde047] transition-all hover:bg-[#d4af37]/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {broadcastTestMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                {broadcastTestMutation.isPending ? "Sending test..." : "Send test to owner"}
+              </button>
+              <span className="text-[11px] text-[#64748b]">Estimated recipients: {isLoading ? "—" : broadcastRecipientEstimate}{broadcastForm.audienceType === "field" && broadcastForm.audienceField ? ` in ${broadcastForm.audienceField}` : ""}</span>
             </div>
 
             {broadcastNotice && (
@@ -454,6 +559,7 @@ export default function CareerDashboard() {
                   <thead className="bg-[#07090e]/60 text-[#94a3b8]">
                     <tr>
                       <th className="px-3 py-2.5 font-semibold">Opportunity</th>
+                      <th className="px-3 py-2.5 font-semibold">Audience</th>
                       <th className="px-3 py-2.5 font-semibold">Sent</th>
                       <th className="px-3 py-2.5 font-semibold">Delivered</th>
                       <th className="px-3 py-2.5 font-semibold">Failed</th>
@@ -464,6 +570,7 @@ export default function CareerDashboard() {
                     {broadcastHistoryRows.slice(0, 10).map((broadcast) => (
                       <tr key={broadcast.id}>
                         <td className="px-3 py-3 font-medium text-white">{broadcast.jobTitle}</td>
+                        <td className="px-3 py-3 text-[#fde047]">{broadcast.audienceType === "test" ? "Owner test" : broadcast.audienceType === "field" ? broadcast.audienceField || "Field" : "All candidates"}</td>
                         <td className="px-3 py-3 tabular-nums">{broadcast.recipientCount}</td>
                         <td className="px-3 py-3 tabular-nums text-emerald-300">{broadcast.successCount}</td>
                         <td className="px-3 py-3 tabular-nums text-rose-300">{broadcast.failureCount}</td>

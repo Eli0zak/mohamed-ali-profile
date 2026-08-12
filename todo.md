@@ -67,3 +67,9 @@
 - [x] إنشاء مسار tRPC `careerAdmin.broadcastOpportunity` لإرسال البريد وتخزين السجل.
 - [x] إضافة نموذج إرسال فرصة العمل وسجل الأرشيف داخل صفحة `/admin/career-roster`.
 - [x] اختبار الميزة واجتياز اختبارات الوحدة وحفظ الـ Checkpoint النهائي.
+- [x] إبراز زر وقسم Job Opportunity Broadcast في مكان بارز بأعلى صفحة `/admin/career-roster`.
+- [x] ترقية قالب بريد Broadcast بهوية Mohamed Ali — Career Gateway وألوان navy/gold وتوافق Gmail عبر inline styles.
+- [x] إضافة اختيار المستلمين: كل المرشحين أو حسب Field/Specialization مع تحديث عدد المستلمين مباشرة.
+- [x] حفظ الفلتر المستهدف في Broadcast History وعرضه داخل جدول السجل.
+- [x] إضافة مسار إرسال اختبار آمن إلى mohamed280ali90@gmail.com فقط والتحقق من وصوله.
+- [x] إضافة اختبارات Vitest للقالب والفلترة وسجل الجمهور ومسار اختبار المالك.

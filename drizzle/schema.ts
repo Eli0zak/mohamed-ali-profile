@@ -55,6 +55,8 @@ export const broadcastHistory = mysqlTable("broadcast_history", {
   recipientCount: int("recipientCount").notNull(),
   successCount: int("successCount").notNull(),
   failureCount: int("failureCount").notNull(),
+  audienceType: mysqlEnum("audienceType", ["all", "field", "test"]).default("all").notNull(),
+  audienceField: varchar("audienceField", { length: 128 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
