@@ -966,7 +966,54 @@ export default function Home() {
             <span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span>
           </Link>
         </nav>
-        <div className="nav-actions">
+        <div className="nav-actions relative flex items-center gap-2">
+          {/* Header Share Dropdown */}
+          <div className="relative group">
+            <button
+              className="language-toggle"
+              type="button"
+              aria-label="Share portfolio"
+              title={language === "ar" ? "مشاركة الموقع" : "Share portfolio"}
+            >
+              <Share2 size={15} />
+              <span className="hidden sm:inline">{language === "en" ? "Share" : "مشاركة"}</span>
+            </button>
+            <div className="absolute right-0 mt-2 w-48 bg-slate-900/95 border border-amber-500/30 rounded-xl shadow-2xl p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 backdrop-blur-md">
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
+              >
+                <Linkedin size={14} className="text-amber-400" />
+                <span>{language === "en" ? "Share on LinkedIn" : "مشاركة عبر لينكد إن"}</span>
+              </a>
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Mohamed Ali's Portfolio: ${window.location.href}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
+              >
+                <MessageCircle size={14} className="text-emerald-400" />
+                <span>{language === "en" ? "Share via WhatsApp" : "مشاركة عبر واتساب"}</span>
+              </a>
+              <button
+                type="button"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors text-left"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert(language === "ar" ? "تم نسخ رابط الموقع بنجاح!" : "Portfolio link copied to clipboard!");
+                  } catch (e) {
+                    console.warn("Copy failed", e);
+                  }
+                }}
+              >
+                <Share2 size={14} className="text-sky-400" />
+                <span>{language === "en" ? "Copy Link" : "نسخ الرابط"}</span>
+              </button>
+            </div>
+          </div>
           <button className="language-toggle" type="button" onClick={handleLanguageToggle} aria-label="Toggle Arabic and English"><Languages size={15} /><span>{language === "en" ? "العربية" : "English"}</span></button>
           <a className="nav-cv" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={15} /> <span>Download CV</span></a>
           <button className="menu-toggle" type="button" onClick={() => setMenuOpen((open) => !open)} aria-label="Toggle menu">{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
@@ -1108,60 +1155,8 @@ export default function Home() {
                     <div className="skill-chip" key={name} tabIndex={0} role="region" aria-label={name} style={{ "--skill-delay": `${index * 60}ms` } as React.CSSProperties}>
                       <span className="skill-chip__icon">{index === 0 ? "EX" : index === 1 ? "BI" : index === 2 ? "SQL" : index === 3 ? "PY" : index === 4 ? "CRM" : "KPI"}</span>
                       <span><b>{skillTitle}</b><small>{skillDesc}</small></span>
-                      <div className="skill-chip__actions flex items-center gap-1.5">
-                        {/* LinkedIn Share */}
-                        <a
-                          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="skill-share-btn"
-                          title={language === "ar" ? "مشاركة عبر لينكد إن" : "Share on LinkedIn"}
-                          aria-label={`Share ${skillTitle} on LinkedIn`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Linkedin size={13} />
-                        </a>
-                        {/* WhatsApp Share */}
-                        <a
-                          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Mohamed Ali Capability: ${skillTitle} - ${skillDesc}\n${window.location.href}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="skill-share-btn"
-                          title={language === "ar" ? "مشاركة عبر واتساب" : "Share on WhatsApp"}
-                          aria-label={`Share ${skillTitle} on WhatsApp`}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <MessageCircle size={13} />
-                        </a>
-                        {/* Copy / General Share */}
-                        <button
-                          type="button"
-                          className={`skill-share-btn ${copiedKey === `skill-${name}` ? "skill-share-btn--copied" : ""}`}
-                          title={language === "ar" ? "نسخ الرابط" : "Copy link"}
-                          aria-label={`Copy ${skillTitle}`}
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            const shareText = `Mohamed Ali Capability: ${skillTitle} - ${skillDesc}\n${window.location.href}`;
-                            try {
-                              if (navigator.clipboard && navigator.clipboard.writeText) {
-                                await navigator.clipboard.writeText(shareText);
-                                triggerCopyFeedback(`skill-${name}`);
-                              } else {
-                                const textArea = document.createElement("textarea");
-                                textArea.value = shareText;
-                                document.body.appendChild(textArea);
-                                textArea.select();
-                                document.execCommand("copy");
-                                document.body.removeChild(textArea);
-                                triggerCopyFeedback(`skill-${name}`);
-                              }
-                            } catch (err) {
-                              console.warn("Copy action failed:", err);
-                            }
-                          }}
-                        >
-                          {copiedKey === `skill-${name}` ? <Check size={13} className="text-amber-400" /> : <Share2 size={13} />}
-                        </button>
+                      <div className="skill-chip__actions">
+                        <ArrowUpRight size={15} />
                       </div>
                     </div>
                   );
@@ -1181,58 +1176,7 @@ export default function Home() {
                       <h3>{cred.title}</h3>
                       <p>{cred.desc}</p>
                     </div>
-                    <div className="flex items-center gap-1.5 ml-auto">
-                      <a
-                        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="skill-share-btn"
-                        title={language === "ar" ? "مشاركة عبر لينكد إن" : "Share on LinkedIn"}
-                        aria-label={`Share ${cred.title} on LinkedIn`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Linkedin size={13} />
-                      </a>
-                      <a
-                        href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Mohamed Ali Credential: ${cred.title} - ${cred.desc}\n${window.location.href}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="skill-share-btn"
-                        title={language === "ar" ? "مشاركة عبر واتساب" : "Share on WhatsApp"}
-                        aria-label={`Share ${cred.title} on WhatsApp`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <MessageCircle size={13} />
-                      </a>
-                      <button
-                        type="button"
-                        className={`skill-share-btn ${copiedKey === `cred-${idx}` ? "skill-share-btn--copied" : ""}`}
-                        title={language === "ar" ? "نسخ الرابط" : "Copy link"}
-                        aria-label={`Copy ${cred.title}`}
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          const shareText = `Mohamed Ali Credential: ${cred.title} - ${cred.desc}\n${window.location.href}`;
-                          try {
-                            if (navigator.clipboard && navigator.clipboard.writeText) {
-                              await navigator.clipboard.writeText(shareText);
-                              triggerCopyFeedback(`cred-${idx}`);
-                            } else {
-                              const textArea = document.createElement("textarea");
-                              textArea.value = shareText;
-                              document.body.appendChild(textArea);
-                              textArea.select();
-                              document.execCommand("copy");
-                              document.body.removeChild(textArea);
-                              triggerCopyFeedback(`cred-${idx}`);
-                            }
-                          } catch (err) {
-                            console.warn("Copy action failed:", err);
-                          }
-                        }}
-                      >
-                        {copiedKey === `cred-${idx}` ? <Check size={13} className="text-amber-400" /> : <Share2 size={13} />}
-                      </button>
-                    </div>
+
                   </div>
                 );
               })}
