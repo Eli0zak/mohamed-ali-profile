@@ -701,8 +701,8 @@
 }
 
 @keyframes orbit-rotate {
-  from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
-  to { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+  from { transform: rotate(var(--orbit-angle, 0deg)) translateX(var(--orbit-radius)) rotate(var(--orbit-reverse-angle, 0deg)); }
+  to { transform: rotate(calc(360deg + var(--orbit-angle, 0deg))) translateX(var(--orbit-radius)) rotate(calc(-360deg + var(--orbit-reverse-angle, 0deg))); }
 }
 
 .orbit-badge:hover {
@@ -1644,4 +1644,71 @@
   .timeline-rail {
     display: none;
   }
+}
+
+/* FIX REQUEST — achievement cards keep the orbital dark-gold system while making role, description, and animated metrics legible. */
+.achievement-card__description {
+  margin: 0.95rem 0 0;
+  color: rgba(226, 232, 240, 0.78);
+  font-size: 0.86rem;
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+.achievement-card__role {
+  display: grid;
+  gap: 0.28rem;
+  margin-top: 1rem;
+  padding: 0.78rem 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.achievement-card__role strong {
+  color: #f8fafc;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.chart-bar {
+  transform-origin: bottom;
+  animation: chart-rise 760ms cubic-bezier(.23, 1, .32, 1) both;
+}
+
+@keyframes chart-rise {
+  from { transform: scaleY(0.08); opacity: 0.45; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-bar { animation: none; }
+}
+
+/* FIX REQUEST — tracks rotate as a single system so every company badge is visible at first paint and remains clickable. */
+.orbit-track {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: orbit-track-rotate var(--track-duration, 25s) linear infinite;
+}
+
+.orbit-track .orbit-badge {
+  pointer-events: auto;
+  animation: none;
+  transform: rotate(var(--orbit-angle, 0deg)) translateX(var(--orbit-radius)) rotate(var(--orbit-counter-angle, 0deg));
+}
+
+.orbit-track .orbit-badge:hover,
+.orbit-track .orbit-badge:focus-visible {
+  transform: rotate(var(--orbit-angle, 0deg)) translateX(var(--orbit-radius)) rotate(var(--orbit-counter-angle, 0deg)) scale(1.25) !important;
+}
+
+@keyframes orbit-track-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-track { animation: none; }
 }

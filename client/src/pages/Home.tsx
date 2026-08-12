@@ -47,6 +47,8 @@ type Company = {
   role: string;
   dates: string;
   type: CompanyType;
+  tag: string;
+  description?: string;
   roles: string[];
   achievements: string[];
   color: string;
@@ -64,6 +66,8 @@ const asset = {
   cv: "/manus-storage/Mohamed_Ali_CV_99df027a.pdf",
 };
 
+const linkedinUrl = "https://www.linkedin.com/in/mohamed-ali-88a49b29a";
+
 const companies: Company[] = [
   {
     id: "jcc",
@@ -74,20 +78,26 @@ const companies: Company[] = [
     role: "Branch Manager & BD Lead",
     dates: "Jan 2026 — Present",
     type: "full-time",
+    tag: "Executive Role",
     roles: ["Founding Member", "Branch Manager", "BD Lead"],
+    description: "Founding member of the branch; opened the academy's operations and scaled it from launch.",
     achievements: [
-      "Opened the branch from the ground up after a two-month setup phase.",
-      "Scaled monthly revenue from EGP 150K in month one to EGP 450K peak in month five.",
-      "Built the operating structure across Sales, Operations, and Education.",
-      "Recruited, trained, and managed the sales team with onboarding and development systems.",
-      "Established sales processes, KPIs, reporting, and competitor intelligence.",
+      "Opened and established the branch from the ground up, including the initial 2-month setup and readiness phase before commercial launch",
+      "Scaled monthly revenue from EGP 150,000 in month 1 to EGP 250,000 in month 2 and EGP 300,000 in month 3, reaching a peak of EGP 450,000/month — within an organization with 7 months total market presence",
+      "Built the branch's operational structure and workflows across Sales, Operations, and Education departments",
+      "Recruited, trained, and managed the sales team, implementing onboarding and continuous performance-development programs",
+      "Designed sales processes that improved lead management, follow-up discipline, and conversion rates",
+      "Conducted market and competitor research to identify opportunities and strengthen the academy's market position",
+      "Established KPIs, performance-monitoring systems, and reporting mechanisms across departments",
+      "Introduced competitive advantages, new educational services, and value-added offerings to differentiate the academy from competitors",
+      "Coordinated cross-functional collaboration between Sales, Operations, and Academic teams to ensure seamless student experience",
     ],
     color: "#fbbf24",
     chart: [
-      { label: "M1", value: 150, display: "EGP 150K" },
-      { label: "M2", value: 250, display: "EGP 250K" },
-      { label: "M3", value: 300, display: "EGP 300K" },
-      { label: "M5", value: 450, display: "EGP 450K" },
+      { label: "Month 1", value: 150, display: "EGP 150K" },
+      { label: "Month 2", value: 250, display: "EGP 250K" },
+      { label: "Month 3", value: 300, display: "EGP 300K" },
+      { label: "Month 5 / Peak", value: 450, display: "EGP 450K" },
     ],
     chartMax: 500,
   },
@@ -100,17 +110,23 @@ const companies: Company[] = [
     role: "Sales Team Leader → BD Specialist",
     dates: "2024 — 2025",
     type: "full-time",
+    tag: "Executive Role",
     roles: ["Sales Team Leader", "BD Specialist"],
     achievements: [
-      "Led branch operations across sales, marketing, and student services.",
-      "Contributed to monthly revenue growth from approximately EGP 2M to EGP 5M.",
-      "Implemented CRM and structured sales funnels to improve conversion and retention.",
-      "Designed and delivered sales training programs while monitoring KPIs and forecasting.",
+      "Developed strategic partnerships and business-expansion opportunities as Business Development Specialist (2025)",
+      "Led commercial sales operations and daily team performance as Sales Team Leader (2024–2025)",
+      "Contributed to increasing monthly revenue from approximately EGP 2M to EGP 5M — the highest monthly revenue in the organization's history",
+      "Led branch operations including sales, marketing, and student services",
+      "Built and managed a high-performing sales team, achieving monthly and quarterly revenue targets",
+      "Implemented CRM and structured sales funnels, increasing conversion and retention rates",
+      "Designed and delivered sales training programs to enhance team skills and performance",
+      "Improved customer experience and reduced service-related issues by applying quality control processes",
+      "Monitored KPIs, forecasting, coaching, and sales quality across the team",
     ],
     color: "#38bdf8",
     chart: [
       { label: "Start", value: 2, display: "EGP 2M" },
-      { label: "Peak", value: 5, display: "EGP 5M" },
+      { label: "Peak / month", value: 5, display: "EGP 5M" },
     ],
     chartMax: 5,
   },
@@ -120,15 +136,20 @@ const companies: Company[] = [
     shortName: "Be Fluent",
     logo: "/manus-storage/be-fluent_ed3866f1.jpeg",
     initials: "BF",
-    role: "Business Developer → Branch Manager → Consultant",
-    dates: "2025 — Present",
+    role: "Business Development Consultant & Sales Trainer (current) / previously Branch Manager & Business Developer",
+    dates: "Oct 2024 — Present",
     type: "full-time",
+    tag: "Executive Role",
     roles: ["Business Developer", "Branch Manager", "Consultant"],
+    description: "Transitioned from full-time Branch Manager to an ongoing consulting and training role for the sales team.",
     achievements: [
-      "Managed end-to-end branch operations and launched two new business branches.",
-      "Oversaw branch performance, enrollment growth, and KPI-driven coaching.",
-      "Coordinates with marketing and academic teams for student acquisition.",
-      "Provides ongoing business development consulting and sales training.",
+      "Oversaw branch performance, ensuring operational excellence and consistent enrollment growth",
+      "Monitored and developed sales team performance through KPI-driven coaching",
+      "Coordinated with marketing and academic teams to enhance student acquisition and satisfaction",
+      "Implemented feedback-based service improvements increasing retention rates",
+      "Managed end-to-end branch operations and launched two new business branches",
+      "Continues providing business development consulting and sales training services to the organization's commercial team",
+      "Designed commercial growth initiatives and operational improvements that carried into the current advisory engagement",
     ],
     color: "#67e8f9",
   },
@@ -138,15 +159,17 @@ const companies: Company[] = [
     shortName: "MEC Academy",
     logo: "",
     initials: "MEC",
-    role: "Senior Sales Consultant → Head of Quality Assurance",
+    role: "Senior Sales Consultant → Sales Team Leader → Head of Quality Assurance",
     dates: "2023 — 2024",
     type: "full-time",
+    tag: "Executive Role",
     roles: ["Senior Sales Consultant", "Sales Team Leader", "Head of Quality Assurance"],
     achievements: [
-      "Progressed through three roles based on performance and leadership impact.",
-      "Built quality-assurance standards and coaching frameworks that prevented issues upstream.",
-      "Designed performance-evaluation systems with senior leadership.",
-      "Received a Certificate of Appreciation for contribution to AISPRINT.",
+      "Progressed from Senior Sales Consultant to Sales Team Leader to Head of Quality Assurance based on performance",
+      "Built quality-assurance standards and coaching frameworks focused on preventing service and sales-process issues, not just detecting them after the fact — designing the standards that shape the customer experience upfront",
+      "Designed performance-evaluation systems and coaching frameworks; partnered with senior leadership to improve operational efficiency",
+      "As Senior Sales Consultant, consistently achieved sales targets while mentoring junior team members",
+      "Received a Certificate of Appreciation (dated May 17, 2024) in sincere recognition of outstanding efforts and valuable contribution to the success of \"AISPRINT\"",
     ],
     color: "#a78bfa",
   },
@@ -156,15 +179,19 @@ const companies: Company[] = [
     shortName: "Harvest British College",
     logo: "/manus-storage/harvest_fbefaf15.jpeg",
     initials: "HBC",
-    role: "Sales Executive → Branch Manager",
-    dates: "2020/21 — 2023",
+    role: "Sales Executive → Senior Sales Consultant → Sales Team Leader → Acting Branch Manager → Branch Manager",
+    dates: "2021 — 2023",
     type: "full-time",
-    roles: ["Sales Executive", "Senior Sales", "Team Leader", "Acting Branch Manager", "Branch Manager"],
+    tag: "Executive Role",
+    roles: ["Sales Executive", "Senior Sales Consultant", "Sales Team Leader", "Acting Branch Manager", "Branch Manager"],
+    description: "Rapidly promoted through five leadership positions within approximately two years.",
     achievements: [
-      "Rapidly promoted through five leadership positions in approximately two years.",
-      "Led branch operations, sales performance, and operational KPIs.",
-      "Recruited, coached, and developed sales professionals.",
-      "Handled Sales Manager-level responsibilities during organizational restructuring.",
+      "Progression: Sales Executive → Senior Sales Consultant → Sales Team Leader → Acting Branch Manager → Branch Manager",
+      "Led branch operations, managing sales performance and operational KPIs",
+      "Recruited, coached, and developed sales professionals, driving customer acquisition and commercial growth",
+      "Played a key leadership role during organizational restructuring, handling responsibilities typically assigned to a Sales Manager",
+      "Trained new sales hires and improved onboarding processes, boosting team productivity and closing efficiency",
+      "Consistently achieved top performance ranking and contributed to maximizing enrollment and revenue growth",
     ],
     color: "#bef264",
   },
@@ -174,14 +201,13 @@ const companies: Company[] = [
     shortName: "PlanIT Software School",
     logo: "/manus-storage/planit_778aaca0.jpeg",
     initials: "PIT",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "2023 — Present",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: [
-      "Delivered sales programs around communication, objections, negotiation, and closing.",
-      "Supported sales funnels, CRM workflows, and lead-nurturing systems.",
-    ],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#60a5fa",
   },
   {
@@ -190,14 +216,13 @@ const companies: Company[] = [
     shortName: "EraaSoft",
     logo: "/manus-storage/eraasoft_f29f8d15.jpeg",
     initials: "ES",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "2023 — Present",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: [
-      "Built coaching and onboarding processes for commercial teams.",
-      "Designed KPI structures, 1:1 coaching rituals, and mock-call practice.",
-    ],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#38bdf8",
   },
   {
@@ -206,11 +231,13 @@ const companies: Company[] = [
     shortName: "SMART Creative Agency",
     logo: "/manus-storage/smart_7365295d.jpeg",
     initials: "SCA",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#e5e7eb",
   },
   {
@@ -219,11 +246,13 @@ const companies: Company[] = [
     shortName: "Globe Upscale",
     logo: "/manus-storage/globe-upscale_4cdf96af.jpeg",
     initials: "GU",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#2dd4bf",
   },
   {
@@ -232,11 +261,13 @@ const companies: Company[] = [
     shortName: "IBI British",
     logo: "/manus-storage/ibi-british_10638c30.jpeg",
     initials: "IBI",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#93c5fd",
   },
   {
@@ -245,11 +276,13 @@ const companies: Company[] = [
     shortName: "FutureTech",
     logo: "/manus-storage/futuretech_107721b3.jpeg",
     initials: "FT",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#d946ef",
   },
   {
@@ -258,11 +291,13 @@ const companies: Company[] = [
     shortName: "AMIT",
     logo: "/manus-storage/amit_2cead941.jpeg",
     initials: "AM",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#f87171",
   },
   {
@@ -271,11 +306,13 @@ const companies: Company[] = [
     shortName: "Middleware",
     logo: "/manus-storage/middleware_095a149d.jpeg",
     initials: "MW",
-    role: "Sales Trainer & BD Consultant",
+    role: "Sales Trainer & Business Development Consultant",
     dates: "Consulting engagement",
     type: "consulting",
+    tag: "Consulting Partner",
     roles: ["Sales Trainer", "BD Consultant"],
-    achievements: ["Delivered sales training and business development consulting engagements."],
+    description: "Delivered training and consulting engagements.",
+    achievements: ["Delivered training and consulting engagements."],
     color: "#22d3ee",
   },
 ];
@@ -429,29 +466,28 @@ function OrbitBadge({
   company,
   index,
   ring,
-  paused,
   onPause,
   onSelect,
 }: {
   company: Company;
   index: number;
   ring: "inner" | "outer";
-  paused: boolean;
   onPause: (id: string | null) => void;
   onSelect: (company: Company) => void;
 }) {
   const total = ring === "inner" ? 5 : 8;
   const duration = ring === "inner" ? 32 : 25;
   const radius = ring === "inner" ? "150px" : "235px";
+  const angle = (index / total) * 360;
   return (
     <button
       type="button"
       className={`orbit-badge orbit-badge--${ring}`}
       style={{
         "--orbit-radius": radius,
+        "--orbit-angle": `${angle}deg`,
+        "--orbit-counter-angle": `${-angle}deg`,
         "--orbit-duration": `${duration}s`,
-        animationDelay: `${(index / total) * -duration}s`,
-        animationPlayState: paused ? "paused" : "running",
         "--badge-color": company.color,
       } as React.CSSProperties}
       onMouseEnter={() => onPause(company.id)}
@@ -468,19 +504,73 @@ function OrbitBadge({
   );
 }
 
+function OrbitTrack({
+  companies,
+  ring,
+  paused,
+  onPause,
+  onSelect,
+}: {
+  companies: Company[];
+  ring: "inner" | "outer";
+  paused: boolean;
+  onPause: (id: string | null) => void;
+  onSelect: (company: Company) => void;
+}) {
+  const duration = ring === "inner" ? 32 : 25;
+  return (
+    <div
+      className={`orbit-track orbit-track--${ring}`}
+      style={{
+        "--track-duration": `${duration}s`,
+        animationPlayState: paused ? "paused" : "running",
+      } as React.CSSProperties}
+      aria-label={`${ring === "inner" ? "Executive roles" : "Training and consulting partners"} orbit`}
+    >
+      {companies.map((company, index) => (
+        <OrbitBadge key={company.id} company={company} index={index} ring={ring} onPause={onPause} onSelect={onSelect} />
+      ))}
+    </div>
+  );
+}
+
 function RevenueChart({ company }: { company: Company }) {
-  if (!company.chart) return null;
+  const points = company.chart ?? [];
+  const [animatedValues, setAnimatedValues] = useState(() => points.map(() => 0));
+
+  useEffect(() => {
+    if (!points.length) return;
+    let frame = 0;
+    const startedAt = performance.now();
+    const duration = 760;
+    const animate = (now: number) => {
+      const progress = Math.min((now - startedAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedValues(points.map((point) => point.value * eased));
+      if (progress < 1) frame = requestAnimationFrame(animate);
+    };
+    setAnimatedValues(points.map(() => 0));
+    frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frame);
+  }, [company.id, points]);
+
+  if (!points.length) return null;
+  const isMillionChart = company.id === "russian";
   return (
     <div className="revenue-chart">
       <div className="chart-heading"><span><BarChart3 size={14} /> Revenue trajectory</span><span className="chart-heading__unit">EGP</span></div>
       <div className="chart-bars" aria-label={`${company.name} revenue chart`}>
-        {company.chart.map((point) => (
-          <div className="chart-bar-group" key={point.label}>
-            <span className="chart-value">{point.display}</span>
-            <div className="chart-bar-track"><div className="chart-bar" style={{ height: `${(point.value / (company.chartMax ?? 100)) * 100}%` }} /></div>
-            <span className="chart-label">{point.label}</span>
-          </div>
-        ))}
+        {points.map((point, index) => {
+          const value = animatedValues[index] ?? 0;
+          const displayValue = isMillionChart ? `EGP ${value.toFixed(1).replace(/\\.0$/, "")}M` : `EGP ${Math.round(value)}K`;
+          return (
+            <div className="chart-bar-group" key={point.label}>
+              <span className="chart-value">{displayValue}</span>
+              <div className="chart-bar-track"><div className="chart-bar" style={{ height: `${Math.max(value ? 5 : 0, (value / (company.chartMax ?? 100)) * 100)}%` }} /></div>
+              <span className="chart-label">{point.label}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -489,11 +579,13 @@ function RevenueChart({ company }: { company: Company }) {
 function AchievementCard({ company, onClose }: { company: Company; onClose: () => void }) {
   return (
     <article className="achievement-card" data-reveal>
-      <div className="achievement-card__topline"><span>{company.type === "full-time" ? "FULL-TIME ROLE" : "CONSULTING / TRAINING"}</span><button type="button" onClick={onClose} aria-label="Close achievement card"><X size={18} /></button></div>
+      <div className="achievement-card__topline"><span>{company.tag}</span><button type="button" onClick={onClose} aria-label="Close achievement card"><X size={18} /></button></div>
       <div className="achievement-card__identity">
         <div className="achievement-card__logo"><LogoImage company={company} /></div>
         <div><p className="company-kicker">Selected orbit</p><h3>{company.name}</h3><p className="achievement-card__dates">{company.dates}</p></div>
       </div>
+      <p className="achievement-card__description">{company.description ?? "Delivered training and consulting engagements."}</p>
+      <div className="achievement-card__role"><span className="company-kicker">Role title</span><strong>{company.role}</strong></div>
       <div className="role-progression">
         <p className="company-kicker">Role progression</p>
         <div className="role-progression__path">{company.roles.map((role, index) => <span key={role}><b>{role}</b>{index < company.roles.length - 1 && <ArrowRight size={13} />}</span>)}</div>
@@ -567,7 +659,7 @@ export default function Home() {
               <div className="contact-strip">
                 <a href="tel:+201030537773"><Phone size={14} />01030537773</a>
                 <a href="mailto:mohamed280ali90@gmail.com"><Mail size={14} />mohamed280ali90@gmail.com</a>
-                <a href="https://www.linkedin.com" target="_blank" rel="noreferrer"><Linkedin size={14} />LinkedIn</a>
+                <a href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={14} />LinkedIn</a>
                 <span><MapPin size={14} />Giza, Egypt</span>
               </div>
             </div>
@@ -595,8 +687,8 @@ export default function Home() {
               <div className="orbit-stage" data-reveal>
                 <div className="orbit-guide orbit-guide--outer" /><div className="orbit-guide orbit-guide--inner" />
                 <div className="orbit-center"><div className="orbit-center__pulse" /><img src={asset.mark} alt="" /><span>MA</span><small>impact<br />core</small></div>
-                {fullTime.map((company, index) => <OrbitBadge key={company.id} company={company} index={index} ring="inner" paused={pausedBadge === company.id} onPause={setPausedBadge} onSelect={setSelectedCompany} />)}
-                {consulting.map((company, index) => <OrbitBadge key={company.id} company={company} index={index} ring="outer" paused={pausedBadge === company.id} onPause={setPausedBadge} onSelect={setSelectedCompany} />)}
+                <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
+                <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} />
                 <div className="orbit-annotation orbit-annotation--inner"><span />full-time roles</div>
                 <div className="orbit-annotation orbit-annotation--outer"><span />training / consulting</div>
               </div>
@@ -635,9 +727,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="contact-section" style={{ backgroundImage: `linear-gradient(90deg, rgba(3,7,18,.98) 0%, rgba(3,7,18,.88) 55%, rgba(3,7,18,.52) 100%), url(${asset.contact})` }}>
+        <section id="contact" className="contact-section" style={{ backgroundImage: "linear-gradient(90deg, rgba(3,7,18,.99) 0%, rgba(3,7,18,.94) 55%, rgba(7,20,40,.88) 100%)" }}>
           <div className="container contact-grid">
-            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> 06 / Open channel</p><h2>Let's put the next<br /><em>orbit</em> in motion.</h2><p>Reach out for branch launching, commercial consulting, sales leadership, or a corporate training engagement.</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href="https://www.linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div></div>
+            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> 06 / Open channel</p><h2>Let's put the next<br /><em>orbit</em> in motion.</h2><p>Reach out for branch launching, commercial consulting, sales leadership, or a corporate training engagement.</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div></div>
             <form className="contact-form" onSubmit={sendWhatsApp} data-reveal><div className="form-heading"><span>Start a conversation</span><span className="form-status"><span /> direct channel</span></div><label>Full name<Input required value={formState.name} onChange={(event) => setFormState({ ...formState, name: event.target.value })} placeholder="Your name" /></label><label>Email address<Input required type="email" value={formState.email} onChange={(event) => setFormState({ ...formState, email: event.target.value })} placeholder="you@company.com" /></label><label>What are we building?<Textarea required value={formState.details} onChange={(event) => setFormState({ ...formState, details: event.target.value })} placeholder="Tell me about the branch, team, or commercial challenge..." /></label><button className="button button--gold button--full" type="submit">Send direct message via WhatsApp <MoveUpRight size={16} /></button><p className="form-note"><Sparkles size={14} /> Your message opens directly in WhatsApp — no inbox lost in space.</p></form>
           </div>
         </section>
