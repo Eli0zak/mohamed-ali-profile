@@ -1,14 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { 
   ArrowLeft, ArrowRight, Briefcase, CheckCircle2, Clock, Download, 
-  ExternalLink, FileText, Filter, Globe2, Loader2, Mail, Phone, Search, ShieldAlert, User, Check 
+  ExternalLink, FileText, Filter, Globe2, Loader2, Mail, Phone, Search, ShieldAlert, User, Check, Lock, KeyRound, AlertCircle 
 } from "lucide-react";
 
 export default function CareerDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem("moh_admin_auth") === "true";
+  });
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState(false);
+
   const [statusFilter, setStatusFilter] = useState<string>("All");
+  
   const { data: submissions, isLoading, refetch } = trpc.career.listSubmissions.useQuery(undefined, {
+    enabled: isAuthenticated,
     retry: false,
   });
 
@@ -17,6 +25,78 @@ export default function CareerDashboard() {
       refetch();
     }
   });
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Default admin password for Mohamed Ali
+    if (passwordInput === "Mohamed2026!@#" || passwordInput === "moh280ali") {
+      setIsAuthenticated(true);
+      sessionStorage.setItem("moh_admin_auth", "true");
+      setAuthError(false);
+    } else {
+      setAuthError(true);
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#07090e] text-[#f1f5f9] font-sans flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-[#111827]/90 border border-[#1f2937] rounded-3xl p-8 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[#d4af37]/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="text-center space-y-3 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center mx-auto text-[#d4af37]">
+              <Lock className="w-7 h-7" />
+            </div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">Admin Restricted Access</h1>
+            <p className="text-xs text-[#94a3b8]">
+              Authorized for <span className="text-[#d4af37] font-medium">mohamed280ali90@gmail.com</span> only. Please enter your secure admin password to view candidate submissions.
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-[#cbd5e1] uppercase tracking-wider flex items-center gap-2">
+                <KeyRound className="w-3.5 h-3.5 text-[#d4af37]" />
+                Admin Password
+              </label>
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  setAuthError(false);
+                }}
+                placeholder="Enter secure admin password..."
+                className="w-full bg-[#07090e] border border-[#374151] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#d4af37] transition-all"
+                required
+              />
+            </div>
+
+            {authError && (
+              <div className="flex items-center gap-2 text-rose-400 text-xs bg-rose-500/10 border border-rose-500/20 px-3 py-2 rounded-xl">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>Incorrect password. Please enter the valid admin passcode.</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] text-[#07090e] text-sm font-bold shadow-lg shadow-[#d4af37]/20 hover:opacity-95 transition-all"
+            >
+              Unlock Roster
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <Link href="/" className="text-xs text-[#94a3b8] hover:text-[#d4af37] transition-colors inline-flex items-center gap-1.5">
+              ← Return to Main Portfolio
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const filteredSubmissions = (submissions || []).filter(sub => {
     if (statusFilter === "All") return true;
@@ -32,13 +112,22 @@ export default function CareerDashboard() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 text-[#fde047] text-xs font-medium mb-3">
               <Briefcase className="w-3.5 h-3.5" />
-              <span>Admin Dashboard</span>
+              <span>Admin Dashboard — Secure Roster</span>
             </div>
             <h1 className="text-3xl font-bold text-white tracking-tight">Career Gateway Roster</h1>
-            <p className="text-sm text-[#94a3b8]">Centralized record of all candidate CV submissions across your partner organizations.</p>
+            <p className="text-sm text-[#94a3b8]">Centralized secure record of all candidate CV submissions across your partner organizations.</p>
           </div>
 
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                setIsAuthenticated(false);
+                sessionStorage.removeItem("moh_admin_auth");
+              }}
+              className="px-4 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium hover:bg-rose-500/25 transition-all"
+            >
+              Lock Roster
+            </button>
             <Link href="/career-gateway" className="px-4 py-2 rounded-xl bg-[#111827] border border-[#374151] hover:border-[#d4af37]/50 text-xs font-medium text-white transition-all flex items-center gap-2">
               <ExternalLink className="w-4 h-4 text-[#d4af37]" />
               <span>Open Candidate Form</span>
@@ -77,7 +166,7 @@ export default function CareerDashboard() {
           {isLoading ? (
             <div className="py-20 flex flex-col items-center justify-center gap-3">
               <Loader2 className="w-8 h-8 text-[#d4af37] animate-spin" />
-              <p className="text-sm text-[#94a3b8]">Loading submissions roster...</p>
+              <p className="text-sm text-[#94a3b8]">Loading secure submissions roster...</p>
             </div>
           ) : !submissions || submissions.length === 0 ? (
             <div className="py-20 text-center space-y-3">

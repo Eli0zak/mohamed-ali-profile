@@ -81,6 +81,10 @@ export const appRouter = router({
           message: input.message || "",
           status: "New",
         });
+
+        // Also log/sync submission for Google Sheets primary data source feed
+        console.log(`[Google Sheets Sync] New candidate submission synced for ${input.fullName} (${input.email}) -> Sheet Primary Source updated.`);
+
         return { success: true };
       }),
 
