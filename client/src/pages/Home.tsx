@@ -905,6 +905,7 @@ function AchievementCard({ company, onClose, language }: { company: Company; onC
 export default function Home() {
   const [language, setLanguage] = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const triggerCopyFeedback = (key: string) => {
@@ -967,52 +968,59 @@ export default function Home() {
           </Link>
         </nav>
         <div className="nav-actions relative flex items-center gap-2">
-          {/* Header Share Dropdown */}
-          <div className="relative group">
+          {/* Header Share Interactive Dropdown */}
+          <div className="relative">
             <button
               className="language-toggle"
               type="button"
+              onClick={() => setShareMenuOpen((prev) => !prev)}
+              aria-expanded={shareMenuOpen}
               aria-label="Share portfolio"
               title={language === "ar" ? "مشاركة الموقع" : "Share portfolio"}
             >
               <Share2 size={15} />
               <span className="hidden sm:inline">{language === "en" ? "Share" : "مشاركة"}</span>
             </button>
-            <div className="absolute right-0 mt-2 w-48 bg-slate-900/95 border border-amber-500/30 rounded-xl shadow-2xl p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 backdrop-blur-md">
-              <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
+            {shareMenuOpen && (
+              <div
+                className="absolute right-0 mt-2 w-48 bg-slate-900/98 border border-amber-500/30 rounded-xl shadow-2xl p-1.5 z-50 backdrop-blur-md"
+                onClick={() => setShareMenuOpen(false)}
               >
-                <Linkedin size={14} className="text-amber-400" />
-                <span>{language === "en" ? "Share on LinkedIn" : "مشاركة عبر لينكد إن"}</span>
-              </a>
-              <a
-                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Mohamed Ali's Portfolio: ${window.location.href}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
-              >
-                <MessageCircle size={14} className="text-emerald-400" />
-                <span>{language === "en" ? "Share via WhatsApp" : "مشاركة عبر واتساب"}</span>
-              </a>
-              <button
-                type="button"
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors text-left"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(window.location.href);
-                    alert(language === "ar" ? "تم نسخ رابط الموقع بنجاح!" : "Portfolio link copied to clipboard!");
-                  } catch (e) {
-                    console.warn("Copy failed", e);
-                  }
-                }}
-              >
-                <Share2 size={14} className="text-sky-400" />
-                <span>{language === "en" ? "Copy Link" : "نسخ الرابط"}</span>
-              </button>
-            </div>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
+                >
+                  <Linkedin size={14} className="text-amber-400" />
+                  <span>{language === "en" ? "Share on LinkedIn" : "مشاركة عبر لينكد إن"}</span>
+                </a>
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out Mohamed Ali's Portfolio: ${window.location.href}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors"
+                >
+                  <MessageCircle size={14} className="text-emerald-400" />
+                  <span>{language === "en" ? "Share via WhatsApp" : "مشاركة عبر واتساب"}</span>
+                </a>
+                <button
+                  type="button"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs text-slate-200 hover:bg-amber-500/15 hover:text-amber-400 rounded-lg transition-colors text-left"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(window.location.href);
+                      alert(language === "ar" ? "تم نسخ رابط الموقع بنجاح!" : "Portfolio link copied to clipboard!");
+                    } catch (e) {
+                      console.warn("Copy failed", e);
+                    }
+                  }}
+                >
+                  <Share2 size={14} className="text-sky-400" />
+                  <span>{language === "en" ? "Copy Link" : "نسخ الرابط"}</span>
+                </button>
+              </div>
+            )}
           </div>
           <button className="language-toggle" type="button" onClick={handleLanguageToggle} aria-label="Toggle Arabic and English"><Languages size={15} /><span>{language === "en" ? "العربية" : "English"}</span></button>
           <a className="nav-cv" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={15} /> <span>Download CV</span></a>
