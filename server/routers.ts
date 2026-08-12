@@ -3,12 +3,13 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { getDb } from "./db";
-import { careerSubmissions } from "../drizzle/schema";
+import { broadcastHistory, careerSubmissions } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 import { storagePut } from "./storage";
 import { isCareerAdmin } from "./careerAdmin";
 import { appendToGoogleSheet } from "./googleSheetsAutoSync";
+import { sendBroadcastOpportunity } from "./careerBroadcast";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -126,6 +127,57 @@ export const appRouter = router({
         if (!db) throw new Error("Database unavailable");
         await db.update(careerSubmissions).set({ status: input.status }).where(eq(careerSubmissions.id, input.id));
         return { success: true };
+      }),
+
+    listBroadcastHistory: protectedProcedure.query(async ({ ctx }) => {
+      if (!isCareerAdmin(ctx.user)) {
+        throw new Error("Unauthorized access");
+      }
+      const db = await getDb();
+      if (!db) return [];
+      return db.select().from(broadcastHistory).orderBy(desc(broadcastHistory.createdAt));
+    }),
+
+    broadcastOpportunity: protectedProcedure
+      .input(
+        z.object({
+          jobTitle: z.string().trim().min(3).max(255),
+          jobDetails: z.string().trim().min(10).max(20_000),
+          contactName: z.string().trim().max(255).optional(),
+          contactEmail: z.union([z.string().email(), z.literal("")]).optional(),
+          contactLinkedin: z.union([
+            z.string().trim().url().refine((value) => value.startsWith("http://") || value.startsWith("https://"), "LinkedIn URL must use http or https"),
+            z.literal(""),
+          ]).optional(),
+          otherInstructions: z.string().trim().max(20_000).optional(),
+        }),
+      )
+      .mutation(async ({ ctx, input }) => {
+        if (!isCareerAdmin(ctx.user)) {
+          throw new Error("Unauthorized access");
+        }
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        const submissions = await db.select().from(careerSubmissions);
+        const result = await sendBroadcastOpportunity(input, submissions);
+        const [history] = await db.insert(broadcastHistory).values({
+          jobTitle: input.jobTitle,
+          jobDetails: input.jobDetails,
+          contactName: input.contactName || null,
+          contactEmail: input.contactEmail || null,
+          contactLinkedin: input.contactLinkedin || null,
+          otherInstructions: input.otherInstructions || null,
+          recipientCount: result.recipientCount,
+          successCount: result.successCount,
+          failureCount: result.failureCount,
+        }).$returningId();
+
+        return {
+          success: result.recipientCount > 0 && result.failureCount === 0,
+          ...result,
+          historyId: history?.id ?? null,
+        };
       }),
   }),
 });

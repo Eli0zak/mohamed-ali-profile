@@ -43,3 +43,20 @@ export const careerSubmissions = mysqlTable("career_submissions", {
 
 export type CareerSubmission = typeof careerSubmissions.$inferSelect;
 export type InsertCareerSubmission = typeof careerSubmissions.$inferInsert;
+
+export const broadcastHistory = mysqlTable("broadcast_history", {
+  id: int("id").autoincrement().primaryKey(),
+  jobTitle: varchar("jobTitle", { length: 255 }).notNull(),
+  jobDetails: text("jobDetails").notNull(),
+  contactName: varchar("contactName", { length: 255 }),
+  contactEmail: varchar("contactEmail", { length: 320 }),
+  contactLinkedin: varchar("contactLinkedin", { length: 512 }),
+  otherInstructions: text("otherInstructions"),
+  recipientCount: int("recipientCount").notNull(),
+  successCount: int("successCount").notNull(),
+  failureCount: int("failureCount").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type BroadcastHistory = typeof broadcastHistory.$inferSelect;
+export type InsertBroadcastHistory = typeof broadcastHistory.$inferInsert;

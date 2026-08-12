@@ -7,9 +7,27 @@ import {
 } from "@/lib/careerStats";
 import { 
   ArrowLeft, ArrowRight, BarChart3, Briefcase, CalendarDays, CheckCircle2, Clock, Download,
-  ExternalLink, FileCheck2, FileText, Filter, Globe2, Loader2, Mail, Phone, Search, ShieldAlert, User, UserPlus, Users, Check, Lock, KeyRound, AlertCircle, X
+  ExternalLink, FileCheck2, FileText, Filter, Globe2, History, Loader2, Mail, Phone, Search, Send, ShieldAlert, User, UserPlus, Users, Check, Lock, KeyRound, AlertCircle, X
 
 } from "lucide-react";
+
+type BroadcastForm = {
+  jobTitle: string;
+  jobDetails: string;
+  contactName: string;
+  contactEmail: string;
+  contactLinkedin: string;
+  otherInstructions: string;
+};
+
+const emptyBroadcastForm: BroadcastForm = {
+  jobTitle: "",
+  jobDetails: "",
+  contactName: "",
+  contactEmail: "",
+  contactLinkedin: "",
+  otherInstructions: "",
+};
 
 export default function CareerDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -20,6 +38,8 @@ export default function CareerDashboard() {
 
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [statsFilter, setStatsFilter] = useState<"all" | "new" | "week" | "cv">("all");
+  const [broadcastForm, setBroadcastForm] = useState<BroadcastForm>(emptyBroadcastForm);
+  const [broadcastNotice, setBroadcastNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const referenceNow = useMemo(() => new Date(), []);
   
   const { data: submissions, isLoading, refetch } = trpc.career.listSubmissions.useQuery(undefined, {
@@ -31,6 +51,27 @@ export default function CareerDashboard() {
     onSuccess: () => {
       refetch();
     }
+  });
+
+  const { data: broadcastHistoryRows, isLoading: isBroadcastHistoryLoading, refetch: refetchBroadcastHistory } = trpc.career.listBroadcastHistory.useQuery(undefined, {
+    enabled: isAuthenticated,
+    retry: false,
+  });
+
+  const broadcastMutation = trpc.career.broadcastOpportunity.useMutation({
+    onSuccess: (result) => {
+      refetchBroadcastHistory();
+      setBroadcastNotice({
+        type: result.success ? "success" : "error",
+        text: result.recipientCount === 0
+          ? "No valid candidate email addresses are available for this broadcast."
+          : `Broadcast completed: ${result.successCount} sent, ${result.failureCount} failed, ${result.recipientCount} unique recipients.`,
+      });
+      if (result.success) setBroadcastForm(emptyBroadcastForm);
+    },
+    onError: (error) => {
+      setBroadcastNotice({ type: "error", text: error.message || "Broadcast failed. No messages were sent." });
+    },
   });
 
   const stats = useMemo(
@@ -52,6 +93,34 @@ export default function CareerDashboard() {
   const handleStatusFilterClick = (status: string) => {
     setStatusFilter(status);
     setStatsFilter("all");
+  };
+
+  const handleBroadcastSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setBroadcastNotice(null);
+    if (!submissions || submissions.length === 0) {
+      setBroadcastNotice({ type: "error", text: "There are no candidate submissions to receive this opportunity." });
+      return;
+    }
+
+    const recipientEstimate = new Set(
+      submissions
+        .map((submission) => submission.email.trim().toLowerCase())
+        .filter((email) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)),
+    ).size;
+    const confirmed = window.confirm(
+      `Send this opportunity to ${recipientEstimate} unique candidate email address${recipientEstimate === 1 ? "" : "es"}? This action will send real emails.`,
+    );
+    if (!confirmed) return;
+
+    broadcastMutation.mutate({
+      jobTitle: broadcastForm.jobTitle.trim(),
+      jobDetails: broadcastForm.jobDetails.trim(),
+      contactName: broadcastForm.contactName.trim(),
+      contactEmail: broadcastForm.contactEmail.trim(),
+      contactLinkedin: broadcastForm.contactLinkedin.trim(),
+      otherInstructions: broadcastForm.otherInstructions.trim(),
+    });
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -257,6 +326,154 @@ export default function CareerDashboard() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Job Opportunity Broadcast — admin-only */}
+        <section aria-labelledby="broadcast-title" className="rounded-2xl border border-[#d4af37]/25 bg-[#111827]/80 p-4 sm:p-6 shadow-xl shadow-black/10">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-2">
+                <Send className="w-4 h-4 text-[#d4af37]" />
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4af37] font-semibold">Network connector</p>
+              </div>
+              <h2 id="broadcast-title" className="mt-2 text-xl font-semibold text-white">Broadcast a job opportunity</h2>
+              <p className="mt-1 text-xs leading-5 text-[#94a3b8]">Share a verified opportunity with unique candidate email addresses stored in Career Gateway. The message will be sent only after your confirmation.</p>
+            </div>
+            <div className="shrink-0 rounded-xl border border-amber-500/20 bg-amber-500/5 px-3 py-2 text-[11px] leading-5 text-amber-200/80 max-w-xs">
+              Use the opportunity contact details below so candidates know exactly who to contact.
+            </div>
+          </div>
+
+          <form onSubmit={handleBroadcastSubmit} className="mt-6 space-y-4">
+            <div className="grid gap-4 lg:grid-cols-2">
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Job title <span className="text-rose-400">*</span></span>
+                <input
+                  required
+                  minLength={3}
+                  maxLength={255}
+                  value={broadcastForm.jobTitle}
+                  onChange={(event) => setBroadcastForm((current) => ({ ...current, jobTitle: event.target.value }))}
+                  placeholder="e.g. Business Development Manager"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Opportunity contact name</span>
+                <input
+                  maxLength={255}
+                  value={broadcastForm.contactName}
+                  onChange={(event) => setBroadcastForm((current) => ({ ...current, contactName: event.target.value }))}
+                  placeholder="Hiring manager or company contact"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+            </div>
+
+            <label className="block space-y-1.5">
+              <span className="text-xs font-semibold text-[#cbd5e1]">Job details <span className="text-rose-400">*</span></span>
+              <textarea
+                required
+                minLength={10}
+                maxLength={20_000}
+                rows={5}
+                value={broadcastForm.jobDetails}
+                onChange={(event) => setBroadcastForm((current) => ({ ...current, jobDetails: event.target.value }))}
+                placeholder="Responsibilities, location, seniority, compensation context, and application instructions..."
+                className="w-full resize-y rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm leading-6 text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+              />
+            </label>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Contact email</span>
+                <input
+                  type="email"
+                  maxLength={320}
+                  value={broadcastForm.contactEmail}
+                  onChange={(event) => setBroadcastForm((current) => ({ ...current, contactEmail: event.target.value }))}
+                  placeholder="contact@company.com"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">LinkedIn profile or post</span>
+                <input
+                  type="url"
+                  maxLength={512}
+                  value={broadcastForm.contactLinkedin}
+                  onChange={(event) => setBroadcastForm((current) => ({ ...current, contactLinkedin: event.target.value }))}
+                  placeholder="https://linkedin.com/..."
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Additional instructions</span>
+                <input
+                  maxLength={20_000}
+                  value={broadcastForm.otherInstructions}
+                  onChange={(event) => setBroadcastForm((current) => ({ ...current, otherInstructions: event.target.value }))}
+                  placeholder="How candidates should apply"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
+              <button
+                type="submit"
+                disabled={broadcastMutation.isPending || isLoading || !submissions?.length}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#b8860b] px-5 py-3 text-sm font-bold text-[#07090e] shadow-lg shadow-[#d4af37]/15 transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {broadcastMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                {broadcastMutation.isPending ? "Sending..." : "Review and broadcast"}
+              </button>
+              <span className="text-[11px] text-[#64748b]">Estimated recipients: {isLoading ? "—" : new Set((submissions ?? []).map((submission) => submission.email.trim().toLowerCase()).filter((email) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))).size}</span>
+            </div>
+
+            {broadcastNotice && (
+              <div className={`rounded-xl border px-3.5 py-3 text-xs ${broadcastNotice.type === "success" ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-300" : "border-rose-500/25 bg-rose-500/10 text-rose-300"}`} role="status">
+                {broadcastNotice.text}
+              </div>
+            )}
+          </form>
+
+          <div className="mt-7 border-t border-[#1f2937] pt-5">
+            <div className="flex items-center gap-2 mb-3">
+              <History className="w-4 h-4 text-[#d4af37]" />
+              <h3 className="text-sm font-semibold text-white">Broadcast history</h3>
+            </div>
+            {isBroadcastHistoryLoading ? (
+              <p className="text-xs text-[#64748b]">Loading broadcast history...</p>
+            ) : !broadcastHistoryRows?.length ? (
+              <p className="text-xs text-[#64748b]">No broadcasts have been sent yet.</p>
+            ) : (
+              <div className="overflow-x-auto rounded-xl border border-[#1f2937]">
+                <table className="w-full min-w-[720px] text-left text-xs">
+                  <thead className="bg-[#07090e]/60 text-[#94a3b8]">
+                    <tr>
+                      <th className="px-3 py-2.5 font-semibold">Opportunity</th>
+                      <th className="px-3 py-2.5 font-semibold">Sent</th>
+                      <th className="px-3 py-2.5 font-semibold">Delivered</th>
+                      <th className="px-3 py-2.5 font-semibold">Failed</th>
+                      <th className="px-3 py-2.5 font-semibold">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#1f2937] text-[#cbd5e1]">
+                    {broadcastHistoryRows.slice(0, 10).map((broadcast) => (
+                      <tr key={broadcast.id}>
+                        <td className="px-3 py-3 font-medium text-white">{broadcast.jobTitle}</td>
+                        <td className="px-3 py-3 tabular-nums">{broadcast.recipientCount}</td>
+                        <td className="px-3 py-3 tabular-nums text-emerald-300">{broadcast.successCount}</td>
+                        <td className="px-3 py-3 tabular-nums text-rose-300">{broadcast.failureCount}</td>
+                        <td className="px-3 py-3 whitespace-nowrap text-[#94a3b8]">{new Date(broadcast.createdAt).toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </section>
 
