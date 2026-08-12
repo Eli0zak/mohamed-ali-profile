@@ -452,36 +452,49 @@ export default function CareerDashboard() {
               />
             </label>
 
-            <div className="grid gap-4 md:grid-cols-3">
-              <label className="space-y-1.5">
-                <span className="text-xs font-semibold text-[#cbd5e1]">Send to</span>
-                <select
-                  value={broadcastForm.audienceType}
-                  onChange={(event) => setBroadcastForm((current) => ({
-                    ...current,
-                    audienceType: event.target.value as BroadcastAudienceType,
-                    audienceField: event.target.value === "all" ? "" : (current.audienceField || fieldOptions[0] || ""),
-                  }))}
-                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white outline-none transition-colors focus:border-[#d4af37]"
-                >
-                  <option value="all">All Candidates</option>
-                  <option value="field">Filter by Field/Specialization</option>
-                </select>
-              </label>
-              {broadcastForm.audienceType === "field" && (
+            <div className="rounded-2xl border border-[#d4af37]/40 bg-[#0c1322] p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 text-[#d4af37]" />
+                <span className="text-xs font-bold uppercase tracking-wider text-[#d4af37]">Target Audience & Recipient Filtering</span>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2">
                 <label className="space-y-1.5">
-                  <span className="text-xs font-semibold text-[#cbd5e1]">Field / Specialization</span>
+                  <span className="text-xs font-semibold text-[#cbd5e1]">Send to group <span className="text-rose-400">*</span></span>
                   <select
-                    required
-                    value={broadcastForm.audienceField}
-                    onChange={(event) => setBroadcastForm((current) => ({ ...current, audienceField: event.target.value }))}
-                    className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white outline-none transition-colors focus:border-[#d4af37]"
+                    value={broadcastForm.audienceType}
+                    onChange={(event) => setBroadcastForm((current) => ({
+                      ...current,
+                      audienceType: event.target.value as BroadcastAudienceType,
+                      audienceField: event.target.value === "all" ? "" : (current.audienceField || fieldOptions[0] || ""),
+                    }))}
+                    className="w-full rounded-xl border border-[#d4af37]/40 bg-[#07090e] px-3.5 py-3 text-sm font-semibold text-white outline-none transition-colors focus:border-[#d4af37]"
                   >
-                    <option value="" disabled>Select a stored field</option>
-                    {fieldOptions.map((field) => <option key={field} value={field}>{field}</option>)}
+                    <option value="all">⚡ All Unique Candidates (Send to everyone)</option>
+                    <option value="field">🎯 Filter by Field / Specialization (e.g. Sales only)</option>
                   </select>
                 </label>
-              )}
+                {broadcastForm.audienceType === "field" ? (
+                  <label className="space-y-1.5">
+                    <span className="text-xs font-semibold text-[#cbd5e1]">Target Field / Specialization <span className="text-rose-400">*</span></span>
+                    <select
+                      required
+                      value={broadcastForm.audienceField}
+                      onChange={(event) => setBroadcastForm((current) => ({ ...current, audienceField: event.target.value }))}
+                      className="w-full rounded-xl border border-[#d4af37]/40 bg-[#07090e] px-3.5 py-3 text-sm font-semibold text-[#fde047] outline-none transition-colors focus:border-[#d4af37]"
+                    >
+                      <option value="" disabled>Select specialization...</option>
+                      {fieldOptions.map((field) => <option key={field} value={field}>{field}</option>)}
+                    </select>
+                  </label>
+                ) : (
+                  <div className="flex items-center text-xs text-[#94a3b8] px-2 pt-5">
+                    ℹ️ Automatically sends to all unique candidate emails without duplication.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
               <label className="space-y-1.5">
                 <span className="text-xs font-semibold text-[#cbd5e1]">Contact email</span>
                 <input
