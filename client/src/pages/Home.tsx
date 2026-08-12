@@ -1,10 +1,12 @@
 /* مدار النفوذ: الصفحة الرئيسية تجمع بين السرد التحريري، الكوكبة المدارية، ووضوح الإنجاز. */
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "wouter";
 import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
   BarChart3,
+  Briefcase,
   BriefcaseBusiness,
   Check,
   ChevronDown,
@@ -633,10 +635,14 @@ export default function Home() {
           <span><strong>Mohamed Ali</strong><small>Growth systems / 06</small></span>
         </a>
         <nav className={`desktop-nav ${menuOpen ? "desktop-nav--open" : ""}`} aria-label="Primary navigation">
-          <a href="#companies" onClick={() => setMenuOpen(false)}>Orbit</a>
-          <a href="#journey" onClick={() => setMenuOpen(false)}>Journey</a>
-          <a href="#training" onClick={() => setMenuOpen(false)}>Training</a>
-          <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
+          <a href="#companies" onClick={() => setMenuOpen(false)}>{language === "en" ? "Orbit" : "الكوكبة"}</a>
+          <a href="#journey" onClick={() => setMenuOpen(false)}>{language === "en" ? "Journey" : "المسار"}</a>
+          <a href="#training" onClick={() => setMenuOpen(false)}>{language === "en" ? "Training" : "التدريب"}</a>
+          <a href="#contact" onClick={() => setMenuOpen(false)}>{language === "en" ? "Contact" : "التواصل"}</a>
+          <Link href="/career-gateway" className="text-[#d4af37] font-semibold flex items-center gap-1" onClick={() => setMenuOpen(false)}>
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span>
+          </Link>
         </nav>
         <div className="nav-actions">
           <button className="language-toggle" type="button" onClick={toggleLanguage} aria-label="Toggle Arabic and English"><Languages size={15} /><span>{language === "en" ? "العربية" : "English"}</span></button>
@@ -735,7 +741,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>Build the system. Scale the signal.</small></span></div><p>© 2026 Mohamed Ali. Business Development · Commercial Operations · Sales Leadership.</p><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></footer>
+      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>Build the system. Scale the signal.</small></span></div><div className="flex items-center gap-6"><Link href="/career-gateway" className="text-sm font-semibold text-[#d4af37] hover:underline flex items-center gap-1.5"><Briefcase className="w-4 h-4" /><span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span></Link></div><p>© 2026 Mohamed Ali. Business Development · Commercial Operations · Sales Leadership.</p><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></footer>
     </div>
   );
 }
