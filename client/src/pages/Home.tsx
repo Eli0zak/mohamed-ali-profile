@@ -5,6 +5,7 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
+  Award,
   BarChart3,
   Briefcase,
   BriefcaseBusiness,
@@ -13,9 +14,15 @@ import {
   Download,
   ExternalLink,
   Facebook,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  FileSignature,
   FileText,
   Globe2,
   GraduationCap,
+  Handshake,
+  Mic2,
   Languages,
   Linkedin,
   Mail,
@@ -31,8 +38,10 @@ import {
   TrendingUp,
   Users,
   X,
+  ZoomIn,
   Zap,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLanguage, toggleLanguage, type Language } from "@/hooks/useLanguage";
@@ -69,6 +78,111 @@ const asset = {
   profile: "/manus-storage/profile_cb7113aa.jpg",
   cv: "/manus-storage/Mohamed_Ali_CV_99df027a.pdf",
 };
+
+type ProofItem = {
+  title: string;
+  titleAr: string;
+  organization: string;
+  organizationAr: string;
+  type: string;
+  typeAr: string;
+  description: string;
+  descriptionAr: string;
+  image: string;
+  alt: string;
+};
+
+type ProofCategory = {
+  id: "training" | "partnerships" | "recognition" | "certifications" | "events";
+  label: string;
+  labelAr: string;
+  kicker: string;
+  kickerAr: string;
+  summary: string;
+  summaryAr: string;
+  accent: string;
+  icon: LucideIcon;
+  items: ProofItem[];
+};
+
+const proofCategories: ProofCategory[] = [
+  {
+    id: "training",
+    label: "Training & Speaking",
+    labelAr: "التدريب والتحدث",
+    kicker: "Proof planet 01",
+    kickerAr: "كوكب الدليل 01",
+    summary: "Sales rooms, workshops, and speaking moments that show the work behind the training practice.",
+    summaryAr: "جلسات مبيعات وورش ولحظات تقديم توضح العمل الفعلي خلف خبرة التدريب.",
+    accent: "#fbbf24",
+    icon: Mic2,
+    items: [
+      { title: "Live Sales & Funnel Masterclass", titleAr: "تدريب عملي للمبيعات والـ Funnel", organization: "Sales training evidence", organizationAr: "دليل تدريب مبيعات", type: "Training / Speaking", typeAr: "تدريب / تقديم", description: "A documented in-room training setting focused on practical selling and funnel thinking.", descriptionAr: "جلسة تدريب موثقة داخل قاعة تركز على ممارسة البيع وبناء الـ Funnel.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM.jpeg", alt: "Sales training session with a room of participants" },
+      { title: "Sales Funnel Workshop", titleAr: "ورشة Sales Funnel", organization: "Training room evidence", organizationAr: "دليل من قاعة تدريب", type: "Workshop", typeAr: "ورشة عمل", description: "A whiteboard-led workshop environment built around sales process explanation and team learning.", descriptionAr: "بيئة ورشة عملية حول السبورة لشرح مسار المبيعات وتعلم الفريق.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM (1).jpeg", alt: "Mohamed Ali presenting a sales funnel workshop" },
+      { title: "Stage & Technical Partner Session", titleAr: "جلسة تقديم وشريك تقني", organization: "MEC Academy / AISPRINT", organizationAr: "MEC Academy / AISPRINT", type: "Speaking / Engagement", typeAr: "تقديم / مشاركة مهنية", description: "A speaking moment documented with MEC Academy and AISPRINT branding in the supplied evidence.", descriptionAr: "لحظة تقديم موثقة مع ظهور هوية MEC Academy وAISPRINT في المادة المرفقة.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg", alt: "Mohamed Ali speaking on stage with MEC Academy and AISPRINT branding" },
+    ],
+  },
+  {
+    id: "partnerships",
+    label: "Partnerships & Engagements",
+    labelAr: "الشراكات والمشاركات",
+    kicker: "Proof planet 02",
+    kickerAr: "كوكب الدليل 02",
+    summary: "Professional engagements shown as engagements and partnerships—not as employment claims.",
+    summaryAr: "مشاركات مهنية معروضة كشراكات وتعاونات، وليس كادعاءات توظيف.",
+    accent: "#38bdf8",
+    icon: Handshake,
+    items: [
+      { title: "Formal MEC Academy Engagement", titleAr: "تعاون مهني رسمي مع MEC Academy", organization: "MEC Academy", organizationAr: "MEC Academy", type: "Partnership / engagement", typeAr: "شراكة / مشاركة مهنية", description: "A formal engagement moment documented in the supplied partnership evidence.", descriptionAr: "لقطة تعاون مهني رسمي موثقة ضمن أدلة الشراكات المرفقة.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.29 PM.jpeg", alt: "Formal professional engagement with MEC Academy" },
+      { title: "Professional Engagement Archive", titleAr: "أرشيف مشاركة مهنية", organization: "Professional engagement", organizationAr: "مشاركة مهنية", type: "Engagement evidence", typeAr: "دليل مشاركة", description: "A documented professional setting presented with neutral language where the supplied material does not specify a role or date.", descriptionAr: "توثيق لمشهد مهني بصياغة محايدة لأن المادة المرفقة لا تحدد دورًا أو تاريخًا.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.25 PM.jpeg", alt: "Mohamed Ali in a formal professional engagement setting" },
+    ],
+  },
+  {
+    id: "recognition",
+    label: "Recognition",
+    labelAr: "التقدير المهني",
+    kicker: "Proof planet 03",
+    kickerAr: "كوكب الدليل 03",
+    summary: "Verified recognition and event evidence connected to professional contribution.",
+    summaryAr: "أدلة تقدير ومشاركات مرتبطة بالمساهمة المهنية كما تظهر في المواد المرفقة.",
+    accent: "#fb7185",
+    icon: Award,
+    items: [
+      { title: "AISPRINT Recognition Evidence", titleAr: "دليل تقدير مرتبط بـ AISPRINT", organization: "AISPRINT", organizationAr: "AISPRINT", type: "Recognition / event evidence", typeAr: "تقدير / دليل فعالية", description: "Recognition and team documentation supplied from the AISPRINT-related event archive.", descriptionAr: "توثيق تقدير ومشاركة جماعية من أرشيف الفعالية المرتبط بـ AISPRINT.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.28 PM (2).jpeg", alt: "AISPRINT event recognition and team documentation" },
+      { title: "Official Recommendation", titleAr: "خطاب توصية رسمي", organization: "Russian Cultural Center", organizationAr: "المركز الثقافي الروسي", type: "Professional recommendation", typeAr: "توصية مهنية", description: "A supplied recommendation document presented as professional evidence of sales leadership.", descriptionAr: "خطاب توصية مرفق يُعرض كدليل مهني على قيادة المبيعات.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (2).jpeg", alt: "Official professional recommendation document" },
+    ],
+  },
+  {
+    id: "certifications",
+    label: "Certifications",
+    labelAr: "الشهادات",
+    kicker: "Proof planet 04",
+    kickerAr: "كوكب الدليل 04",
+    summary: "A compact archive of learning evidence that supports the broader commercial story.",
+    summaryAr: "أرشيف مختصر لأدلة التعلم التي تدعم القصة التجارية الأكبر.",
+    accent: "#a78bfa",
+    icon: GraduationCap,
+    items: [
+      { title: "Professional Data Analysis", titleAr: "تحليل البيانات الاحترافي", organization: "Machinfy", organizationAr: "Machinfy", type: "Certification", typeAr: "شهادة", description: "A supplied certificate showing 75 hours of professional data analysis training with an Excellent grade.", descriptionAr: "شهادة مرفقة توضح 75 ساعة تدريبية في تحليل البيانات بتقدير ممتاز.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (4).jpeg", alt: "Professional data analysis certificate" },
+      { title: "Professional Certificate Archive", titleAr: "أرشيف شهادات مهنية", organization: "Certificate evidence", organizationAr: "دليل شهادة", type: "Certification document", typeAr: "وثيقة شهادة", description: "A second certificate document from the supplied archive, shown without adding unavailable metadata.", descriptionAr: "وثيقة شهادة إضافية من الأرشيف المرفق بدون إضافة بيانات غير متاحة.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (3).jpeg", alt: "Professional certificate document" },
+    ],
+  },
+  {
+    id: "events",
+    label: "Events",
+    labelAr: "الفعاليات",
+    kicker: "Proof planet 05",
+    kickerAr: "كوكب الدليل 05",
+    summary: "A visual record of community, event, and room moments from the professional journey.",
+    summaryAr: "سجل بصري للحظات المجتمع والفعاليات وقاعات التدريب من المسار المهني.",
+    accent: "#67e8f9",
+    icon: Camera,
+    items: [
+      { title: "AISPRINT Hackathon Community", titleAr: "مجتمع فعالية AISPRINT Hackathon", organization: "AISPRINT", organizationAr: "AISPRINT", type: "Event documentation", typeAr: "توثيق فعالية", description: "A supplied group image documenting participation around an AISPRINT event environment.", descriptionAr: "صورة جماعية مرفقة توثق المشاركة في أجواء فعالية مرتبطة بـ AISPRINT.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.28 PM (1).jpeg", alt: "Group photo from an AISPRINT event" },
+      { title: "Training Room Story", titleAr: "مشهد من قاعة تدريب", organization: "Training evidence", organizationAr: "دليل تدريب", type: "Event / training moment", typeAr: "لحظة فعالية / تدريب", description: "A cinematic room view that shows the scale and atmosphere of live learning moments.", descriptionAr: "مشهد تحريري من قاعة يوضح حجم وأجواء لحظات التعلم المباشر.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.29 PM (3).jpeg", alt: "Training room with a live audience" },
+    ],
+  },
+];
 
 const linkedinUrl = "https://www.linkedin.com/in/mohamed-ali-88a49b29a";
 
@@ -783,6 +897,9 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
+  const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
+  const [selectedProofIndex, setSelectedProofIndex] = useState(0);
+  const [proofOrbitFocused, setProofOrbitFocused] = useState(false);
   const [formState, setFormState] = useState({ name: "", email: "", details: "" });
   const scrolled = useScrollState();
   useReveal();
@@ -792,6 +909,21 @@ export default function Home() {
   const consulting = useMemo(() => companies.filter((company) => company.type === "consulting"), []);
 
   const handleLanguageToggle = () => setLanguage((current) => toggleLanguage(current));
+  const openProofCategory = (category: ProofCategory) => {
+    setSelectedProofCategory(category);
+    setSelectedProofIndex(0);
+    setProofOrbitFocused(true);
+  };
+  const closeProofCategory = () => {
+    setSelectedProofCategory(null);
+    setSelectedProofIndex(0);
+    setProofOrbitFocused(false);
+  };
+  const shiftProofItem = (direction: 1 | -1) => {
+    if (!selectedProofCategory) return;
+    const count = selectedProofCategory.items.length;
+    setSelectedProofIndex((index) => (index + direction + count) % count);
+  };
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const sendWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
@@ -894,57 +1026,52 @@ export default function Home() {
             <div className="training-topics" data-reveal><p className="company-kicker">{homeCopy[language].training.modules}</p><div className="topic-cloud">{trainingTopics.map((topic, index) => <span key={topic} style={{ "--topic-delay": `${index * 40}ms` } as React.CSSProperties}>{language === "ar" ? topicArabic[topic] ?? topic : topic}</span>)}</div><div className="training-callout"><Quote size={26} /><p>“{homeCopy[language].training.quote}”</p><span>{homeCopy[language].training.principle}</span></div></div>
           </div>
           <div className="container mt-16">
-            <div className="text-center mb-10" data-reveal>
-              <p className="eyebrow inline-flex items-center gap-2"><span className="eyebrow-dot" /> {language === "ar" ? "توثيق ميداني وشراكات" : "Field Evidence & Partnerships"}</p>
-              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-white mt-2">
-                {language === "ar" ? "أبرز المحطات التدريبية والتعاقدات الرسمية" : "Key Training Sessions & Official Contracts"}
-              </h3>
+            <div className="proof-heading" data-reveal>
+              <div>
+                <p className="eyebrow inline-flex items-center gap-2"><span className="eyebrow-dot" /> {language === "ar" ? "الكون المهني · الطبقة الثالثة: دليل العمل" : "Professional Universe · Layer 3: Evidence of the Work"}</p>
+                <h3>{language === "ar" ? "مدار الأدلة الموثقة (Proof Orbit)" : "Verified Proof Orbit"}</h3>
+                <p>{language === "ar" ? "استعراض طبقات الكون الثلاث: الهوية المركزية (1) ← الكوكبة التجارية (2) ← أدلة العمل والتدريب والشراكات (3)." : "Exploring the 3 layers: Central Identity (1) ← Commercial Constellation (2) ← Verified Proof of Work (3)."}</p>
+              </div>
+              <span className="proof-heading__stamp">{language === "ar" ? "PROOF / 03" : "PROOF / 03"}</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-reveal>
-              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
-                <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM.jpeg" alt="Sales Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Sales Training & Mentorship</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "تدريب العملي لفرق المبيعات والـ Funnel" : "Live Sales & Funnel Masterclass"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "جلسة تدريب مكثفة مع الفرق لشرح آليات البيع وتأهيل العملاء." : "Intensive live sales training and pipeline structuring."}</p>
-                </div>
+
+            <div className={`proof-orbit ${proofOrbitFocused ? "proof-orbit--focused" : ""}`} data-reveal>
+              <div className="proof-orbit__halo proof-orbit__halo--one" aria-hidden="true" />
+              <div className="proof-orbit__halo proof-orbit__halo--two" aria-hidden="true" />
+              <div className="proof-orbit__center">
+                <button className="proof-orbit__core" type="button" onClick={() => setProofOrbitFocused((focused) => !focused)} aria-pressed={proofOrbitFocused} aria-label={language === "ar" ? "إبراز هوية محمد علي داخل مدار الأدلة" : "Focus Mohamed Ali inside the proof orbit"}>
+                  <span className="proof-orbit__core-glow" aria-hidden="true" />
+                  <img src={asset.brandIcon} alt="Mohamed Ali monogram" />
+                </button>
+                <div className="proof-orbit__identity"><strong>Mohamed Ali</strong><span>{language === "ar" ? "قائد تطوير الأعمال والمبيعات" : "Business Development & Sales Leader"}</span><small>Revenue · Leadership · Training · Growth</small></div>
               </div>
-              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
-                <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.02 PM.jpeg" alt="MEC Academy Certification" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">MEC Academy</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "تخريج وتكريم متدربي الأكاديمية" : "Academy Graduation & Honors"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "تسليم الشهادات وتكريم المتميزين في برامج الإرشاد المهني." : "Awarding certificates to top graduates of our programs."}</p>
-                </div>
+
+              <div className="proof-orbit__nodes" role="list" aria-label={language === "ar" ? "فئات الأدلة المهنية" : "Professional proof categories"}>
+                {proofCategories.map((category, index) => {
+                  const Icon = category.icon;
+                  const isActive = selectedProofCategory?.id === category.id;
+                  return <button key={category.id} type="button" role="listitem" className={`proof-node proof-node--${index + 1} ${isActive ? "proof-node--active" : ""}`} style={{ "--proof-accent": category.accent } as React.CSSProperties} onClick={() => openProofCategory(category)} aria-label={language === "ar" ? `فتح ${category.labelAr}` : `Open ${category.label}`} aria-pressed={isActive}><span className="proof-node__index">0{index + 1}</span><span className="proof-node__icon"><Icon size={18} /></span><span className="proof-node__copy"><strong>{language === "ar" ? category.labelAr : category.label}</strong><small>{language === "ar" ? category.kickerAr : category.kicker}</small></span><ArrowUpRight size={15} /></button>;
+                })}
               </div>
-              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
-                <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (2).jpeg" alt="Russian Cultural Center Recommendation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Russian Cultural Center</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "توصية رسمية - إدارة المبيعات" : "Official Recommendation Letter"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "خطاب توصية رسمي يوثق القيادة والإنجاز المتميز كقائد فريق مبيعات." : "Verified recommendation documenting sales team leadership."}</p>
-                </div>
-              </div>
-              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
-                <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (4).jpeg" alt="Data Analysis Certification" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Machinfy Certification</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "شهادة تحليل البيانات الاحترافية" : "Professional Data Analysis"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "اعتماد احترافي في تحليل البيانات (75 ساعة تدريبية بتقدير ممتاز)." : "75 hours of advanced data analysis training with Excellent grade."}</p>
-                </div>
-              </div>
+              <div className="proof-orbit__legend"><span><i className="proof-orbit__legend-dot proof-orbit__legend-dot--gold" /> {language === "ar" ? "هوية مهنية في المركز" : "professional identity at the center"}</span><span><i className="proof-orbit__legend-dot proof-orbit__legend-dot--blue" /> {language === "ar" ? "اضغط على كوكب للاستكشاف" : "select a planet to explore"}</span></div>
+            </div>
+
+            <div className={`proof-detail ${selectedProofCategory ? "proof-detail--open" : ""}`} aria-live="polite">
+              {selectedProofCategory ? (() => {
+                const proofItem = selectedProofCategory.items[selectedProofIndex];
+                const categoryTitle = language === "ar" ? selectedProofCategory.labelAr : selectedProofCategory.label;
+                const categoryKicker = language === "ar" ? selectedProofCategory.kickerAr : selectedProofCategory.kicker;
+                const categorySummary = language === "ar" ? selectedProofCategory.summaryAr : selectedProofCategory.summary;
+                const itemTitle = language === "ar" ? proofItem.titleAr : proofItem.title;
+                const itemOrganization = language === "ar" ? proofItem.organizationAr : proofItem.organization;
+                const itemType = language === "ar" ? proofItem.typeAr : proofItem.type;
+                const itemDescription = language === "ar" ? proofItem.descriptionAr : proofItem.description;
+                return <div className="proof-detail__panel" style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
+                  <div className="proof-detail__header"><div><p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
+                  <div className="proof-detail__content"><div className="proof-detail__media"><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /><a className="proof-detail__zoom" href={proofItem.image} target="_blank" rel="noreferrer"><ZoomIn size={15} /> {language === "ar" ? "فتح المعاينة الكاملة" : "Open full preview"}</a></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
+                  {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
+                </div>;
+              })() : <div className="proof-detail__empty"><Sparkles size={17} /><span>{language === "ar" ? "اختر كوكبًا من المدار لفتح قصة الدليل." : "Select a planet to open its proof story."}</span></div>}
             </div>
           </div>
         </section>
@@ -958,7 +1085,7 @@ export default function Home() {
 
         <section id="contact" className="contact-section" style={{ backgroundImage: "linear-gradient(90deg, rgba(3,7,18,.99) 0%, rgba(3,7,18,.94) 55%, rgba(7,20,40,.88) 100%)" }}>
           <div className="container contact-grid">
-            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].contact.eyebrow}</p><h2>{homeCopy[language].contact.title.split(" ").slice(0, -2).join(" ")}<br /><em>{homeCopy[language].contact.title.split(" ").slice(-2).join(" ")}</em></h2><p>{homeCopy[language].contact.copy}</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div><div className="mt-8 max-w-md rounded-2xl border border-white/10 bg-[#f3eee3] p-4 flex items-center gap-4 shadow-2xl"><div className="h-14 w-14 shrink-0 rounded-xl bg-white flex items-center justify-center p-2"><img src={asset.brandIcon} alt="Mohamed Ali monogram" className="h-full w-full object-contain" /></div><div className="min-w-0 flex-1"><p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#52627a]">{language === "ar" ? "الهوية المهنية الرسمية" : "Official professional identity"}</p><img src={asset.brandHorizontal} alt="Mohamed Ali — Senior Business Developer" className="h-auto w-full max-w-[230px]" /></div></div></div>
+            <div className="contact-copy" data-reveal><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].contact.eyebrow}</p><h2>{homeCopy[language].contact.title.split(" ").slice(0, -2).join(" ")}<br /><em>{homeCopy[language].contact.title.split(" ").slice(-2).join(" ")}</em></h2><p>{homeCopy[language].contact.copy}</p><div className="contact-details"><a href="mailto:mohamed280ali90@gmail.com"><Mail size={16} />mohamed280ali90@gmail.com</a><a href="tel:+201030537773"><Phone size={16} />+20 10 3053 7773</a><span><MapPin size={16} />Giza, Egypt · GMT+2</span></div><div className="social-links"><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><Linkedin size={17} /></a><a href="https://wa.me/201030537773" target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle size={17} /></a><a href="mailto:mohamed280ali90@gmail.com" aria-label="Email"><Mail size={17} /></a></div></div>
             <form className="contact-form" onSubmit={sendWhatsApp} data-reveal><div className="form-heading"><span>{homeCopy[language].contact.formTitle}</span><span className="form-status"><span /> {homeCopy[language].contact.status}</span></div><label>{homeCopy[language].contact.name}<Input required value={formState.name} onChange={(event) => setFormState({ ...formState, name: event.target.value })} placeholder={homeCopy[language].contact.namePlaceholder} /></label><label>{homeCopy[language].contact.email}<Input required type="email" value={formState.email} onChange={(event) => setFormState({ ...formState, email: event.target.value })} placeholder={homeCopy[language].contact.emailPlaceholder} /></label><label>{homeCopy[language].contact.building}<Textarea required value={formState.details} onChange={(event) => setFormState({ ...formState, details: event.target.value })} placeholder={homeCopy[language].contact.detailsPlaceholder} /></label><button className="button button--gold button--full" type="submit">{homeCopy[language].contact.submit} <MoveUpRight size={16} /></button><p className="form-note"><Sparkles size={14} /> {homeCopy[language].contact.note}</p></form>
           </div>
         </section>
