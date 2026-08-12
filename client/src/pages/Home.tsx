@@ -898,38 +898,49 @@ export default function Home() {
                 {language === "ar" ? "أبرز المحطات التدريبية والتعاقدات الرسمية" : "Key Training Sessions & Official Contracts"}
               </h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-reveal>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.25 PM.jpeg" alt="Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM.jpeg" alt="Sales Training Session" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">MEC Academy / AISPRINT</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "محاضرات الإرشاد والـ Sales Funnel" : "Mentorship & Sales Funnel Sessions"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "إرشاد وتدريب مباشر لفرق العمل والطلاب على آليات تحويل العملاء." : "Direct training and mentorship on lead conversion and sales pipelines."}</p>
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Sales Training & Mentorship</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "تدريب العملي لفرق المبيعات والـ Funnel" : "Live Sales & Funnel Masterclass"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "جلسة تدريب مكثفة مع الفرق لشرح آليات البيع وتأهيل العملاء." : "Intensive live sales training and pipeline structuring."}</p>
                 </div>
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg" alt="Contracts & Partnerships" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.02 PM.jpeg" alt="MEC Academy Certification" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Corporate Protocols</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "توقيع التعاقدات والشراكات الاستراتيجية" : "Strategic Partnerships & Contracts"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "توثيق اتفاقيات التعاون وبروتوكولات العمل المؤسسي." : "Formalizing institutional agreements and operational protocols."}</p>
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">MEC Academy</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "تخريج وتكريم متدربي الأكاديمية" : "Academy Graduation & Honors"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "تسليم الشهادات وتكريم المتميزين في برامج الإرشاد المهني." : "Awarding certificates to top graduates of our programs."}</p>
                 </div>
               </div>
               <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
                 <div className="aspect-video overflow-hidden relative">
-                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.15.28 PM (1).jpeg" alt="Stage Presentation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (2).jpeg" alt="Russian Cultural Center Recommendation" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                 </div>
                 <div className="p-4">
-                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Keynote & Workshops</span>
-                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "الفعاليات الكبرى والورش التفاعلية" : "Keynote Events & Interactive Workshops"}</h4>
-                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "تمثيل المؤسسات وتقديم عروض قيادية أمام مئات المتخصصين." : "Representing institutions and delivering leadership keynotes."}</p>
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Russian Cultural Center</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "توصية رسمية - إدارة المبيعات" : "Official Recommendation Letter"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "خطاب توصية رسمي يوثق القيادة والإنجاز المتميز كقائد فريق مبيعات." : "Verified recommendation documenting sales team leadership."}</p>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-white/10 bg-slate-900/60 shadow-xl group">
+                <div className="aspect-video overflow-hidden relative">
+                  <img src="/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM (4).jpeg" alt="Data Analysis Certification" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                </div>
+                <div className="p-4">
+                  <span className="text-xs font-semibold uppercase text-amber-400 tracking-wider">Machinfy Certification</span>
+                  <h4 className="text-base font-bold text-white mt-1">{language === "ar" ? "شهادة تحليل البيانات الاحترافية" : "Professional Data Analysis"}</h4>
+                  <p className="text-xs text-slate-400 mt-1">{language === "ar" ? "اعتماد احترافي في تحليل البيانات (75 ساعة تدريبية بتقدير ممتاز)." : "75 hours of advanced data analysis training with Excellent grade."}</p>
                 </div>
               </div>
             </div>
