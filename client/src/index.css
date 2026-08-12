@@ -2988,3 +2988,11 @@
     transition: none !important;
   }
 }
+
+.credential-card:hover,
+.credential-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(251, 191, 36, 0.38);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 20px rgba(251, 191, 36, 0.08);
+  outline: none;
+}
