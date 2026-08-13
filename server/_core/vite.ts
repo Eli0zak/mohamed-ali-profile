@@ -6,8 +6,12 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 
-export async function setupVite(app: Express, server: Server) {
+export async function setupVite(app: Express, server: Server, port: number) {
   const serverOptions = {
+    // Express owns the listening socket in middleware mode. Keep Vite's
+    // resolved server port aligned with that socket so the injected HMR
+    // client does not advertise its standalone default (5173).
+    port,
     middlewareMode: true,
     hmr: { server },
     allowedHosts: true as const,
