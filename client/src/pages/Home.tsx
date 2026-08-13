@@ -892,8 +892,9 @@ function RevenueChart({ company, language }: { company: Company; language: Langu
 }
 
 function AchievementCard({ company, onClose, language }: { company: Company; onClose: () => void; language: Language }) {
+  const isAr = language === "ar";
   return (
-    <article className="achievement-card" data-reveal>
+    <article className="achievement-card" dir={isAr ? "rtl" : "ltr"} data-reveal>
       <div className="achievement-card__topline"><span>{language === "en" ? company.tag : company.tag === "Executive Role" ? "دور تنفيذي" : "شريك استشاري"}</span><button type="button" onClick={onClose} aria-label="Close achievement card"><X size={18} /></button></div>
       <div className="achievement-card__identity">
         <div className="achievement-card__logo"><LogoImage company={company} /></div>
@@ -903,7 +904,7 @@ function AchievementCard({ company, onClose, language }: { company: Company; onC
       <div className="achievement-card__role"><span className="company-kicker">{language === "en" ? "Role title" : "المسمى الوظيفي"}</span><strong>{language === "en" ? company.role : company.role.includes("Sales Trainer") ? "مدرب مبيعات ومستشار تطوير أعمال" : company.role}</strong></div>
       <div className="role-progression">
         <p className="company-kicker">{language === "en" ? "Role progression" : "تطور الدور"}</p>
-        <div className="role-progression__path">{company.roles.map((role, index) => <span key={role}><b>{role}</b>{index < company.roles.length - 1 && <ArrowRight size={13} />}</span>)}</div>
+        <div className="role-progression__path">{company.roles.map((role, index) => <span key={role}><b>{role}</b>{index < company.roles.length - 1 && <span className="mx-1.5 inline-block text-amber-400">{isAr ? "←" : "→"}</span>}</span>)}</div>
       </div>
       <div className="achievement-card__body">
         <div><p className="company-kicker">{language === "en" ? "Impact notes" : "ملاحظات الأثر"}</p><ul>{(language === "en" ? company.achievements : (company.achievementsAr || company.achievements)).map((achievement, index) => <li key={achievement} style={{ "--item-delay": `${index * 70}ms` } as React.CSSProperties}><Check size={14} />{achievement}</li>)}</ul></div>

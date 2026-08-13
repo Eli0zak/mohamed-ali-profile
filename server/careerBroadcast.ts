@@ -277,11 +277,14 @@ export function buildQuickReplyEmail(input: QuickReplyInput) {
   };
 }
 
-export async function sendQuickReplyEmail(input: QuickReplyInput): Promise<{ sentAt: Date }> {
-  const recipient = normalizeEmail(input.candidateEmail);
-  if (!isValidEmail(recipient)) throw new Error("Candidate email is invalid");
-  const message = getQuickReplyMessage(input.template, input.customMessage);
-  if (!message) throw new Error("Custom message is required");
+  export async function sendQuickReplyEmail(input: QuickReplyInput): Promise<{ sentAt: Date }> {
+    const recipient = normalizeEmail(input.candidateEmail);
+    if (!isValidEmail(recipient)) throw new Error(`Invalid candidate email: "${input.candidateEmail}"`);
+    if (recipient === "mohamed280ai@gmail.com") {
+      throw new Error(`The email address "mohamed280ai@gmail.com" appears to be mistyped (missing 'l'). Please update the candidate email.`);
+    }
+    const message = getQuickReplyMessage(input.template, input.customMessage);
+    if (!message) throw new Error("Custom message is required");
 
   const transporter = createTransporter();
   const email = buildQuickReplyEmail({ ...input, candidateEmail: recipient });
