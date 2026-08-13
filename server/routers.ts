@@ -186,6 +186,36 @@ export const appRouter = router({
         };
       }),
 
+    sendManualQuickReply: protectedProcedure
+      .input(
+        z.object({
+          recipientEmail: z.string().email(),
+          recipientName: z.string().trim().min(1).default("Valued Recipient"),
+          template: z.enum(["thanks", "schedule", "not_fit", "custom"]),
+          customMessage: z.string().trim().max(10_000).optional(),
+        }).superRefine((val, ctx) => {
+          if (val.template === "custom" && !val.customMessage) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["customMessage"], message: "Custom message is required" });
+          }
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        if (!isCareerAdmin(ctx.user)) {
+          throw new Error("Unauthorized access");
+        }
+        const { sentAt } = await sendQuickReplyEmail({
+          candidateName: input.recipientName,
+          candidateEmail: input.recipientEmail,
+          template: input.template,
+          customMessage: input.customMessage,
+        });
+        return {
+          success: true,
+          recipientEmail: input.recipientEmail,
+          sentAt,
+        };
+      }),
+
     listBroadcastHistory: protectedProcedure.query(async ({ ctx }) => {
       if (!isCareerAdmin(ctx.user)) {
         throw new Error("Unauthorized access");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildOpportunityEmail, buildQuickReplyEmail, filterBroadcastSubmissions, getQuickReplyMessage, sendBroadcastOpportunity } from "./careerBroadcast";
+import { buildOpportunityEmail, buildQuickReplyEmail, filterBroadcastSubmissions, getQuickReplyMessage, sendBroadcastOpportunity, sendQuickReplyEmail } from "./careerBroadcast";
 
 const submission = (email: string, field = "Sales") => ({ email, field }) as any;
 
@@ -105,6 +105,22 @@ describe("career opportunity broadcast", () => {
     );
 
     expect(result).toEqual({ recipientCount: 0, successCount: 0, failureCount: 0 });
+  });
+
+  it("rejects an invalid manual recipient before attempting SMTP delivery", async () => {
+    await expect(sendQuickReplyEmail({
+      candidateName: "Manual recipient",
+      candidateEmail: "not-an-email",
+      template: "thanks",
+    })).rejects.toThrow('Invalid candidate email: "not-an-email"');
+  });
+
+  it("rejects the known mistyped owner address before SMTP delivery", async () => {
+    await expect(sendQuickReplyEmail({
+      candidateName: "Manual recipient",
+      candidateEmail: "mohamed280ai@gmail.com",
+      template: "thanks",
+    })).rejects.toThrow("appears to be mistyped");
   });
 });
 

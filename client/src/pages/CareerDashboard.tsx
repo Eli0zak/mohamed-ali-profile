@@ -58,9 +58,14 @@ export default function CareerDashboard() {
   const [statsFilter, setStatsFilter] = useState<"all" | "new" | "week" | "cv">("all");
   const [broadcastForm, setBroadcastForm] = useState<BroadcastForm>(emptyBroadcastForm);
   const [broadcastNotice, setBroadcastNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [manualNotice, setManualNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [quickReplyCandidateId, setQuickReplyCandidateId] = useState<number | null>(null);
   const [quickReplyTemplate, setQuickReplyTemplate] = useState<QuickReplyTemplate>("thanks");
   const [quickReplyCustomMessage, setQuickReplyCustomMessage] = useState("");
+  const [manualRecipientEmail, setManualRecipientEmail] = useState("");
+  const [manualRecipientName, setManualRecipientName] = useState("");
+  const [manualQuickReplyTemplate, setManualQuickReplyTemplate] = useState<QuickReplyTemplate>("thanks");
+  const [manualQuickReplyCustomMessage, setManualQuickReplyCustomMessage] = useState("");
   const referenceNow = useMemo(() => new Date(), []);
   
   const { data: submissions, isLoading, refetch } = trpc.career.listSubmissions.useQuery(undefined, {
@@ -123,6 +128,19 @@ export default function CareerDashboard() {
     },
   });
 
+  const manualQuickReplyMutation = trpc.career.sendManualQuickReply.useMutation({
+    onSuccess: (result) => {
+      setManualRecipientEmail("");
+      setManualRecipientName("");
+      setManualQuickReplyTemplate("thanks");
+      setManualQuickReplyCustomMessage("");
+      setManualNotice({ type: "success", text: `Message sent successfully to ${result.recipientEmail}.` });
+    },
+    onError: (error) => {
+      setManualNotice({ type: "error", text: error.message || "Manual email failed. No message was sent." });
+    },
+  });
+
   const quickReplyCandidate = useMemo(
     () => (submissions ?? []).find((submission) => submission.id === quickReplyCandidateId) ?? null,
     [quickReplyCandidateId, submissions],
@@ -142,6 +160,29 @@ export default function CareerDashboard() {
       candidateId: quickReplyCandidate.id,
       template: quickReplyTemplate,
       customMessage: quickReplyTemplate === "custom" ? quickReplyCustomMessage.trim() : undefined,
+    });
+  };
+
+  const handleManualQuickReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const recipientEmail = manualRecipientEmail.trim().toLowerCase();
+    if (!isValidRecipientEmail(recipientEmail)) {
+      setManualNotice({ type: "error", text: "Enter a valid email address, such as name@company.com, before sending." });
+      return;
+    }
+    if (manualQuickReplyTemplate === "custom" && !manualQuickReplyCustomMessage.trim()) {
+      setManualNotice({ type: "error", text: "Write a message before sending a custom reply." });
+      return;
+    }
+    const templateLabel = quickReplyTemplateOptions.find((option) => option.value === manualQuickReplyTemplate)?.label ?? "Quick Reply";
+    const recipientLabel = manualRecipientName.trim() || "this recipient";
+    const confirmed = window.confirm(`Send “${templateLabel}” to ${recipientLabel} at ${recipientEmail}? This address is outside the candidate roster.`);
+    if (!confirmed) return;
+    manualQuickReplyMutation.mutate({
+      recipientEmail,
+      recipientName: recipientLabel,
+      template: manualQuickReplyTemplate,
+      customMessage: manualQuickReplyTemplate === "custom" ? manualQuickReplyCustomMessage.trim() : undefined,
     });
   };
 
@@ -641,6 +682,129 @@ export default function CareerDashboard() {
               </div>
             )}
           </div>
+        </section>
+
+        {/* Manual email Quick Reply — admin-only */}
+        <section aria-labelledby="manual-email-title" className="rounded-2xl border border-[#374151] bg-[#111827]/80 p-4 sm:p-6 shadow-xl shadow-black/10">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-[#d4af37]" />
+                <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4af37] font-semibold">Direct outreach</p>
+              </div>
+              <h2 id="manual-email-title" className="mt-2 text-xl font-semibold text-white">Send to one email</h2>
+              <p className="mt-1 max-w-2xl text-xs leading-5 text-[#94a3b8]">Send the same professional Quick Reply templates to a manually entered address, even when the person is not in the candidate roster.</p>
+            </div>
+            <div className="rounded-xl border border-sky-500/20 bg-sky-500/5 px-3 py-2 text-[11px] leading-5 text-sky-200/80 max-w-xs">
+              The address is checked before sending and is never added to the candidate database.
+            </div>
+          </div>
+
+          <form onSubmit={handleManualQuickReplySubmit} className="mt-6 space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Recipient email <span className="text-rose-400">*</span></span>
+                <input
+                  type="email"
+                  required
+                  maxLength={320}
+                  value={manualRecipientEmail}
+                  onChange={(event) => {
+                    setManualRecipientEmail(event.target.value);
+                    if (manualNotice) setManualNotice(null);
+                  }}
+                  placeholder="name@company.com"
+                  autoComplete="email"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+                <span className="block text-[11px] text-[#64748b]">Format and domain syntax are checked before sending; this cannot guarantee that the mailbox exists.</span>
+              </label>
+              <label className="space-y-1.5">
+                <span className="text-xs font-semibold text-[#cbd5e1]">Recipient name <span className="text-[#64748b]">(optional)</span></span>
+                <input
+                  type="text"
+                  maxLength={255}
+                  value={manualRecipientName}
+                  onChange={(event) => setManualRecipientName(event.target.value)}
+                  placeholder="Hiring manager or contact name"
+                  autoComplete="name"
+                  className="w-full rounded-xl border border-[#374151] bg-[#07090e] px-3.5 py-3 text-sm text-white placeholder:text-[#64748b] outline-none transition-colors focus:border-[#d4af37]"
+                />
+              </label>
+            </div>
+
+            <div>
+              <span className="mb-2 block text-xs font-semibold text-[#cbd5e1]">Choose a message template</span>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {quickReplyTemplateOptions.map((option) => (
+                  <button
+                    key={`manual-${option.value}`}
+                    type="button"
+                    onClick={() => setManualQuickReplyTemplate(option.value)}
+                    aria-pressed={manualQuickReplyTemplate === option.value}
+                    className={`rounded-xl border p-3 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/80 ${manualQuickReplyTemplate === option.value ? "border-[#d4af37] bg-[#d4af37]/10" : "border-[#374151] bg-[#07090e]/60 hover:border-[#64748b]"}`}
+                  >
+                    <span className="block text-sm font-semibold text-white">{option.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-[#94a3b8]">{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {manualQuickReplyTemplate === "custom" && (
+              <textarea
+                required
+                value={manualQuickReplyCustomMessage}
+                onChange={(event) => setManualQuickReplyCustomMessage(event.target.value)}
+                rows={5}
+                maxLength={10_000}
+                placeholder="Write the message you want to send..."
+                className="w-full resize-y rounded-xl border border-[#374151] bg-[#07090e] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-[#64748b] focus:border-[#d4af37]"
+              />
+            )}
+
+            <div className="rounded-xl border border-[#374151]/70 bg-[#07090e]/80 p-4">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#d4af37]">Live email preview</span>
+                <span className="text-[11px] text-[#64748b]">To: {manualRecipientEmail.trim() || "recipient email"}</span>
+              </div>
+              <div className="space-y-1.5 text-xs">
+                <p className="font-medium text-[#cbd5e1]">
+                  <span className="text-[#94a3b8]">Subject:</span> {manualQuickReplyTemplate === "custom" ? "A message from Mohamed Ali — Career Gateway" : `${quickReplyTemplateOptions.find((option) => option.value === manualQuickReplyTemplate)?.label} — Mohamed Ali`}
+                </p>
+                <div className="mt-2 rounded-lg border border-[#1f2937] bg-[#111827] p-3 text-[#cbd5e1] space-y-2">
+                  <p className="font-semibold text-white">Dear {manualRecipientName.trim() || "there"},</p>
+                  <p className="whitespace-pre-line leading-relaxed text-[#94a3b8]">
+                    {manualQuickReplyTemplate === "thanks" && "Thank you for submitting your application to our Career Gateway. We have received your CV and are currently reviewing your qualifications."}
+                    {manualQuickReplyTemplate === "schedule" && "Thank you for your application. I'd like to schedule a short call to discuss your experience. When are you available?"}
+                    {manualQuickReplyTemplate === "not_fit" && "Thank you for your interest in joining Mohamed Ali's professional network. While your profile is impressive, we are not moving forward at this time."}
+                    {manualQuickReplyTemplate === "custom" && (manualQuickReplyCustomMessage.trim() || "(Type your custom message above to preview it here...)")}
+                  </p>
+                  <p className="border-t border-[#1f2937] pt-2 text-[11px] text-[#64748b]">
+                    Best regards,<br /><strong className="text-[#cbd5e1]">Mohamed Ali</strong><br />Career Gateway
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {manualNotice && (
+              <div className={`rounded-xl border px-3.5 py-3 text-xs ${manualNotice.type === "success" ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-300" : "border-rose-500/25 bg-rose-500/10 text-rose-300"}`} role="status">
+                {manualNotice.text}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 border-t border-[#1f2937] pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-[11px] text-[#64748b]">A confirmation dialog will show the exact recipient before any email is sent.</p>
+              <button
+                type="submit"
+                disabled={manualQuickReplyMutation.isPending}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#d4af37] px-4 py-2.5 text-sm font-bold text-[#07090e] transition-all hover:bg-[#fde047] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {manualQuickReplyMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                {manualQuickReplyMutation.isPending ? "Sending..." : "Send message"}
+              </button>
+            </div>
+          </form>
         </section>
 
         {/* Filters & Controls */}
