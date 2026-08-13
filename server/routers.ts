@@ -9,7 +9,7 @@ import { z } from "zod";
 import { storagePut } from "./storage";
 import { isCareerAdmin } from "./careerAdmin";
 import { appendToGoogleSheet } from "./googleSheetsAutoSync";
-import { sendBroadcastOpportunity } from "./careerBroadcast";
+import { sendBroadcastOpportunity, sendQuickReplyEmail } from "./careerBroadcast";
 
 const careerBroadcastInput = z.object({
   jobTitle: z.string().trim().min(3).max(255),
@@ -26,6 +26,16 @@ const careerBroadcastInput = z.object({
 type CareerBroadcastInput = z.infer<typeof careerBroadcastInput>;
 
 const CAREER_TEST_RECIPIENT = "mohamed280ali90@gmail.com";
+
+const quickReplyInput = z.object({
+  candidateId: z.number().int().positive(),
+  template: z.enum(["thanks", "schedule", "not_fit", "custom"]),
+  customMessage: z.string().trim().max(10_000).optional(),
+}).superRefine((value, context) => {
+  if (value.template === "custom" && !value.customMessage) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["customMessage"], message: "Custom message is required" });
+  }
+});
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -143,6 +153,37 @@ export const appRouter = router({
         if (!db) throw new Error("Database unavailable");
         await db.update(careerSubmissions).set({ status: input.status }).where(eq(careerSubmissions.id, input.id));
         return { success: true };
+      }),
+
+    sendQuickReply: protectedProcedure
+      .input(quickReplyInput)
+      .mutation(async ({ ctx, input }) => {
+        if (!isCareerAdmin(ctx.user)) {
+          throw new Error("Unauthorized access");
+        }
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        const [candidate] = await db.select().from(careerSubmissions).where(eq(careerSubmissions.id, input.candidateId)).limit(1);
+        if (!candidate) throw new Error("Candidate not found");
+
+        const { sentAt } = await sendQuickReplyEmail({
+          candidateName: candidate.fullName,
+          candidateEmail: candidate.email,
+          template: input.template,
+          customMessage: input.customMessage,
+        });
+        await db.update(careerSubmissions)
+          .set({ lastContactedAt: sentAt })
+          .where(eq(careerSubmissions.id, candidate.id));
+
+        return {
+          success: true,
+          candidateId: candidate.id,
+          candidateName: candidate.fullName,
+          sentAt,
+          template: input.template,
+        };
       }),
 
     listBroadcastHistory: protectedProcedure.query(async ({ ctx }) => {

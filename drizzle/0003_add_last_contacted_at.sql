@@ -1,0 +1,1 @@
+ALTER TABLE `career_submissions` ADD `lastContactedAt` timestamp;

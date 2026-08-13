@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildOpportunityEmail, filterBroadcastSubmissions, sendBroadcastOpportunity } from "./careerBroadcast";
+import { buildOpportunityEmail, buildQuickReplyEmail, filterBroadcastSubmissions, getQuickReplyMessage, sendBroadcastOpportunity } from "./careerBroadcast";
 
 const submission = (email: string, field = "Sales") => ({ email, field }) as any;
 
@@ -29,6 +29,35 @@ describe("career opportunity broadcast", () => {
     expect(email.html).toContain("https://www.linkedin.com/in/contact");
     expect(email.html).not.toContain("<Hiring Contact>");
     expect(email.html).not.toContain("<here>");
+  });
+
+  it("renders each Quick Reply template with the branded header and escaped candidate data", () => {
+    const email = buildQuickReplyEmail({
+      candidateName: "<Candidate>",
+      candidateEmail: "candidate@example.com",
+      template: "schedule",
+    });
+
+    expect(email.subject).toContain("Schedule a call");
+    expect(email.html).toContain("Mohamed Ali — Career Gateway");
+    expect(email.html).toContain("#070B14");
+    expect(email.html).toContain("#F59E0B");
+    expect(email.html).toContain("Schedule a call");
+    expect(email.html).not.toContain("<Candidate>");
+    expect(email.text).toContain("Dear <Candidate>");
+  });
+
+  it("requires and renders a custom Quick Reply message", () => {
+    expect(getQuickReplyMessage("custom", "  Please send your availability.  ")).toBe("Please send your availability.");
+    expect(getQuickReplyMessage("custom")).toBe("");
+    const email = buildQuickReplyEmail({
+      candidateName: "Mona",
+      candidateEmail: "mona@example.com",
+      template: "custom",
+      customMessage: "Line one\nLine two",
+    });
+    expect(email.html).toContain("Line one<br />Line two");
+    expect(email.text).toContain("Line one\nLine two");
   });
 
   it("includes every How to Apply label even when optional values are omitted", () => {

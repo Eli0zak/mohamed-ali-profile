@@ -38,6 +38,7 @@ export const careerSubmissions = mysqlTable("career_submissions", {
   cvFileName: varchar("cvFileName", { length: 255 }),
   message: text("message"),
   status: mysqlEnum("status", ["New", "Reviewed", "Shortlisted", "Contacted", "Archived"]).default("New").notNull(),
+  lastContactedAt: timestamp("lastContactedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

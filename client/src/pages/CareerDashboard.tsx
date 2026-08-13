@@ -7,11 +7,19 @@ import {
 } from "@/lib/careerStats";
 import { 
   ArrowLeft, ArrowRight, BarChart3, Briefcase, CalendarDays, CheckCircle2, Clock, Download,
-  ExternalLink, FileCheck2, FileText, Filter, Globe2, History, Loader2, Mail, Phone, Search, Send, ShieldAlert, User, UserPlus, Users, Check, Lock, KeyRound, AlertCircle, X
+  ExternalLink, FileCheck2, FileText, Filter, Globe2, History, Loader2, Mail, MessageSquare, Phone, Search, Send, ShieldAlert, User, UserPlus, Users, Check, Lock, KeyRound, AlertCircle, X
 
 } from "lucide-react";
 
 type BroadcastAudienceType = "all" | "field";
+type QuickReplyTemplate = "thanks" | "schedule" | "not_fit" | "custom";
+
+const quickReplyTemplateOptions: Array<{ value: QuickReplyTemplate; label: string; description: string }> = [
+  { value: "thanks", label: "Thanks for applying", description: "Confirm receipt and keep the door open." },
+  { value: "schedule", label: "Schedule a call", description: "Ask the candidate for a convenient call time." },
+  { value: "not_fit", label: "Not a fit right now", description: "Close the loop professionally for now." },
+  { value: "custom", label: "Write a custom reply", description: "Send your own message to this candidate." },
+];
 
 type BroadcastForm = {
   jobTitle: string;
@@ -50,6 +58,9 @@ export default function CareerDashboard() {
   const [statsFilter, setStatsFilter] = useState<"all" | "new" | "week" | "cv">("all");
   const [broadcastForm, setBroadcastForm] = useState<BroadcastForm>(emptyBroadcastForm);
   const [broadcastNotice, setBroadcastNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [quickReplyCandidateId, setQuickReplyCandidateId] = useState<number | null>(null);
+  const [quickReplyTemplate, setQuickReplyTemplate] = useState<QuickReplyTemplate>("thanks");
+  const [quickReplyCustomMessage, setQuickReplyCustomMessage] = useState("");
   const referenceNow = useMemo(() => new Date(), []);
   
   const { data: submissions, isLoading, refetch } = trpc.career.listSubmissions.useQuery(undefined, {
@@ -98,6 +109,41 @@ export default function CareerDashboard() {
       setBroadcastNotice({ type: "error", text: error.message || "Test email failed. No candidate messages were sent." });
     },
   });
+
+  const quickReplyMutation = trpc.career.sendQuickReply.useMutation({
+    onSuccess: (result) => {
+      refetch();
+      setQuickReplyCandidateId(null);
+      setQuickReplyTemplate("thanks");
+      setQuickReplyCustomMessage("");
+      setBroadcastNotice({ type: "success", text: `Reply sent to ${result.candidateName}. Last contacted time updated.` });
+    },
+    onError: (error) => {
+      setBroadcastNotice({ type: "error", text: error.message || "Quick Reply failed. No email was sent." });
+    },
+  });
+
+  const quickReplyCandidate = useMemo(
+    () => (submissions ?? []).find((submission) => submission.id === quickReplyCandidateId) ?? null,
+    [quickReplyCandidateId, submissions],
+  );
+
+  const handleQuickReplySubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!quickReplyCandidate) return;
+    if (quickReplyTemplate === "custom" && !quickReplyCustomMessage.trim()) {
+      setBroadcastNotice({ type: "error", text: "Write a message before sending a custom reply." });
+      return;
+    }
+    const templateLabel = quickReplyTemplateOptions.find((option) => option.value === quickReplyTemplate)?.label ?? "Quick Reply";
+    const confirmed = window.confirm(`Send “${templateLabel}” to ${quickReplyCandidate.fullName} at ${quickReplyCandidate.email}?`);
+    if (!confirmed) return;
+    quickReplyMutation.mutate({
+      candidateId: quickReplyCandidate.id,
+      template: quickReplyTemplate,
+      customMessage: quickReplyTemplate === "custom" ? quickReplyCustomMessage.trim() : undefined,
+    });
+  };
 
   const fieldOptions = useMemo(
     () => Array.from(new Set((submissions ?? []).map((submission) => submission.field.trim()).filter(Boolean))).sort((a, b) => a.localeCompare(b)),
@@ -710,9 +756,26 @@ export default function CareerDashboard() {
                         </select>
                       </td>
                       <td className="py-4 px-6 text-right">
-                        <span className="text-xs text-[#64748b]">
-                          {new Date(sub.createdAt).toLocaleDateString()}
-                        </span>
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuickReplyCandidateId(sub.id);
+                              setQuickReplyTemplate("thanks");
+                              setQuickReplyCustomMessage("");
+                              setBroadcastNotice(null);
+                            }}
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#d4af37]/50 bg-[#d4af37]/10 px-3 py-1.5 text-xs font-semibold text-[#fde047] transition-all hover:border-[#fde047] hover:bg-[#d4af37]/20 focus:outline-none focus:ring-2 focus:ring-[#d4af37]/50"
+                          >
+                            <MessageSquare className="h-3.5 w-3.5" />
+                            Quick Reply
+                          </button>
+                          <span className="text-xs text-[#64748b]">
+                            {sub.lastContactedAt
+                              ? `Last contacted ${new Date(sub.lastContactedAt).toLocaleDateString()}`
+                              : `Applied ${new Date(sub.createdAt).toLocaleDateString()}`}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -721,6 +784,83 @@ export default function CareerDashboard() {
             </div>
           )}
         </div>
+
+        {quickReplyCandidate && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="quick-reply-title">
+            <div className="w-full max-w-lg rounded-2xl border border-[#d4af37]/30 bg-[#111827] p-6 shadow-2xl shadow-black/50">
+              <div className="mb-5 flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d4af37]">Candidate follow-up</p>
+                  <h2 id="quick-reply-title" className="mt-1 text-xl font-bold text-white">Reply to {quickReplyCandidate.fullName}</h2>
+                  <p className="mt-1 break-all text-sm text-[#94a3b8]">{quickReplyCandidate.email}</p>
+                </div>
+                <button type="button" onClick={() => setQuickReplyCandidateId(null)} className="rounded-lg p-2 text-[#94a3b8] transition-colors hover:bg-white/10 hover:text-white" aria-label="Close Quick Reply">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleQuickReplySubmit} className="space-y-4">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {quickReplyTemplateOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setQuickReplyTemplate(option.value)}
+                      className={`rounded-xl border p-3 text-left transition-all ${quickReplyTemplate === option.value ? "border-[#d4af37] bg-[#d4af37]/10" : "border-[#374151] bg-[#07090e]/60 hover:border-[#64748b]"}`}
+                    >
+                      <span className="block text-sm font-semibold text-white">{option.label}</span>
+                      <span className="mt-1 block text-xs leading-5 text-[#94a3b8]">{option.description}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {quickReplyTemplate === "custom" && (
+                  <textarea
+                    value={quickReplyCustomMessage}
+                    onChange={(event) => setQuickReplyCustomMessage(event.target.value)}
+                    rows={5}
+                    maxLength={10_000}
+                    placeholder="Write the message you want to send..."
+                    className="w-full resize-y rounded-xl border border-[#374151] bg-[#07090e] px-4 py-3 text-sm text-white outline-none transition-colors placeholder:text-[#64748b] focus:border-[#d4af37]"
+                  />
+                )}
+
+                {/* Live Email Preview Box */}
+                <div className="rounded-xl border border-[#374151]/70 bg-[#07090e]/80 p-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-xs font-semibold tracking-wider text-[#d4af37] uppercase">Live Email Preview</span>
+                    <span className="text-[11px] text-[#64748b]">To: {quickReplyCandidate.email}</span>
+                  </div>
+                  <div className="space-y-1.5 text-xs">
+                    <p className="text-[#cbd5e1] font-medium">
+                      <span className="text-[#94a3b8]">Subject:</span> {quickReplyTemplate === "custom" ? "A message from Mohamed Ali — Career Gateway" : `${quickReplyTemplateOptions.find(o => o.value === quickReplyTemplate)?.label} — Mohamed Ali`}
+                    </p>
+                    <div className="mt-2 rounded-lg bg-[#111827] p-3 text-[#cbd5e1] space-y-2 border border-[#1f2937]">
+                      <p className="font-semibold text-white">Dear {quickReplyCandidate.fullName || "Candidate"},</p>
+                      <p className="whitespace-pre-line text-[#94a3b8] leading-relaxed">
+                        {quickReplyTemplate === "thanks" && "Thank you for submitting your application to our Career Gateway. We have received your CV and are currently reviewing your qualifications."}
+                        {quickReplyTemplate === "schedule" && "Thank you for your application. I'd like to schedule a short call to discuss your experience. When are you available?"}
+                        {quickReplyTemplate === "not_fit" && "Thank you for your interest in joining Mohamed Ali's professional network. While your profile is impressive, we are not moving forward at this time."}
+                        {quickReplyTemplate === "custom" && (quickReplyCustomMessage.trim() || "(Type your custom message above to preview it here...)")}
+                      </p>
+                      <p className="pt-2 text-[11px] text-[#64748b] border-t border-[#1f2937]">
+                        Best regards,<br /><strong className="text-[#cbd5e1]">Mohamed Ali</strong><br />Career Gateway
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col-reverse gap-3 border-t border-[#1f2937] pt-4 sm:flex-row sm:justify-end">
+                  <button type="button" onClick={() => setQuickReplyCandidateId(null)} className="rounded-xl border border-[#374151] px-4 py-2.5 text-sm font-semibold text-[#cbd5e1] transition-colors hover:border-[#64748b] hover:text-white">Cancel</button>
+                  <button type="submit" disabled={quickReplyMutation.isPending} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#d4af37] px-4 py-2.5 text-sm font-bold text-[#07090e] transition-all hover:bg-[#fde047] disabled:cursor-not-allowed disabled:opacity-60">
+                    {quickReplyMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    Send reply
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

@@ -21,6 +21,15 @@ export type BroadcastResult = {
   failureCount: number;
 };
 
+export type QuickReplyTemplate = "thanks" | "schedule" | "not_fit" | "custom";
+
+export type QuickReplyInput = {
+  candidateName: string;
+  candidateEmail: string;
+  template: QuickReplyTemplate;
+  customMessage?: string;
+};
+
 function requiredSmtpValue(name: string): string {
   const value = process.env[name]?.trim();
   if (!value) {
@@ -208,6 +217,86 @@ export function buildOpportunityEmail(input: BroadcastOpportunityInput) {
   </body>
 </html>`,
   };
+}
+
+const quickReplyTemplateCopy: Record<Exclude<QuickReplyTemplate, "custom">, { label: string; message: string }> = {
+  thanks: {
+    label: "Thanks for applying",
+    message: "Thank you for submitting your CV. We've received it and will review it carefully. We'll reach out if there's a good fit with an upcoming opportunity.",
+  },
+  schedule: {
+    label: "Schedule a call",
+    message: "Thank you for your application. I'd like to schedule a short call to discuss your experience. When are you available?",
+  },
+  not_fit: {
+    label: "Not a fit right now",
+    message: "Thank you for your interest. At this time, we don't have a matching opportunity, but we'll keep your CV on file for future openings.",
+  },
+};
+
+export function getQuickReplyMessage(template: QuickReplyTemplate, customMessage?: string): string {
+  if (template === "custom") return customMessage?.trim() || "";
+  return quickReplyTemplateCopy[template].message;
+}
+
+export function buildQuickReplyEmail(input: QuickReplyInput) {
+  const candidateName = input.candidateName.trim() || "there";
+  const message = getQuickReplyMessage(input.template, input.customMessage);
+  const safeName = escapeHtml(candidateName);
+  const safeMessage = renderMultiline(message);
+  const replyLabel = input.template === "custom" ? "Personal message" : quickReplyTemplateCopy[input.template].label;
+  const subject = input.template === "custom"
+    ? "A message from Mohamed Ali — Career Gateway"
+    : `${quickReplyTemplateCopy[input.template].label} — Mohamed Ali`;
+  const plainText = `${replyLabel}\n\nDear ${candidateName},\n\n${message}\n\nBest regards,\nMohamed Ali\nCareer Gateway`;
+
+  return {
+    subject,
+    text: plainText,
+    html: `<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:0;background:#eef2f7;color:#0f172a;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#eef2f7;">
+      <tr><td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:620px;background:#ffffff;border:1px solid #dbe3ee;">
+          <tr><td style="padding:26px 30px;background:#070B14;color:#ffffff;">
+            <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#F59E0B;font-weight:bold;">Candidate follow-up</div>
+            <div style="margin-top:8px;font-size:22px;line-height:1.3;font-weight:bold;color:#ffffff;">Mohamed Ali — Career Gateway</div>
+            <div style="margin-top:7px;font-size:13px;line-height:1.5;color:#cbd5e1;">${escapeHtml(replyLabel)}</div>
+          </td></tr>
+          <tr><td style="padding:30px;background:#ffffff;">
+            <div style="font-size:15px;line-height:1.7;color:#334155;">Dear ${safeName},</div>
+            <div style="margin-top:18px;font-size:15px;line-height:1.8;color:#334155;">${safeMessage}</div>
+            <div style="margin-top:26px;padding-top:18px;border-top:1px solid #e2e8f0;color:#64748b;font-size:13px;line-height:1.6;">Best regards,<br /><strong style="color:#0c1f39;">Mohamed Ali</strong><br />Career Gateway</div>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>`,
+  };
+}
+
+export async function sendQuickReplyEmail(input: QuickReplyInput): Promise<{ sentAt: Date }> {
+  const recipient = normalizeEmail(input.candidateEmail);
+  if (!isValidEmail(recipient)) throw new Error("Candidate email is invalid");
+  const message = getQuickReplyMessage(input.template, input.customMessage);
+  if (!message) throw new Error("Custom message is required");
+
+  const transporter = createTransporter();
+  const email = buildQuickReplyEmail({ ...input, candidateEmail: recipient });
+  try {
+    await transporter.sendMail({
+      from: requiredSmtpValue("SMTP_FROM"),
+      to: recipient,
+      subject: email.subject,
+      text: email.text,
+      html: email.html,
+    });
+  } finally {
+    transporter.close();
+  }
+  return { sentAt: new Date() };
 }
 
 export async function sendBroadcastOpportunity(
