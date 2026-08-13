@@ -66,6 +66,7 @@ type Company = {
   description?: string;
   roles: string[];
   achievements: string[];
+  achievementsAr?: string[];
   color: string;
   chart?: { label: string; value: number; display: string }[];
   chartMax?: number;
@@ -279,7 +280,7 @@ const companies: Company[] = [
     id: "mec",
     name: "MEC Academy",
     shortName: "MEC Academy",
-    logo: "",
+    logo: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg",
     initials: "MEC",
     role: "Senior Sales Consultant → Sales Team Leader → Head of Quality Assurance",
     dates: "2023 — 2024",
@@ -295,6 +296,16 @@ const companies: Company[] = [
       "Designed performance-evaluation systems and coaching frameworks; partnered with senior leadership to improve operational efficiency",
       "As Senior Sales Consultant, consistently achieved sales targets while mentoring junior team members",
       "Received a Certificate of Appreciation (dated May 17, 2024) in sincere recognition of outstanding efforts and valuable contribution to the success of \"AISPRINT\"",
+    ],
+    achievementsAr: [
+      "التدرج الوظيفي من استشاري مبيعات أول إلى قائد فريق المبيعات ثم رئيس ضمان الجودة بناءً على الأداء.",
+      "قيادة أداء فريق المبيعات وتدريب الموظفين الجدد وتحسين مهارات الإغلاق وإدارة مسار المبيعات.",
+      "بناء أنظمة متابعة منظمة لزيادة معدلات التحويل والاحتفاظ بالعملاء.",
+      "تأسيس معايير ضمان الجودة وأطر التدريب لمنع مشكلات خدمة العملاء مسبقًا وليس فقط اكتشافها لاحقًا.",
+      "تطوير معايير الجودة لتجربة الطلاب وتقديم الخدمة، ومراقبة أداء المحاضرين والعمليات الأكاديمية.",
+      "تصميم أنظمة تقييم الأداء وأطر التدريب والتعاون مع الإدارة العليا لتحسين الكفاءة التشغيلية.",
+      "تحقيق أهداف المبيعات باستهداف مستمر مع توجيه أعضاء الفريق الجدد كاستشاري مبيعات أول.",
+      "الحصول على شهادة تقدير رسمية (بتاريخ 17 مايو 2024) تقديراً للجهود المتميزة في نجاح فعالية «AISPRINT»."
     ],
     color: "#a78bfa",
   },
@@ -895,7 +906,7 @@ function AchievementCard({ company, onClose, language }: { company: Company; onC
         <div className="role-progression__path">{company.roles.map((role, index) => <span key={role}><b>{role}</b>{index < company.roles.length - 1 && <ArrowRight size={13} />}</span>)}</div>
       </div>
       <div className="achievement-card__body">
-        <div><p className="company-kicker">{language === "en" ? "Impact notes" : "ملاحظات الأثر"}</p><ul>{company.achievements.map((achievement, index) => <li key={achievement} style={{ "--item-delay": `${index * 70}ms` } as React.CSSProperties}><Check size={14} />{language === "en" ? achievement : "تقديم تدريب واستشارات ساعدت على تحسين الأداء التجاري."}</li>)}</ul></div>
+        <div><p className="company-kicker">{language === "en" ? "Impact notes" : "ملاحظات الأثر"}</p><ul>{(language === "en" ? company.achievements : (company.achievementsAr || company.achievements)).map((achievement, index) => <li key={achievement} style={{ "--item-delay": `${index * 70}ms` } as React.CSSProperties}><Check size={14} />{achievement}</li>)}</ul></div>
         <RevenueChart company={company} language={language} />
       </div>
     </article>
