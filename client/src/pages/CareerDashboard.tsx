@@ -765,10 +765,10 @@ export default function CareerDashboard() {
                               setQuickReplyCustomMessage("");
                               setBroadcastNotice(null);
                             }}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#d4af37]/50 bg-[#d4af37]/10 px-3 py-1.5 text-xs font-semibold text-[#fde047] transition-all hover:border-[#fde047] hover:bg-[#d4af37]/20 focus:outline-none focus:ring-2 focus:ring-[#d4af37]/50"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-[#d4af37] bg-[#d4af37]/20 px-3.5 py-2 text-xs font-bold text-[#fde047] shadow-md shadow-[#d4af37]/10 transition-all hover:bg-[#d4af37]/30 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
                           >
-                            <MessageSquare className="h-3.5 w-3.5" />
-                            Quick Reply
+                            <MessageSquare className="h-4 w-4 text-[#fde047]" />
+                            <span>Quick Reply</span>
                           </button>
                           <span className="text-xs text-[#64748b]">
                             {sub.lastContactedAt
