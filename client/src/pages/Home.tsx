@@ -52,6 +52,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
 
 type CompanyType = "full-time" | "consulting";
+type VisitorMode = "recruiter" | "client";
 
 type Company = {
   id: string;
@@ -951,6 +952,8 @@ export default function Home() {
   const [language, setLanguage] = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareMenuOpen, setShareMenuOpen] = useState(false);
+  const [visitorMode, setVisitorMode] = useState<VisitorMode>("recruiter");
+  const [smartContactOpen, setSmartContactOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const scrollProgress = useScrollProgress();
 
@@ -1031,6 +1034,7 @@ export default function Home() {
         <nav className={`desktop-nav ${menuOpen ? "desktop-nav--open" : ""}`} aria-label="Primary navigation">
           <a href="#companies" onClick={() => setMenuOpen(false)}>{language === "en" ? "Orbit" : "الكوكبة"}</a>
           <a href="#journey" onClick={() => setMenuOpen(false)}>{language === "en" ? "Journey" : "المسار"}</a>
+          <a href="#case-study" onClick={() => setMenuOpen(false)}>{language === "en" ? "Case Study" : "دراسة حالة"}</a>
           <a href="#training" onClick={() => setMenuOpen(false)}>{language === "en" ? "Training" : "التدريب"}</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>{language === "en" ? "Contact" : "التواصل"}</a>
           <Link href="/career-gateway" className="text-[#d4af37] font-semibold flex items-center gap-1" onClick={() => setMenuOpen(false)}>
@@ -1109,6 +1113,20 @@ export default function Home() {
               <h1>Mohamed <em>Ali</em></h1>
               <p className="hero-role">{homeCopy[language].hero.role}</p>
               <p className="hero-lede">{homeCopy[language].hero.lede}</p>
+              <div className="visitor-path" aria-label={language === "ar" ? "اختر نوع التواصل" : "Choose your path"}>
+                <span className="visitor-path__label">{language === "ar" ? "أنت هنا من أجل" : "You are here for"}</span>
+                <div className="visitor-path__options" role="group">
+                  <button type="button" className={visitorMode === "recruiter" ? "visitor-path__option visitor-path__option--active" : "visitor-path__option"} onClick={() => setVisitorMode("recruiter")} aria-pressed={visitorMode === "recruiter"}>
+                    <BriefcaseBusiness size={15} />
+                    <span>{language === "ar" ? "توظيف وقيادة مبيعات" : "Recruiter · Sales leadership"}</span>
+                  </button>
+                  <button type="button" className={visitorMode === "client" ? "visitor-path__option visitor-path__option--active" : "visitor-path__option"} onClick={() => setVisitorMode("client")} aria-pressed={visitorMode === "client"}>
+                    <Target size={15} />
+                    <span>{language === "ar" ? "تدريب أو استشارة" : "Client · Training & consulting"}</span>
+                  </button>
+                </div>
+                <p className="visitor-path__hint">{visitorMode === "recruiter" ? (language === "ar" ? "ابدأ من المسار التجاري والنتائج القابلة للقياس." : "Start with commercial leadership and measurable outcomes.") : (language === "ar" ? "ابدأ من التدريب، بناء الأنظمة، وتحويل المعرفة إلى أداء." : "Start with training, systems, and turning knowledge into performance.")}</p>
+              </div>
               <div className="hero-actions"><a className="button button--gold" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={17} /> {homeCopy[language].hero.download}</a><button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{homeCopy[language].hero.conversation} <ArrowUpRight size={17} /></button></div>
               <div className="contact-strip">
                 <a href="tel:+201030537773"><Phone size={14} />01030537773</a>
@@ -1169,6 +1187,18 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="case-study" className="case-study-section section-dark">
+          <div className="container">
+            <SectionIntro eyebrow={language === "ar" ? "دراسة حالة موثقة · 01" : "Documented case study · 01"} title={language === "ar" ? "من إطلاق فرع جديد إلى نظام نمو قابل للتكرار" : "From a new-branch launch to a repeatable growth system"} copy={language === "ar" ? "قصة مختصرة من تجربة JCC Training Academy، مبنية على بيانات الدور والنتائج المسجلة في ملف محمد المهني." : "A concise story from the JCC Training Academy experience, built from the role data and outcomes recorded in Mohamed's professional profile."} language={language} />
+            <div className="case-study-grid">
+              <article className="case-study-card" data-reveal><span className="case-study-card__number">01</span><p className="company-kicker">{language === "ar" ? "التحدي" : "Challenge"}</p><h3>{language === "ar" ? "إطلاق فرع جديد من الصفر" : "Launch a new branch from the ground up"}</h3><p>{language === "ar" ? "بدأت المهمة قبل الإطلاق التجاري بمرحلة تأسيس وتجهيز مدتها شهران، مع الحاجة إلى بناء هيكل واضح للتشغيل والمبيعات والتعليم." : "The assignment began with a two-month setup and readiness phase before commercial launch, requiring a clear structure across Sales, Operations, and Education."}</p></article>
+              <article className="case-study-card" data-reveal><span className="case-study-card__number">02</span><p className="company-kicker">{language === "ar" ? "الفعل" : "Action"}</p><h3>{language === "ar" ? "بناء الفريق والنظام معًا" : "Build the team and the system together"}</h3><p>{language === "ar" ? "تم تأسيس سير العمل، وتوظيف وتدريب فريق المبيعات، ووضع مؤشرات أداء وآليات متابعة، مع تحسين إدارة العملاء والمتابعة والتحويل." : "Built operating workflows, recruited and trained the sales team, established KPIs and reporting, and improved lead management, follow-up discipline, and conversion practices."}</p></article>
+              <article className="case-study-card case-study-card--outcome" data-reveal><span className="case-study-card__number">03</span><p className="company-kicker">{language === "ar" ? "النتيجة" : "Outcome"}</p><h3>{language === "ar" ? "نمو تجاري موثق خلال الأشهر الأولى" : "Documented commercial growth in the first months"}</h3><p>{language === "ar" ? "ارتفعت الإيرادات الشهرية من 150 ألف جنيه في الشهر الأول إلى 250 ألفًا ثم 300 ألف، مع وصول الذروة إلى 450 ألف جنيه شهريًا." : "Monthly revenue moved from EGP 150K in month one to EGP 250K and EGP 300K, reaching a peak of EGP 450K per month."}</p><strong>{language === "ar" ? "150K → 450K جنيه مصري / شهريًا" : "EGP 150K → EGP 450K / month"}</strong></article>
+            </div>
+            <div className="case-study-footer"><span><Check size={15} /> {language === "ar" ? "الأرقام مبنية على بيانات الدور المقدمة في الملف المهني" : "Figures are based on the role data provided in the professional profile"}</span><a className="text-link" href={asset.cv} download="Mohamed-Ali-CV.pdf">{language === "ar" ? "راجع السيرة الذاتية" : "Review the CV"} <Download size={15} /></a></div>
+          </div>
+        </section>
+
         <section id="training" className="training-section section-dark">
           <div className="container training-grid">
             <div className="training-copy" data-reveal><SectionIntro eyebrow={homeCopy[language].training.eyebrow} title={homeCopy[language].training.title} copy={homeCopy[language].training.copy} language={language} /><div className="training-stat"><span className="training-stat__number">{trainedCount}<sup>+</sup></span><span>{homeCopy[language].training.trained}</span></div><a className="text-link" href="#contact">{homeCopy[language].training.link} <ArrowRight size={15} /></a></div>
@@ -1218,6 +1248,7 @@ export default function Home() {
                 const itemCaption = language === "ar" ? (proofItem.captionAr ?? itemTitle) : (proofItem.caption ?? itemTitle);
                 return <div className={`proof-detail__panel ${selectedProofCategory.id === "events" ? "proof-detail__panel--featured" : ""}`} style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
                   <div className="proof-detail__header"><div>{selectedProofCategory.id === "events" && <span className="proof-detail__featured-badge"><Sparkles size={13} /> {language === "ar" ? "فعالية مميزة — متحدث" : "Featured speaking engagement"}</span>}<p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
+                  {selectedProofCategory.id === "events" && <div className="speaking-profile"><div><p className="company-kicker">{language === "ar" ? "Speaking Profile" : "Speaking Profile"}</p><h5>{language === "ar" ? "من قاعة الفعالية إلى حوار تجاري مؤثر" : "From the event room to a sharper commercial conversation"}</h5><p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p></div><div className="speaking-profile__topics"><span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span><span>{language === "ar" ? "Business Development" : "Business Development"}</span><span>{language === "ar" ? "Team performance" : "Team performance"}</span></div><div className="speaking-profile__actions"><a className="button button--gold" href="mailto:mohamed280ali90@gmail.com?subject=Speaking%20invitation%20for%20Mohamed%20Ali"><Mail size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a><a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a></div></div>}
                   <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
                   {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
                 </div>;
@@ -1225,8 +1256,11 @@ export default function Home() {
             </div>
             {lightboxItem && <div className="proof-lightbox" role="dialog" aria-modal="true" aria-label={language === "ar" ? "معاينة صورة الفعالية" : "Event image preview"} onClick={(event) => { if (event.target === event.currentTarget) setLightboxItem(null); }}><div className="proof-lightbox__panel"><button type="button" className="proof-lightbox__close" onClick={() => setLightboxItem(null)} aria-label={language === "ar" ? "إغلاق الصورة" : "Close image preview"}><X size={20} /></button><button type="button" className="proof-lightbox__nav proof-lightbox__nav--prev" onClick={() => shiftLightboxItem(-1)} aria-label={language === "ar" ? "الصورة السابقة" : "Previous image"}><ChevronLeft size={22} /></button><img src={lightboxItem.item.image} alt={lightboxItem.item.alt} /><button type="button" className="proof-lightbox__nav proof-lightbox__nav--next" onClick={() => shiftLightboxItem(1)} aria-label={language === "ar" ? "الصورة التالية" : "Next image"}><ChevronRight size={22} /></button><div className="proof-lightbox__copy"><span>{language === "ar" ? lightboxItem.item.organizationAr : lightboxItem.item.organization}</span><h5>{language === "ar" ? lightboxItem.item.titleAr : lightboxItem.item.title}</h5><p>{language === "ar" ? (lightboxItem.item.captionAr ?? lightboxItem.item.descriptionAr) : (lightboxItem.item.caption ?? lightboxItem.item.description)}</p><small>{String(lightboxItem.category.items.findIndex((item) => item.image === lightboxItem.item.image) + 1).padStart(2, "0")} / {String(lightboxItem.category.items.length).padStart(2, "0")}</small></div></div></div>}
           </div>
-        </section>
-
+                </section>
+        <div className={`smart-contact ${smartContactOpen ? "smart-contact--open" : ""}`}>
+          {smartContactOpen && <div className="smart-contact__menu" role="menu"><a href="mailto:mohamed280ali90@gmail.com" role="menuitem"><Mail size={15} /> {language === "ar" ? "إرسال بريد" : "Email Mohamed"}</a><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" role="menuitem"><Linkedin size={15} /> LinkedIn</a><a href="https://wa.me/201030537773" target="_blank" rel="noopener noreferrer" role="menuitem"><MessageCircle size={15} /> WhatsApp</a><a href="mailto:mohamed280ali90@gmail.com?subject=Speaking%20invitation%20for%20Mohamed%20Ali" role="menuitem"><Mic2 size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a></div>}
+          <button type="button" className="smart-contact__trigger" onClick={() => setSmartContactOpen((open) => !open)} aria-expanded={smartContactOpen} aria-label={language === "ar" ? "ابدأ محادثة" : "Start a conversation"}><MessageCircle size={18} /><span>{language === "ar" ? "ابدأ محادثة" : "Start a conversation"}</span></button>
+        </div>
         <section className="skills-section">
           <div className="container skills-grid">
             <div data-reveal><SectionIntro eyebrow={homeCopy[language].skills.eyebrow} title={homeCopy[language].skills.title} copy={homeCopy[language].skills.copy} language={language} /><div className="skill-stack">{skillStack.map(([name, detail], index) => {

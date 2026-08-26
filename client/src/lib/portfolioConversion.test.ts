@@ -1,0 +1,25 @@
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+describe("portfolio conversion surfaces", () => {
+  const homeSource = readFileSync(resolve(process.cwd(), "client/src/pages/Home.tsx"), "utf8");
+
+  it("keeps the recruiter and client choice accessible in the hero", () => {
+    expect(homeSource).toContain('className="visitor-path"');
+    expect(homeSource).toContain("Recruiter · Sales leadership");
+    expect(homeSource).toContain("Client · Training & consulting");
+  });
+
+  it("keeps GDG speaking profile actions connected to real contact paths", () => {
+    expect(homeSource).toContain('className="speaking-profile"');
+    expect(homeSource).toContain("Invite to speak");
+    expect(homeSource).toContain("linkedinUrl");
+  });
+
+  it("keeps the smart contact menu available with direct channels", () => {
+    expect(homeSource).toContain('className={`smart-contact');
+    expect(homeSource).toContain("mailto:mohamed280ali90@gmail.com");
+    expect(homeSource).toContain("https://wa.me/201030537773");
+  });
+});
