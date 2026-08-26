@@ -738,6 +738,30 @@ function useScrollState() {
   return scrolled;
 }
 
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const update = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const range = Math.max(window.innerHeight * 3, 1);
+        setProgress(Math.min(window.scrollY / range, 1));
+      });
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+  return progress;
+}
+
 function Copy({ language, en, ar }: { language: Language; en: string; ar: string }) {
   return <>{language === "en" ? en : ar}</>;
 }
@@ -928,6 +952,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const scrollProgress = useScrollProgress();
 
   const triggerCopyFeedback = (key: string) => {
     setCopiedKey(key);
@@ -1075,7 +1100,7 @@ export default function Home() {
       </header>
 
       <main id="top">
-        <section className="hero-section" style={{ backgroundImage: `linear-gradient(90deg, rgba(3,7,18,.98) 0%, rgba(3,7,18,.82) 45%, rgba(3,7,18,.25) 100%), url(${asset.hero})` }}>
+        <section className="hero-section hero-section--motion" style={{ "--orbit-one-x": `${scrollProgress * -12}px`, "--orbit-one-y": `${scrollProgress * 10}px`, "--orbit-two-x": `${scrollProgress * 14}px`, "--orbit-two-y": `${scrollProgress * -8}px`, backgroundImage: `linear-gradient(90deg, rgba(3,7,18,.98) 0%, rgba(3,7,18,.82) 45%, rgba(3,7,18,.25) 100%), url(${asset.hero})` } as React.CSSProperties}>
           <div className="starfield" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></div>
           <div className="hero-orbit hero-orbit--one" aria-hidden="true" /><div className="hero-orbit hero-orbit--two" aria-hidden="true" />
           <div className="container hero-grid">
@@ -1092,7 +1117,7 @@ export default function Home() {
                 <span><MapPin size={14} />Giza, Egypt</span>
               </div>
             </div>
-            <div className="hero-portrait-wrap" data-reveal>
+            <div className="hero-portrait-wrap hero-portrait-wrap--motion" data-reveal style={{ "--parallax-y": `${scrollProgress * -18}px` } as React.CSSProperties}>
               <div className="portrait-rings" aria-hidden="true"><span /><span /><span /></div>
               <div className="portrait-card"><img src={asset.profile} alt="Mohamed Ali presenting a training session" /><div className="portrait-card__label"><span>MOHAMED ALI</span><small>BUSINESS DEVELOPMENT · EGYPT</small></div></div>
               <div className="portrait-data portrait-data--top"><span>05+</span><small>{homeCopy[language].hero.commercialGrowth}</small></div>
@@ -1102,9 +1127,9 @@ export default function Home() {
           <div className="hero-bottomline container"><span>{homeCopy[language].hero.bottom}</span><ArrowDown size={16} /><span className="hero-bottomline__code">MA / 001 — 2026</span></div>
         </section>
 
-        <section className="signal-section container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>
+        <section className="signal-section signal-section--motion container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title} style={{ "--signal-delay": `${index * 70}ms` } as React.CSSProperties}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>
 
-        <section id="companies" className="orbit-section section-dark">
+        <section id="companies" className="orbit-section orbit-section--motion section-dark" style={{ "--orbit-shift-y": `${scrollProgress * -8}px`, "--orbit-shift-mobile-y": `${scrollProgress * -4}px`, "--orbit-guide-rotation": `${scrollProgress * 12}deg` } as React.CSSProperties}>
           <div className="container">
             <SectionIntro eyebrow={homeCopy[language].orbit.eyebrow} title={homeCopy[language].orbit.title} copy={homeCopy[language].orbit.copy} language={language} />
             <div className="orbit-layout">

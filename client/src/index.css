@@ -3127,3 +3127,83 @@
   border-color: rgba(251, 191, 36, 0.6) !important;
   transform: scale(1.1);
 }
+
+/* Scroll-driven preview layer: restrained motion that supports the portfolio story. */
+.hero-section--motion {
+  --orbit-one-x: 0px;
+  --orbit-one-y: 0px;
+  --orbit-two-x: 0px;
+  --orbit-two-y: 0px;
+}
+
+.hero-portrait-wrap--motion {
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+
+.hero-section--motion .hero-orbit--one {
+  transform: translate3d(var(--orbit-one-x), var(--orbit-one-y), 0) rotate(-18deg);
+}
+
+.hero-section--motion .hero-orbit--two {
+  transform: translate3d(var(--orbit-two-x), var(--orbit-two-y), 0) rotate(22deg);
+}
+
+.signal-section--motion .signal-cell {
+  opacity: 0.72;
+  transform: translateY(14px);
+  transition: opacity 420ms cubic-bezier(0.23, 1, 0.32, 1) var(--signal-delay, 0ms), transform 420ms cubic-bezier(0.23, 1, 0.32, 1) var(--signal-delay, 0ms), border-color 180ms ease;
+}
+
+.signal-section--motion.is-visible .signal-cell,
+.signal-section--motion[data-reveal].is-visible .signal-cell {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.orbit-section--motion {
+  --orbit-shift-y: 0px;
+  --orbit-shift-mobile-y: 0px;
+  --orbit-guide-rotation: 0deg;
+}
+
+.orbit-section--motion .orbit-stage {
+  transform: translateY(var(--orbit-shift-y));
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.orbit-section--motion .orbit-guide--outer {
+  transform: rotate(var(--orbit-guide-rotation));
+}
+
+.orbit-section--motion .proof-detail__panel--featured {
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.12), 0 26px 80px rgba(2, 6, 23, 0.48);
+  transition: box-shadow 240ms ease, transform 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait-wrap--motion,
+  .hero-section--motion .hero-orbit--one,
+  .hero-section--motion .hero-orbit--two,
+  .signal-section--motion .signal-cell,
+  .orbit-section--motion .orbit-stage,
+  .orbit-section--motion .orbit-guide--outer {
+    transform: none;
+    transition: none;
+  }
+
+  .signal-section--motion .signal-cell {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-portrait-wrap--motion {
+    transform: translate3d(0, calc(var(--parallax-y, 0px) * 0.45), 0);
+  }
+
+  .orbit-section--motion .orbit-stage {
+    transform: translateY(var(--orbit-shift-mobile-y));
+  }
+}
