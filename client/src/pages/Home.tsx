@@ -95,6 +95,8 @@ type ProofItem = {
   descriptionAr: string;
   image: string;
   alt: string;
+  caption?: string;
+  captionAr?: string;
 };
 
 type ProofCategory = {
@@ -178,11 +180,18 @@ const proofCategories: ProofCategory[] = [
     labelAr: "الفعاليات",
     kicker: "Proof planet 05",
     kickerAr: "كوكب الدليل 05",
-    summary: "A visual record of community, event, and room moments from the professional journey.",
-    summaryAr: "سجل بصري للحظات المجتمع والفعاليات وقاعات التدريب من المسار المهني.",
+    summary: "Speaking, community, and live-room moments that show Mohamed representing his own Sales and Business Development perspective.",
+    summaryAr: "لحظات تحدث ومجتمع مهني وقاعات حية توضح تمثيل محمد لخبرته الشخصية في المبيعات وتطوير الأعمال.",
     accent: "#67e8f9",
     icon: Camera,
     items: [
+      { title: "GDG New Cairo — Speaker", titleAr: "GDG New Cairo — متحدث", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Featured speaking engagement", typeAr: "مشاركة مميزة كمتحدث", description: "A featured speaking engagement where Mohamed shared his own perspective from Sales and Business Development with a professional community.", descriptionAr: "مشاركة مميزة كمتحدث شارك خلالها محمد منظوره الشخصي المستمد من خبرته في المبيعات وتطوير الأعمال مع مجتمع مهني.", image: "/manus-storage/49019632-44cf-4001-bb92-f814d8f25409_97daeebc.jfif", alt: "Mohamed Ali speaking on stage at GDG New Cairo beside the event screen and Novera banner" },
+      { title: "GDG New Cairo — Talk in Action", titleAr: "GDG New Cairo — لحظة تقديم", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Speaker / Sales perspective", typeAr: "متحدث / منظور مبيعات", description: "A live on-stage moment capturing Mohamed presenting with the GDG New Cairo and Novera event visuals behind him.", descriptionAr: "لحظة حية من على المسرح يظهر فيها محمد أثناء التقديم مع ظهور هوية GDG New Cairo وNovera خلفه.", image: "/manus-storage/e1501bb7-a8f7-4eef-b439-fc37e83030e3_e4bf4387.jfif", alt: "Mohamed Ali presenting with a microphone at GDG New Cairo" },
+      { title: "GDG New Cairo — Audience", titleAr: "GDG New Cairo — الجمهور", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Community engagement", typeAr: "تفاعل مجتمعي", description: "The audience perspective from a full professional event room, showing the community context behind the speaking experience.", descriptionAr: "لقطة من منظور الجمهور داخل قاعة فعالية مهنية، توضح المجتمع الذي احتضن تجربة التحدث.", image: "/manus-storage/5b6bdaed-6fa0-440c-b3c1-9b8f4efcefbe_c190f87f.jfif", alt: "Audience seated in the auditorium during GDG New Cairo" },
+      { title: "GDG New Cairo — Room Scale", titleAr: "GDG New Cairo — حجم القاعة", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Event atmosphere", typeAr: "أجواء فعالية", description: "A wide room view that captures the scale and atmosphere of the event from the stage direction.", descriptionAr: "لقطة واسعة توضح حجم القاعة وأجواء الفعالية من اتجاه المسرح.", image: "/manus-storage/gdg11_d6481c0c.jfif", alt: "Wide view of the GDG New Cairo event room and audience" },
+      { title: "GDG New Cairo — Recognition", titleAr: "GDG New Cairo — لحظة تقدير", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Recognition moment", typeAr: "لحظة تقدير", description: "A recognition moment from the event, marking the value of contribution and participation.", descriptionAr: "لحظة تقدير من الفعالية توثق قيمة المساهمة والمشاركة.", image: "/manus-storage/9713a401-8505-40b8-b95a-f2575bcdf4bb_98b5c3ab.jfif", alt: "Mohamed Ali receiving recognition on stage at GDG New Cairo" },
+      { title: "GDG New Cairo — Venue", titleAr: "GDG New Cairo — المكان", organization: "The Greek Campus", organizationAr: "The Greek Campus", type: "Event setting", typeAr: "مكان الفعالية", description: "A venue portrait from The Greek Campus before the speaking engagement began.", descriptionAr: "لقطة من The Greek Campus قبل بدء المشاركة على المسرح.", image: "/manus-storage/359eb3af-4189-4dd9-9b80-a1ba3f6e45aa_bd65694d.webp", alt: "Mohamed Ali standing beneath The Greek Campus sign" },
+      { title: "GDG New Cairo — Stage Perspective", titleAr: "GDG New Cairo — زاوية من المسرح", organization: "GDG New Cairo", organizationAr: "GDG New Cairo", type: "Speaking moment", typeAr: "لحظة تحدث", description: "An additional stage perspective showing Mohamed in a live speaking moment with the event visuals in frame.", descriptionAr: "زاوية إضافية من المسرح يظهر فيها محمد أثناء لحظة تحدث حية مع عناصر الفعالية في المشهد.", image: "/manus-storage/d049bec4-6312-46c8-b24b-e5a2dc1805b0_7c9438e4.jfif", alt: "Mohamed Ali speaking on stage with GDG New Cairo event branding" },
       { title: "AISPRINT Hackathon Community", titleAr: "مجتمع فعالية AISPRINT Hackathon", organization: "AISPRINT", organizationAr: "AISPRINT", type: "Event documentation", typeAr: "توثيق فعالية", description: "A supplied group image documenting participation around an AISPRINT event environment.", descriptionAr: "صورة جماعية مرفقة توثق المشاركة في أجواء فعالية مرتبطة بـ AISPRINT.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.28 PM (1).jpeg", alt: "Group photo from an AISPRINT event" },
       { title: "Training Room Story", titleAr: "مشهد من قاعة تدريب", organization: "Training evidence", organizationAr: "دليل تدريب", type: "Event / training moment", typeAr: "لحظة فعالية / تدريب", description: "A cinematic room view that shows the scale and atmosphere of live learning moments.", descriptionAr: "مشهد تحريري من قاعة يوضح حجم وأجواء لحظات التعلم المباشر.", image: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.29 PM (3).jpeg", alt: "Training room with a live audience" },
     ],
@@ -928,6 +937,7 @@ export default function Home() {
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
   const [selectedProofIndex, setSelectedProofIndex] = useState(0);
+  const [lightboxItem, setLightboxItem] = useState<{ category: ProofCategory; item: ProofItem } | null>(null);
   const [proofOrbitFocused, setProofOrbitFocused] = useState(false);
   const [formState, setFormState] = useState({ name: "", email: "", details: "" });
   const scrolled = useScrollState();
@@ -947,6 +957,7 @@ export default function Home() {
   const closeProofCategory = () => {
     setSelectedProofCategory(null);
     setSelectedProofIndex(0);
+    setLightboxItem(null);
     setProofOrbitFocused(false);
   };
   const shiftProofItem = (direction: 1 | -1) => {
@@ -954,6 +965,29 @@ export default function Home() {
     const count = selectedProofCategory.items.length;
     setSelectedProofIndex((index) => (index + direction + count) % count);
   };
+  const openProofLightbox = (category: ProofCategory, item: ProofItem) => setLightboxItem({ category, item });
+  const shiftLightboxItem = (direction: 1 | -1) => {
+    if (!lightboxItem || lightboxItem.category.items.length < 2) return;
+    const items = lightboxItem.category.items;
+    const currentIndex = items.findIndex((item) => item.image === lightboxItem.item.image);
+    const nextIndex = (Math.max(currentIndex, 0) + direction + items.length) % items.length;
+    setSelectedProofIndex(nextIndex);
+    setLightboxItem({ category: lightboxItem.category, item: items[nextIndex] });
+  };
+  useEffect(() => {
+    if (!lightboxItem) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setLightboxItem(null);
+      if (event.key === "ArrowLeft") shiftLightboxItem(-1);
+      if (event.key === "ArrowRight") shiftLightboxItem(1);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightboxItem]);
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const sendWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
@@ -1156,13 +1190,15 @@ export default function Home() {
                 const itemOrganization = language === "ar" ? proofItem.organizationAr : proofItem.organization;
                 const itemType = language === "ar" ? proofItem.typeAr : proofItem.type;
                 const itemDescription = language === "ar" ? proofItem.descriptionAr : proofItem.description;
-                return <div className="proof-detail__panel" style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
-                  <div className="proof-detail__header"><div><p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
-                  <div className="proof-detail__content"><div className="proof-detail__media"><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /><a className="proof-detail__zoom" href={proofItem.image} target="_blank" rel="noreferrer"><ZoomIn size={15} /> {language === "ar" ? "فتح المعاينة الكاملة" : "Open full preview"}</a></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
+                const itemCaption = language === "ar" ? (proofItem.captionAr ?? itemTitle) : (proofItem.caption ?? itemTitle);
+                return <div className={`proof-detail__panel ${selectedProofCategory.id === "events" ? "proof-detail__panel--featured" : ""}`} style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
+                  <div className="proof-detail__header"><div>{selectedProofCategory.id === "events" && <span className="proof-detail__featured-badge"><Sparkles size={13} /> {language === "ar" ? "فعالية مميزة — متحدث" : "Featured speaking engagement"}</span>}<p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
+                  <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
                   {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
                 </div>;
               })() : <div className="proof-detail__empty"><Sparkles size={17} /><span>{language === "ar" ? "اختر كوكبًا من المدار لفتح قصة الدليل." : "Select a planet to open its proof story."}</span></div>}
             </div>
+            {lightboxItem && <div className="proof-lightbox" role="dialog" aria-modal="true" aria-label={language === "ar" ? "معاينة صورة الفعالية" : "Event image preview"} onClick={(event) => { if (event.target === event.currentTarget) setLightboxItem(null); }}><div className="proof-lightbox__panel"><button type="button" className="proof-lightbox__close" onClick={() => setLightboxItem(null)} aria-label={language === "ar" ? "إغلاق الصورة" : "Close image preview"}><X size={20} /></button><button type="button" className="proof-lightbox__nav proof-lightbox__nav--prev" onClick={() => shiftLightboxItem(-1)} aria-label={language === "ar" ? "الصورة السابقة" : "Previous image"}><ChevronLeft size={22} /></button><img src={lightboxItem.item.image} alt={lightboxItem.item.alt} /><button type="button" className="proof-lightbox__nav proof-lightbox__nav--next" onClick={() => shiftLightboxItem(1)} aria-label={language === "ar" ? "الصورة التالية" : "Next image"}><ChevronRight size={22} /></button><div className="proof-lightbox__copy"><span>{language === "ar" ? lightboxItem.item.organizationAr : lightboxItem.item.organization}</span><h5>{language === "ar" ? lightboxItem.item.titleAr : lightboxItem.item.title}</h5><p>{language === "ar" ? (lightboxItem.item.captionAr ?? lightboxItem.item.descriptionAr) : (lightboxItem.item.caption ?? lightboxItem.item.description)}</p><small>{String(lightboxItem.category.items.findIndex((item) => item.image === lightboxItem.item.image) + 1).padStart(2, "0")} / {String(lightboxItem.category.items.length).padStart(2, "0")}</small></div></div></div>}
           </div>
         </section>
 
