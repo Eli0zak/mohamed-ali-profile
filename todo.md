@@ -126,3 +126,5 @@
 - [x] إضافة قسم مختصر بعنوان What I Can Own From Day One بدل Case Study.
 - [x] جعل Value Snapshot تتغير بصريًا ومضمونيًا حسب Recruiter أو Client.
 - [x] إضافة CTA مختلف لكل مسار مع اختبار أن الانتقال يعمل بوضوح.
+- [x] إضافة انتقالات حركية بسيطة عند التبديل بين مساري Recruiter وClient داخل Value Snapshot.
+- [x] احترام prefers-reduced-motion والتحقق من عدم وجود قفزة أو تداخل أثناء التبديل.

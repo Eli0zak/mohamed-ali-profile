@@ -3368,3 +3368,13 @@
 @media (prefers-reduced-motion: reduce) {
   .value-snapshot, .value-snapshot::before, .value-snapshot__mode, .ownership-card, .ownership-cta { transition: none; }
 }
+
+
+.value-snapshot__content { animation: snapshot-switch-in 260ms cubic-bezier(.23, 1, .32, 1) both; }
+@keyframes snapshot-switch-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .value-snapshot__content { animation: none; }
+}

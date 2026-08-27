@@ -1155,7 +1155,8 @@ export default function Home() {
         </section>
 
         <section className={`value-snapshot value-snapshot--${visitorMode} container`} aria-labelledby="value-snapshot-title" data-mode={visitorMode} data-reveal>
-          <div className="value-snapshot__intro">
+          <div className="value-snapshot__content" key={visitorMode}>
+            <div className="value-snapshot__intro">
             <span className="value-snapshot__mode">{visitorMode === "recruiter" ? (language === "ar" ? "مسار التوظيف" : "Recruiter path") : (language === "ar" ? "مسار الشراكة" : "Client path")}</span>
             <p className="company-kicker">{language === "ar" ? "لقطة القيمة" : "Value snapshot"}</p>
             <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكن أن يبنيه محمد معك؟" : "What can Mohamed build with you?")}</h2>
@@ -1166,8 +1167,9 @@ export default function Home() {
               <span className="value-snapshot__icon"><Icon size={16} /></span>
               <div><h3>{title[language]}</h3><p>{detail[language]}</p></div>
             </article>)}
+            </div>
+            <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "استكشف مسار التدريب" : "Explore the training path")} <ArrowRight size={15} /></a>
           </div>
-          <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "استكشف مسار التدريب" : "Explore the training path")} <ArrowRight size={15} /></a>
         </section>
 
         <section id="ownership" className={`ownership-section ownership-section--${visitorMode} section-dark`} data-reveal>
