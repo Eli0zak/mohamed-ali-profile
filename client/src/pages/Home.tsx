@@ -477,6 +477,7 @@ const timeline = [
     logo: "/manus-storage/harvest_fbefaf15.jpeg",
     copy: "Rapidly promoted through five leadership positions within approximately two years.",
     icon: TrendingUp,
+    highlights: { en: ["Five leadership promotions in approximately two years.", "Owned branch performance and team rhythm.", "Built the leadership foundation for commercial growth."], ar: ["خمس ترقيات قيادية خلال نحو عامين.", "امتلكت أداء الفرع وإيقاع الفريق.", "بنيت الأساس القيادي للنمو التجاري."] },
   },
   {
     year: "2024 — 2025",
@@ -485,6 +486,7 @@ const timeline = [
     logo: "/manus-storage/jcc-jexora_ae963fa5.jpeg",
     copy: "Led the sales team and expansion strategy, contributing to peak monthly revenue growth from EGP 2M to EGP 5M.",
     icon: BarChart3,
+    highlights: { en: ["Led sales and expansion across the commercial operation.", "Contributed to monthly revenue growth from EGP 2M to EGP 5M peak.", "Connected sales execution with a clearer growth path."], ar: ["قدت المبيعات والتوسع داخل العملية التجارية.", "ساهمت في نمو الإيراد الشهري من 2 إلى 5 ملايين جنيه كقمة مسجلة.", "ربطت تنفيذ المبيعات بمسار نمو أوضح."] },
   },
   {
     year: "2025 — Present",
@@ -493,6 +495,7 @@ const timeline = [
     logo: "/manus-storage/be-fluent_ed3866f1.jpeg",
     copy: "Managed end-to-end branch operations and launched two new business branches before transitioning into advisory work.",
     icon: Target,
+    highlights: { en: ["Managed end-to-end branch operations.", "Launched two new business branches.", "Transitioned from operating the branch to advising on growth."], ar: ["أدرت عمليات الفرع بالكامل.", "أطلقت فرعين تجاريين جديدين.", "انتقلت من تشغيل الفرع إلى تقديم الاستشارات في النمو."] },
   },
   {
     year: "Jan 2026 — Present",
@@ -501,6 +504,7 @@ const timeline = [
     logo: "/manus-storage/jexora-campus_8d62abc5.jpeg",
     copy: "Founding member: opened a branch from the ground up, scaling monthly revenue from EGP 150K to EGP 450K peak in the first five operating months.",
     icon: Zap,
+    highlights: { en: ["Founding member who opened a branch from the ground up.", "Scaled peak monthly revenue from EGP 150K to EGP 450K in the first five operating months.", "Combined branch ownership with Business Development leadership."], ar: ["عضو مؤسس افتتح فرعًا من الصفر.", "وسعت الإيراد الشهري كقمة مسجلة من 150 إلى 450 ألف جنيه خلال أول خمسة أشهر تشغيل.", "جمعت بين امتلاك الفرع وقيادة تطوير الأعمال."] },
   },
 ];
 
@@ -969,6 +973,8 @@ export default function Home() {
   };
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [selectedTimelineIndex, setSelectedTimelineIndex] = useState(0);
+  const [hoveredTimelineIndex, setHoveredTimelineIndex] = useState<number | null>(null);
+  const [timelineModalOpen, setTimelineModalOpen] = useState(false);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
   const [selectedProofIndex, setSelectedProofIndex] = useState(0);
@@ -1241,17 +1247,18 @@ export default function Home() {
               </div>
               <div className="career-route__map" aria-label={language === "ar" ? "خريطة الرحلة المهنية" : "Career journey map"}>
                 <svg className="career-route__path" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true"><path className="career-route__path-base" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /><path className="career-route__path-glow" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /></svg>
-                <span className="career-route__traveler" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><span>✦</span></span>
+                <span className="career-route__trail" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span><span className="career-route__traveler" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><span>✦</span></span>
                 <div className="career-route__stations" role="list">
                   {timeline.map((item, index) => {
                     const Icon = item.icon;
                     const localized = language === "ar" ? timelineArabic[item.company] : undefined;
                     const active = selectedTimelineIndex === index;
-                    return <button className={`career-station ${active ? "career-station--active" : ""}`} type="button" role="listitem" key={item.company} onClick={() => setSelectedTimelineIndex(index)} style={timelinePositions[index] as React.CSSProperties} aria-pressed={active} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__icon"><Icon size={14} /></span></button>;
+                    return <button className={`career-station ${active ? "career-station--active" : ""}`} type="button" role="listitem" key={item.company} onClick={() => setSelectedTimelineIndex(index)} onMouseEnter={() => setHoveredTimelineIndex(index)} onMouseLeave={() => setHoveredTimelineIndex(null)} onFocus={() => setHoveredTimelineIndex(index)} onBlur={() => setHoveredTimelineIndex(null)} style={timelinePositions[index] as React.CSSProperties} aria-pressed={active} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index}><span>{language === "ar" ? "اضغط لاكتشاف المحطة" : "Select to discover"}</span><strong>{localized?.role ?? item.role}</strong></span><span className="career-station__icon"><Icon size={14} /></span></button>;
                   })}
                 </div>
               </div>
-              {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
+              {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div><button className="career-route__detail-button" type="button" onClick={() => setTimelineModalOpen(true)}>{language === "ar" ? "عرض التفاصيل" : "View details"}<ArrowUpRight size={15} /></button></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
+              {timelineModalOpen && (() => { const item = timeline[selectedTimelineIndex]; const localized = language === "ar" ? timelineArabic[item.company] : undefined; const highlights = language === "ar" ? item.highlights.ar : item.highlights.en; return <div className="career-modal" role="dialog" aria-modal="true" aria-labelledby="career-modal-title" onClick={() => setTimelineModalOpen(false)}><div className="career-modal__panel" onClick={(event) => event.stopPropagation()}><button className="career-modal__close" type="button" onClick={() => setTimelineModalOpen(false)} aria-label={language === "ar" ? "إغلاق التفاصيل" : "Close details"}><X size={18} /></button><div className="career-modal__eyebrow">0{selectedTimelineIndex + 1} / {item.year}</div><div className="career-modal__brand"><img src={item.logo} alt={`${item.company} logo`} /><div><span className="company-kicker">{item.company}</span><h3 id="career-modal-title">{localized?.role ?? item.role}</h3></div></div><p className="career-modal__intro">{localized?.copy ?? item.copy}</p><div className="career-modal__section"><span className="company-kicker">{language === "ar" ? "أبرز ما تم بناؤه" : "Selected proof points"}</span><ul>{highlights.map((highlight) => <li key={highlight}><Check size={15} />{highlight}</li>)}</ul></div><button className="button button--gold" type="button" onClick={() => { setTimelineModalOpen(false); scrollTo("contact"); }}>{language === "ar" ? "ابدأ محادثة حول الدور" : "Start a conversation about this role"}<ArrowUpRight size={16} /></button></div></div>; })()}
               <div className="career-route__hint"><span className="hint-ring" /> {language === "ar" ? "المؤشر يتحرك مع كل محطة تختارها" : "The marker moves with every station you select"}</div>
             </div>
           </div>
