@@ -3579,3 +3579,9 @@
   .career-station__scan-line, .career-station__impact-labels, .career-route__next-mission { transition: none; }
   .career-station__impact-rings i { animation: none !important; opacity: .28; }
 }
+
+/* Speaking invite fallback: keep the invitation usable when clipboard permissions are unavailable. */
+.speaking-profile__copy-fallback { grid-column: 1 / -1; width: 100%; min-height: 7rem; resize: vertical; padding: .7rem .8rem; border: 1px solid rgba(245,158,11,.4); border-radius: .7rem; background: rgba(3,8,18,.72); color: #f8fafc; font: inherit; font-size: .72rem; line-height: 1.55; direction: ltr; text-align: left; outline: none; }
+.speaking-profile__copy-fallback:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.14); }
+@media (max-width: 640px) { .speaking-profile__copy-fallback { min-height: 8.5rem; font-size: .68rem; } }
+@media (prefers-reduced-motion: reduce) { .speaking-profile__copy-fallback { scroll-behavior: auto; } }

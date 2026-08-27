@@ -15,3 +15,9 @@
 - Desktop full-page preview: Career Orbit remains isolated on the dark navy map surface; station labels and orbit path remain readable; the Next Mission panel sits below Mission Control without crowding the detail card.
 - Mobile 390px full-page preview: stations remain in a readable vertical stack; the scan and ring layer is contained around each logo; Next Mission stays compact and does not introduce horizontal overflow.
 - The interaction layer keeps a lightweight 2.5D treatment through perspective, transforms, glow, and rings; no Three.js dependency was introduced.
+
+## Invite to Speak repair — 2026-08-27
+
+- Desktop full-page preview completed after server restart; the page rendered without the previous Vite duplicate-declaration error.
+- Mobile 390px full-page preview completed; no visible horizontal overflow or layout break was introduced by the Speaking Profile fallback.
+- Invite to Speak now uses a programmatically encoded `mailto:` helper, and Copy invite details has a visible manual-selection textarea fallback when clipboard permissions are unavailable.

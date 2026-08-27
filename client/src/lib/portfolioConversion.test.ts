@@ -34,6 +34,7 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain('href="mailto:mohamed280ali90@gmail.com"');
     expect(homeSource).toContain('href={linkedinUrl}');
     expect(homeSource).toContain('href="https://wa.me/201030537773"');
-    expect(homeSource).toContain("Speaking%20invitation%20for%20Mohamed%20Ali");
+    expect(homeSource).toContain("href={speakingInviteHref}");
+    expect(homeSource).toContain("SPEAKING_INVITE_EMAIL");
   });
 });

@@ -11,6 +11,7 @@ import {
   Briefcase,
   BriefcaseBusiness,
   Check,
+  Copy as CopyIcon,
   ChevronDown,
   Download,
   ExternalLink,
@@ -53,6 +54,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
 import { CAREER_ROUTE_D, getCareerRouteGeometry, getCareerRoutePoint, type CareerRouteGeometry } from "@/lib/careerRoute";
 import { getCareerProgressPercent, getNextCareerStationIndex } from "@/lib/careerNavigation";
+import { speakingInviteCopyText, speakingInviteHref, SPEAKING_INVITE_EMAIL } from "@/lib/speakingInvite";
 
 type CompanyType = "full-time" | "consulting";
 type VisitorMode = "recruiter" | "client";
@@ -982,6 +984,27 @@ export default function Home() {
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2500);
   };
+  const copyTextToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const fallback = document.createElement("textarea");
+      fallback.value = text;
+      fallback.setAttribute("readonly", "");
+      fallback.style.position = "fixed";
+      fallback.style.opacity = "0";
+      document.body.appendChild(fallback);
+      fallback.select();
+      const didCopy = document.execCommand("copy");
+      fallback.remove();
+      return didCopy;
+    }
+  };
+  const copySpeakingInvite = async () => {
+    const didCopy = await copyTextToClipboard(speakingInviteCopyText);
+    triggerCopyFeedback(didCopy ? "speaking-invite" : "speaking-invite-failed");
+  };
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [selectedTimelineIndex, setSelectedTimelineIndex] = useState(0);
   const [hoveredTimelineIndex, setHoveredTimelineIndex] = useState<number | null>(null);
@@ -1442,7 +1465,7 @@ export default function Home() {
                 const itemCaption = language === "ar" ? (proofItem.captionAr ?? itemTitle) : (proofItem.caption ?? itemTitle);
                 return <div className={`proof-detail__panel ${selectedProofCategory.id === "events" ? "proof-detail__panel--featured" : ""}`} style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
                   <div className="proof-detail__header"><div>{selectedProofCategory.id === "events" && <span className="proof-detail__featured-badge"><Sparkles size={13} /> {language === "ar" ? "فعالية مميزة — متحدث" : "Featured speaking engagement"}</span>}<p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
-                  {selectedProofCategory.id === "events" && <div className="speaking-profile"><div><p className="company-kicker">{language === "ar" ? "Speaking Profile" : "Speaking Profile"}</p><h5>{language === "ar" ? "من قاعة الفعالية إلى حوار تجاري مؤثر" : "From the event room to a sharper commercial conversation"}</h5><p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p></div><div className="speaking-profile__topics"><span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span><span>{language === "ar" ? "Business Development" : "Business Development"}</span><span>{language === "ar" ? "Team performance" : "Team performance"}</span></div><div className="speaking-profile__actions"><a className="button button--gold" href="mailto:mohamed280ali90@gmail.com?subject=Speaking%20invitation%20for%20Mohamed%20Ali"><Mail size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a><a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a></div></div>}
+                  {selectedProofCategory.id === "events" && <div className="speaking-profile"><div><p className="company-kicker">{language === "ar" ? "Speaking Profile" : "Speaking Profile"}</p><h5>{language === "ar" ? "من قاعة الفعالية إلى حوار تجاري مؤثر" : "From the event room to a sharper commercial conversation"}</h5><p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p></div><div className="speaking-profile__topics"><span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span><span>{language === "ar" ? "Business Development" : "Business Development"}</span><span>{language === "ar" ? "Team performance" : "Team performance"}</span></div><div className="speaking-profile__actions"><a className="button button--gold" href={speakingInviteHref} target="_self"><Mail size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a><button className="button button--ghost" type="button" onClick={copySpeakingInvite}><CopyIcon size={15} /> {copiedKey === "speaking-invite" ? (language === "ar" ? "تم النسخ" : "Copied") : (language === "ar" ? "نسخ بيانات الدعوة" : "Copy invite details")}</button><a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a></div><p className="speaking-profile__fallback" aria-live="polite">{copiedKey === "speaking-invite" ? (language === "ar" ? "تم نسخ البريد والموضوع ونص الدعوة." : "Email, subject, and invite template copied.") : copiedKey === "speaking-invite-failed" ? (language === "ar" ? "لم يتم النسخ تلقائيًا. حدد النص يدويًا من الحقل التالي." : "Copy was unavailable. Select the invite details manually below.") : (language === "ar" ? "إذا لم يفتح تطبيق البريد، استخدم نسخ بيانات الدعوة." : "If your email app does not open, use Copy invite details.")}</p>{copiedKey === "speaking-invite-failed" && <textarea className="speaking-profile__copy-fallback" value={speakingInviteCopyText} readOnly rows={5} aria-label={language === "ar" ? "بيانات دعوة التحدث" : "Speaking invitation details"} onFocus={(event) => event.currentTarget.select()} />}</div>}
                   <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
                   {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
                 </div>;
@@ -1452,7 +1475,7 @@ export default function Home() {
           </div>
                 </section>
         <div className={`smart-contact ${smartContactOpen ? "smart-contact--open" : ""}`}>
-          {smartContactOpen && <div className="smart-contact__menu" role="menu"><a href="mailto:mohamed280ali90@gmail.com" role="menuitem"><Mail size={15} /> {language === "ar" ? "إرسال بريد" : "Email Mohamed"}</a><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" role="menuitem"><Linkedin size={15} /> LinkedIn</a><a href="https://wa.me/201030537773" target="_blank" rel="noopener noreferrer" role="menuitem"><MessageCircle size={15} /> WhatsApp</a><a href="mailto:mohamed280ali90@gmail.com?subject=Speaking%20invitation%20for%20Mohamed%20Ali" role="menuitem"><Mic2 size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a></div>}
+          {smartContactOpen && <div className="smart-contact__menu" role="menu"><a href={`mailto:${SPEAKING_INVITE_EMAIL}`} target="_self" role="menuitem"><Mail size={15} /> {language === "ar" ? "إرسال بريد" : "Email Mohamed"}</a><a href={linkedinUrl} target="_blank" rel="noopener noreferrer" role="menuitem"><Linkedin size={15} /> LinkedIn</a><a href="https://wa.me/201030537773" target="_blank" rel="noopener noreferrer" role="menuitem"><MessageCircle size={15} /> WhatsApp</a><a href={speakingInviteHref} target="_self" role="menuitem"><Mic2 size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a></div>}
           <button type="button" className="smart-contact__trigger" onClick={() => setSmartContactOpen((open) => !open)} aria-expanded={smartContactOpen} aria-label={language === "ar" ? "ابدأ محادثة" : "Start a conversation"}><MessageCircle size={18} /><span>{language === "ar" ? "ابدأ محادثة" : "Start a conversation"}</span></button>
         </div>
         <section className="skills-section">
