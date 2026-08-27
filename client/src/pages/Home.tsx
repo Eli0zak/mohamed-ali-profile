@@ -978,6 +978,7 @@ export default function Home() {
   const [visitorMode, setVisitorMode] = useState<VisitorMode>("recruiter");
   const [speakingAudience, setSpeakingAudience] = useState<SpeakingAudience>("sales-teams");
   const [speakingInviteKind, setSpeakingInviteKind] = useState<SpeakingInviteKind>("talk");
+  const [speakingBuilderOpen, setSpeakingBuilderOpen] = useState(false);
   const [smartContactOpen, setSmartContactOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const scrollProgress = useScrollProgress();
@@ -1485,7 +1486,11 @@ export default function Home() {
                       <span><Sparkles size={13} /> {language === "ar" ? "كل جلسة تبدأ من محطة حقيقية في المدار المهني" : "Every session starts from a real station in the career orbit"}</span>
                       <a href="#companies">{language === "ar" ? "استكشف الرحلة المهنية" : "Explore the career orbit"} <ArrowUpRight size={14} /></a>
                     </div>
-                    <div className="speaking-profile__builder" aria-label={language === "ar" ? "منشئ دعوة التحدث" : "Speaking invitation builder"}>
+                    <div className="speaking-profile__builder-toggle-row">
+                      <span className="speaking-profile__builder-toggle-copy"><strong>{language === "ar" ? "دعوة مخصصة حسب المناسبة" : "Tailor the speaking invitation"}</strong><small>{language === "ar" ? "افتح الخيارات فقط إذا كنت تريد تخصيصها" : "Open the options only when you want to customize it"}</small></span>
+                      <button type="button" className="speaking-profile__builder-toggle" onClick={() => setSpeakingBuilderOpen((open) => !open)} aria-expanded={speakingBuilderOpen} aria-controls="speaking-invitation-builder"><Target size={14} /> {speakingBuilderOpen ? (language === "ar" ? "إخفاء الخيارات" : "Hide options") : (language === "ar" ? "تخصيص الدعوة" : "Customize invite")} <ChevronDown size={14} className={speakingBuilderOpen ? "speaking-profile__builder-chevron speaking-profile__builder-chevron--open" : "speaking-profile__builder-chevron"} /></button>
+                    </div>
+                    {speakingBuilderOpen && <div id="speaking-invitation-builder" className="speaking-profile__builder" aria-label={language === "ar" ? "منشئ دعوة التحدث" : "Speaking invitation builder"}>
                       <div className="speaking-profile__builder-head">
                         <span className="speaking-profile__builder-kicker"><Target size={14} /> {language === "ar" ? "عدسة الجمهور" : "Audience lens"}</span>
                         <span className="speaking-profile__builder-signal"><Sparkles size={12} /> {language === "ar" ? "مخصص حسب احتياجك" : "Personalized to your need"}</span>
@@ -1512,7 +1517,7 @@ export default function Home() {
                         </motion.div>
                       </AnimatePresence>
                     </div>
-                    <div className="speaking-profile__actions">
+}                    <div className="speaking-profile__actions">
                       <a className="button button--gold" href={speakingInviteHref} target="_self"><Mail size={15} /> {language === "ar" ? "إرسال " + speakingInviteCopy.formatLabel : "Send " + speakingInviteCopy.formatLabel + " invite"}</a>
                       <button className="button button--ghost" type="button" onClick={copySpeakingInvite}><CopyIcon size={15} /> {copiedKey === "speaking-invite" ? (language === "ar" ? "تم النسخ" : "Copied") : (language === "ar" ? "نسخ بيانات الدعوة" : "Copy invite details")}</button>
                       <a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a>

@@ -170,3 +170,8 @@
 - [x] دعم التبديل العربي/الإنجليزي وRTL والنسخ اليدوي داخل الدعوة الديناميكية.
 - [x] إضافة اختبارات helper وsource regression والتحقق البصري على desktop/mobile قبل حفظ checkpoint.
 - [x] حفظ checkpoint نهائي بعد اعتماد Speaking Profile الديناميكي.
+
+- [x] تقليل مساحة Speaking Profile وتحويل Invitation Builder إلى دعوة أخف داخل القسم بدل بطاقة كبيرة.
+- [x] معالجة المساحة الفارغة في Value Snapshot وجعل البطاقات تستفيد من العرض المتاح بتخطيط أقرب للصورة المرجعية.
+- [x] الحفاظ على وظائف Audience Lens وInvitation Builder وطرق التواصل مع دعم RTL والموبايل.
+- [x] اختبار التفاعل والبناء والمعاينة على desktop/mobile ثم حفظ checkpoint جديد.

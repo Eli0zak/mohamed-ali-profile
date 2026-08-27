@@ -39,6 +39,13 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain('href={visitorMode === "recruiter" ? "#companies" : "#training"}');
   });
 
+  it("keeps the advanced invitation builder opt-in and compact by default", () => {
+    expect(homeSource).toContain("speakingBuilderOpen &&");
+    expect(homeSource).toContain('className="speaking-profile__builder-toggle-row"');
+    expect(homeSource).toContain('className="speaking-profile__builder-toggle"');
+    expect(homeSource).toContain('aria-controls="speaking-invitation-builder"');
+  });
+
   it("keeps every smart contact option actionable", () => {
     expect(homeSource).toContain('href="mailto:mohamed280ali90@gmail.com"');
     expect(homeSource).toContain('href={linkedinUrl}');
