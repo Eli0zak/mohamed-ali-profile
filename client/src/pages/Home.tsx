@@ -1,5 +1,6 @@
 /* مدار النفوذ: الصفحة الرئيسية تجمع بين السرد التحريري، الكوكبة المدارية، ووضوح الإنجاز. */
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
 import {
   ArrowDown,
@@ -50,7 +51,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage, toggleLanguage, type Language } from "@/hooks/useLanguage";
 import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
-import { CAREER_ROUTE_D, getCareerRouteGeometry, type CareerRouteGeometry } from "@/lib/careerRoute";
+import { CAREER_ROUTE_D, getCareerRouteGeometry, getCareerRoutePoint, type CareerRouteGeometry } from "@/lib/careerRoute";
 import { getCareerProgressPercent, getNextCareerStationIndex } from "@/lib/careerNavigation";
 
 type CompanyType = "full-time" | "consulting";
@@ -480,6 +481,8 @@ const timeline = [
     copy: "Rapidly promoted through five leadership positions within approximately two years.",
     icon: TrendingUp,
     highlights: { en: ["Five leadership promotions in approximately two years.", "Owned branch performance and team rhythm.", "Built the leadership foundation for commercial growth."], ar: ["خمس ترقيات قيادية خلال نحو عامين.", "امتلكت أداء الفرع وإيقاع الفريق.", "بنيت الأساس القيادي للنمو التجاري."] },
+    impactTags: { en: ["Leadership", "Operations", "Team rhythm"], ar: ["قيادة", "تشغيل", "إيقاع الفريق"] },
+    transition: { en: "From leading a branch to building a repeatable commercial rhythm.", ar: "من قيادة الفرع إلى بناء إيقاع تجاري قابل للتكرار." },
   },
   {
     year: "2024 — 2025",
@@ -489,6 +492,8 @@ const timeline = [
     copy: "Led the sales team and expansion strategy, contributing to peak monthly revenue growth from EGP 2M to EGP 5M.",
     icon: BarChart3,
     highlights: { en: ["Led sales and expansion across the commercial operation.", "Contributed to monthly revenue growth from EGP 2M to EGP 5M peak.", "Connected sales execution with a clearer growth path."], ar: ["قدت المبيعات والتوسع داخل العملية التجارية.", "ساهمت في نمو الإيراد الشهري من 2 إلى 5 ملايين جنيه كقمة مسجلة.", "ربطت تنفيذ المبيعات بمسار نمو أوضح."] },
+    impactTags: { en: ["Revenue", "Sales", "Expansion"], ar: ["إيرادات", "مبيعات", "توسع"] },
+    transition: { en: "From branch leadership to connecting sales execution with expansion.", ar: "من قيادة الفرع إلى ربط تنفيذ المبيعات بالتوسع." },
   },
   {
     year: "2025 — Present",
@@ -498,6 +503,8 @@ const timeline = [
     copy: "Managed end-to-end branch operations and launched two new business branches before transitioning into advisory work.",
     icon: Target,
     highlights: { en: ["Managed end-to-end branch operations.", "Launched two new business branches.", "Transitioned from operating the branch to advising on growth."], ar: ["أدرت عمليات الفرع بالكامل.", "أطلقت فرعين تجاريين جديدين.", "انتقلت من تشغيل الفرع إلى تقديم الاستشارات في النمو."] },
+    impactTags: { en: ["Growth", "Branch launch", "Advisory"], ar: ["نمو", "إطلاق فروع", "استشارات"] },
+    transition: { en: "From operating the branch to advising on the growth system behind it.", ar: "من تشغيل الفرع إلى تقديم الاستشارات حول منظومة النمو خلفه." },
   },
   {
     year: "Jan 2026 — Present",
@@ -507,6 +514,8 @@ const timeline = [
     copy: "Founding member: opened a branch from the ground up, scaling monthly revenue from EGP 150K to EGP 450K peak in the first five operating months.",
     icon: Zap,
     highlights: { en: ["Founding member who opened a branch from the ground up.", "Scaled peak monthly revenue from EGP 150K to EGP 450K in the first five operating months.", "Combined branch ownership with Business Development leadership."], ar: ["عضو مؤسس افتتح فرعًا من الصفر.", "وسعت الإيراد الشهري كقمة مسجلة من 150 إلى 450 ألف جنيه خلال أول خمسة أشهر تشغيل.", "جمعت بين امتلاك الفرع وقيادة تطوير الأعمال."] },
+    impactTags: { en: ["Build from zero", "Revenue", "BD ownership"], ar: ["بناء من الصفر", "إيرادات", "امتلاك تطوير الأعمال"] },
+    transition: { en: "From operating experience to founding and scaling the next commercial base.", ar: "من خبرة التشغيل إلى تأسيس وتوسيع قاعدة تجارية جديدة." },
   },
 ];
 
@@ -977,10 +986,14 @@ export default function Home() {
   const [selectedTimelineIndex, setSelectedTimelineIndex] = useState(0);
   const [hoveredTimelineIndex, setHoveredTimelineIndex] = useState<number | null>(null);
   const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+  const [timelineTransition, setTimelineTransition] = useState<{ from: number; to: number } | null>(null);
+  const [dockingIndex, setDockingIndex] = useState<number | null>(null);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
   const careerPathRef = useRef<SVGPathElement | null>(null);
   const careerStationRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [routeGeometry, setRouteGeometry] = useState<CareerRouteGeometry | null>(null);
+  const travelerProgressMotion = useMotionValue(0);
+  const [travelerProgress, setTravelerProgress] = useState(0);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
   const [selectedProofIndex, setSelectedProofIndex] = useState(0);
   const [lightboxItem, setLightboxItem] = useState<{ category: ProofCategory; item: ProofItem } | null>(null);
@@ -988,6 +1001,7 @@ export default function Home() {
   const [formState, setFormState] = useState({ name: "", email: "", details: "" });
   const scrolled = useScrollState();
   const isMobile = useIsMobile();
+  const reducedMotion = useReducedMotion();
   useReveal();
   const trainedCount = useCountUp(750);
   const partnerCount = useCountUp(13, 1100);
@@ -1016,12 +1030,21 @@ export default function Home() {
     setProofOrbitFocused(false);
   };
   const selectTimelineStation = (index: number, focus = false) => {
-    setSelectedTimelineIndex(index);
+    if (index !== selectedTimelineIndex) {
+      setTimelineTransition({ from: selectedTimelineIndex, to: index });
+      setDockingIndex(null);
+      setSelectedTimelineIndex(index);
+    }
     if (focus) {
       window.requestAnimationFrame(() => careerStationRefs.current[index]?.focus());
     }
   };
   const handleTimelineKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setTimelineModalOpen(true);
+      return;
+    }
     const nextIndex = getNextCareerStationIndex(index, timeline.length, event.key);
     if (nextIndex === null) return;
     event.preventDefault();
@@ -1063,21 +1086,51 @@ export default function Home() {
     window.addEventListener("resize", measureRoute);
     return () => window.removeEventListener("resize", measureRoute);
   }, []);
+  useEffect(() => {
+    if (!timelineTransition) return;
+    const dockingDelay = window.setTimeout(() => {
+      setDockingIndex(timelineTransition.to);
+    }, reducedMotion ? 0 : 720);
+    const cleanupDocking = window.setTimeout(() => {
+      setDockingIndex(null);
+      setTimelineTransition(null);
+    }, reducedMotion ? 180 : 1320);
+    return () => {
+      window.clearTimeout(dockingDelay);
+      window.clearTimeout(cleanupDocking);
+    };
+  }, [timelineTransition, reducedMotion]);
+  useEffect(() => {
+    const fallbackProgress = selectedTimelineIndex / Math.max(timeline.length - 1, 1);
+    const targetProgress = routeGeometry?.stationProgress[selectedTimelineIndex] ?? fallbackProgress;
+    const controls = animate(travelerProgressMotion, targetProgress, {
+      duration: reducedMotion ? 0 : 0.92,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (value) => setTravelerProgress(value),
+    });
+    return () => controls.stop();
+  }, [routeGeometry, selectedTimelineIndex, reducedMotion, travelerProgressMotion]);
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  const activeRoutePoint = routeGeometry?.stations[selectedTimelineIndex] ?? {
+  const selectedRoutePoint = routeGeometry?.stations[selectedTimelineIndex] ?? {
     left: timelinePositions[selectedTimelineIndex].left,
     top: timelinePositions[selectedTimelineIndex].top,
     angle: 0,
     progress: selectedTimelineIndex / Math.max(timeline.length - 1, 1),
   };
-  const routeProgressPercent = getCareerProgressPercent(activeRoutePoint.progress);
+  const travelerRoutePoint = routeGeometry && careerPathRef.current
+    ? getCareerRoutePoint(careerPathRef.current, travelerProgress)
+    : selectedRoutePoint;
+  const routeProgressPercent = getCareerProgressPercent(travelerRoutePoint.progress);
   const routeStationProgress = routeGeometry?.stationProgress ?? timeline.map((_, index) => index / Math.max(timeline.length - 1, 1));
+  const currentTimelineItem = timeline[selectedTimelineIndex];
+  const nextTimelineItem = timeline[selectedTimelineIndex + 1] ?? null;
+  const nextTimelineLocalized = nextTimelineItem && language === "ar" ? timelineArabic[nextTimelineItem.company] : undefined;
   const routeCssVars = {
-    "--traveler-left": activeRoutePoint.left,
-    "--traveler-top": activeRoutePoint.top,
-    "--traveler-angle": `${activeRoutePoint.angle}deg`,
+    "--traveler-left": travelerRoutePoint.left,
+    "--traveler-top": travelerRoutePoint.top,
+    "--traveler-angle": `${travelerRoutePoint.angle}deg`,
   } as React.CSSProperties;
-  const travelerStyle = { left: activeRoutePoint.left, top: activeRoutePoint.top, ...routeCssVars } as React.CSSProperties;
+  const travelerStyle = { left: travelerRoutePoint.left, top: travelerRoutePoint.top, ...routeCssVars } as React.CSSProperties;
   const trailStyle = routeCssVars;
   const sendWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
@@ -1287,14 +1340,29 @@ export default function Home() {
               </div>
               <div className="career-route__map" aria-label={language === "ar" ? "خريطة الرحلة المهنية" : "Career journey map"}>
                 <svg className="career-route__path" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true"><path ref={careerPathRef} className="career-route__path-base" d={CAREER_ROUTE_D} /><path className="career-route__path-glow" d={CAREER_ROUTE_D} /></svg>
-                <span className="career-route__trail" style={trailStyle} data-route-progress={activeRoutePoint.progress.toFixed(4)} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span><span className="career-route__traveler" style={travelerStyle} data-route-progress={activeRoutePoint.progress.toFixed(4)} aria-hidden="true"><span>✦</span></span>
+                <span className="career-route__trail" style={trailStyle} data-route-progress={travelerRoutePoint.progress.toFixed(4)} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span><span className="career-route__traveler" style={travelerStyle} data-route-progress={travelerRoutePoint.progress.toFixed(4)} aria-hidden="true"><span>✦</span></span>
                 <div className="career-route__stations" role="list">
                   {timeline.map((item, index) => {
                     const Icon = item.icon;
                     const localized = language === "ar" ? timelineArabic[item.company] : undefined;
                     const active = selectedTimelineIndex === index;
                     const stationPosition = routeGeometry?.stations[index] ?? timelinePositions[index];
-                    return <button ref={(element) => { careerStationRefs.current[index] = element; }} className={`career-station ${active ? "career-station--active career-station--handoff" : ""} ${index < selectedTimelineIndex ? "career-station--visited" : ""}`} type="button" role="listitem" key={item.company} onClick={() => selectTimelineStation(index)} onKeyDown={(event) => handleTimelineKeyDown(event, index)} onMouseEnter={() => setHoveredTimelineIndex(index)} onMouseLeave={() => setHoveredTimelineIndex(null)} onFocus={() => setHoveredTimelineIndex(index)} onBlur={() => setHoveredTimelineIndex(null)} style={{ left: stationPosition.left, top: stationPosition.top }} aria-pressed={active} aria-current={active ? "step" : undefined} aria-describedby="career-route-keyboard-help" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End" tabIndex={active ? 0 : -1} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index}><span>{language === "ar" ? "اضغط لاكتشاف المحطة" : "Select to discover"}</span><strong>{localized?.role ?? item.role}</strong></span><span className="career-station__icon"><Icon size={14} /></span></button>;
+                    const impactTags = item.impactTags[language];
+                    const isSource = timelineTransition?.from === index;
+                    const isTarget = timelineTransition?.to === index;
+                    const isDocking = dockingIndex === index;
+                    return <button ref={(element) => { careerStationRefs.current[index] = element; }} className={`career-station ${active ? "career-station--active" : ""} ${isSource || isTarget ? "career-station--handoff" : ""} ${isDocking ? "career-station--docking" : ""} ${index < selectedTimelineIndex ? "career-station--visited" : ""}`} type="button" role="listitem" key={item.company} onClick={() => selectTimelineStation(index)} onKeyDown={(event) => handleTimelineKeyDown(event, index)} onMouseEnter={() => setHoveredTimelineIndex(index)} onMouseLeave={() => setHoveredTimelineIndex(null)} onFocus={() => setHoveredTimelineIndex(index)} onBlur={() => setHoveredTimelineIndex(null)} style={{ left: stationPosition.left, top: stationPosition.top }} aria-pressed={active} aria-current={active ? "step" : undefined} aria-describedby="career-route-keyboard-help" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home End" tabIndex={active ? 0 : -1} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}>
+                      <span className="career-station__halo" />
+                      <motion.span className="career-station__scan-line" aria-hidden="true" initial={{ scaleX: 0, opacity: 0 }} animate={active || hoveredTimelineIndex === index ? { scaleX: 1, opacity: 1 } : { scaleX: 0, opacity: 0 }} transition={{ duration: reducedMotion ? 0 : 0.28 }} />
+                      <span className="career-station__impact-rings" aria-hidden="true"><i /><i /><i /></span>
+                      {isDocking && <motion.span className="career-station__docking-ring" aria-hidden="true" initial={{ scale: 0.5, opacity: 0.85 }} animate={{ scale: 1.75, opacity: 0 }} transition={{ duration: reducedMotion ? 0.18 : 0.72, ease: "easeOut" }} />}
+                      <span className="career-station__number">0{index + 1}</span>
+                      <span className="career-station__logo"><img src={item.logo} alt="" /></span>
+                      <span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span>
+                      <span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index && !active}><span>{language === "ar" ? "هوية المحطة" : "Station identity"}</span><strong>{localized?.role ?? item.role}</strong><small>{item.year} · {impactTags[0]}</small></span>
+                      <span className="career-station__impact-labels" aria-hidden="true">{impactTags.map((tag) => <span key={tag}>{tag}</span>)}</span>
+                      <span className="career-station__icon"><Icon size={14} /></span>
+                    </button>;
                   })}
                 </div>
               </div>
@@ -1309,9 +1377,15 @@ export default function Home() {
               </div>
               <div className="career-route__mission" aria-live="polite">
                 <span className="career-route__mission-beacon" aria-hidden="true"><span /></span>
-                <div><span className="career-route__mission-kicker">{language === "ar" ? "MISSION CONTROL" : "MISSION CONTROL"}</span><strong>{language === "ar" ? `المحطة الحالية: ${timeline[selectedTimelineIndex].company}` : `Current station: ${timeline[selectedTimelineIndex].company}`}</strong><span>{language === "ar" ? `الخطوة التالية: ${selectedTimelineIndex < timeline.length - 1 ? timeline[selectedTimelineIndex + 1].company : "المرحلة التالية"}` : `Next signal: ${selectedTimelineIndex < timeline.length - 1 ? timeline[selectedTimelineIndex + 1].company : "What comes next"}`}</span></div>
+                <div><span className="career-route__mission-kicker">MISSION CONTROL</span><strong>{language === "ar" ? `المحطة الحالية: ${currentTimelineItem.company}` : `Current station: ${currentTimelineItem.company}`}</strong><span>{language === "ar" ? `الخطوة التالية: ${nextTimelineItem?.company ?? "المرحلة التالية"}` : `Next signal: ${nextTimelineItem?.company ?? "What comes next"}`}</span></div>
                 <span className="career-route__mission-progress">{String(selectedTimelineIndex + 1).padStart(2, "0")} / {String(timeline.length).padStart(2, "0")}</span>
               </div>
+              <AnimatePresence mode="wait" initial={false}>
+                {nextTimelineItem ? <motion.aside key={nextTimelineItem.company} className="career-route__next-mission" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: reducedMotion ? 0 : 0.24, ease: "easeOut" }} aria-live="polite">
+                  <div className="career-route__next-mission-copy"><span className="career-route__next-mission-kicker"><Sparkles size={12} /> {language === "ar" ? "المهمة التالية" : "Next mission"}</span><strong>{nextTimelineItem.company}</strong><span>{nextTimelineLocalized?.role ?? nextTimelineItem.role}</span><p>{nextTimelineItem.transition[language]}</p></div>
+                  <span className="career-route__next-mission-tag">{nextTimelineItem.impactTags[language][0]}</span>
+                </motion.aside> : <motion.aside key="next-mission-ready" className="career-route__next-mission career-route__next-mission--complete" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: reducedMotion ? 0 : 0.24, ease: "easeOut" }} aria-live="polite"><div className="career-route__next-mission-copy"><span className="career-route__next-mission-kicker"><Sparkles size={12} /> {language === "ar" ? "جاهز للمهمة التالية" : "Ready for the next mission"}</span><strong>{language === "ar" ? "المحطة التالية تبدأ معك" : "The next station starts with you"}</strong><p>{language === "ar" ? "تواصل معي لبناء المسار التجاري القادم." : "Open a conversation about the next commercial mission."}</p></div><span className="career-route__next-mission-tag">100%</span></motion.aside>}
+              </AnimatePresence>
               {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div><button className="career-route__detail-button" type="button" onClick={() => setTimelineModalOpen(true)}>{language === "ar" ? "عرض التفاصيل" : "View details"}<ArrowUpRight size={15} /></button></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
               {timelineModalOpen && (() => { const item = timeline[selectedTimelineIndex]; const localized = language === "ar" ? timelineArabic[item.company] : undefined; const highlights = language === "ar" ? item.highlights.ar : item.highlights.en; return <div className="career-modal" role="dialog" aria-modal="true" aria-labelledby="career-modal-title" onClick={() => setTimelineModalOpen(false)}><div className="career-modal__panel" onClick={(event) => event.stopPropagation()}><button className="career-modal__close" type="button" onClick={() => setTimelineModalOpen(false)} aria-label={language === "ar" ? "إغلاق التفاصيل" : "Close details"}><X size={18} /></button><div className="career-modal__eyebrow">0{selectedTimelineIndex + 1} / {item.year}</div><div className="career-modal__brand"><img src={item.logo} alt={`${item.company} logo`} /><div><span className="company-kicker">{item.company}</span><h3 id="career-modal-title">{localized?.role ?? item.role}</h3></div></div><p className="career-modal__intro">{localized?.copy ?? item.copy}</p><div className="career-modal__section"><span className="company-kicker">{language === "ar" ? "أبرز ما تم بناؤه" : "Selected proof points"}</span><ul>{highlights.map((highlight) => <li key={highlight}><Check size={15} />{highlight}</li>)}</ul></div><button className="button button--gold" type="button" onClick={() => { setTimelineModalOpen(false); scrollTo("contact"); }}>{language === "ar" ? "ابدأ محادثة حول الدور" : "Start a conversation about this role"}<ArrowUpRight size={16} /></button></div></div>; })()}
               <div id="career-route-keyboard-help" className="career-route__hint" role="note"><span className="hint-ring" /><span>{language === "ar" ? "المؤشر يتحرك مع كل محطة تختارها" : "The marker moves with every station you select"}</span><span className="career-route__keys" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd><span>{language === "ar" ? "للتنقل" : "to navigate"}</span></span></div>
