@@ -463,6 +463,12 @@ const companies: Company[] = [
   },
 ];
 
+const timelinePositions = [
+  { left: "9%", top: "61%" },
+  { left: "35%", top: "26%" },
+  { left: "62%", top: "65%" },
+  { left: "89%", top: "29%" },
+];
 const timeline = [
   {
     year: "2021 — 2023",
@@ -962,6 +968,7 @@ export default function Home() {
     setTimeout(() => setCopiedKey(null), 2500);
   };
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedTimelineIndex, setSelectedTimelineIndex] = useState(0);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
   const [selectedProofIndex, setSelectedProofIndex] = useState(0);
@@ -1224,16 +1231,28 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="journey" className="journey-section" style={{ backgroundImage: `linear-gradient(180deg, rgba(3,7,18,.98), rgba(3,7,18,.88)), url(${asset.career})` }}>
+        <section id="journey" className="journey-section career-route-section" style={{ backgroundImage: `linear-gradient(180deg, rgba(3,7,18,.98), rgba(3,7,18,.9)), url(${asset.career})` }}>
           <div className="container">
-            <SectionIntro eyebrow={homeCopy[language].journey.eyebrow} title={homeCopy[language].journey.title} copy={homeCopy[language].journey.copy} language={language} />
-            <div className="timeline-wrap">
-              <div className="timeline-rail" aria-hidden="true"><span /><span /><span /><span /></div>
-              {timeline.map((item, index) => {
-                const Icon = item.icon;
-                const localized = language === "ar" ? timelineArabic[item.company] : undefined;
-                return <article className="timeline-card" data-reveal key={item.company} style={{ "--timeline-delay": `${index * 90}ms` } as React.CSSProperties}><div className="timeline-card__index">0{index + 1}</div><div className="timeline-card__logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="timeline-card__content"><p className="company-kicker">{item.company}</p><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="timeline-card__meta"><span><Icon size={14} /> {homeCopy[language].journey.trajectory}</span><span className="timeline-year">{item.year}</span></div></div><ArrowUpRight className="timeline-card__arrow" size={20} /></article>;
-              })}
+            <SectionIntro eyebrow={homeCopy[language].journey.eyebrow} title={language === "ar" ? "مدار مهني بُني خطوة بخطوة" : "The Career Orbit That Built My Commercial Edge"} copy={language === "ar" ? "كل محطة أضافت طبقة جديدة: قيادة، نمو، تشغيل، ثم بناء فرق وأنظمة قابلة للتوسع." : "Each station added a new layer of leadership, growth, operations, and scalable team-building."} language={language} />
+            <div className="career-route" dir={language === "ar" ? "rtl" : "ltr"}>
+              <div className="career-route__header">
+                <div><span className="career-route__eyebrow">{language === "ar" ? "CAREER ROUTE / 04 STATIONS" : "CAREER ROUTE / 04 STATIONS"}</span><h3>{language === "ar" ? "من محطة إلى محطة" : "From station to station"}</h3></div>
+                <p>{language === "ar" ? "اضغط على أي محطة لاكتشاف الدور والدليل وراء الانتقال التالي." : "Select a station to reveal the role, proof, and next move behind the transition."}</p>
+              </div>
+              <div className="career-route__map" aria-label={language === "ar" ? "خريطة الرحلة المهنية" : "Career journey map"}>
+                <svg className="career-route__path" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true"><path className="career-route__path-base" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /><path className="career-route__path-glow" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /></svg>
+                <span className="career-route__traveler" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><span>✦</span></span>
+                <div className="career-route__stations" role="list">
+                  {timeline.map((item, index) => {
+                    const Icon = item.icon;
+                    const localized = language === "ar" ? timelineArabic[item.company] : undefined;
+                    const active = selectedTimelineIndex === index;
+                    return <button className={`career-station ${active ? "career-station--active" : ""}`} type="button" role="listitem" key={item.company} onClick={() => setSelectedTimelineIndex(index)} style={timelinePositions[index] as React.CSSProperties} aria-pressed={active} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__icon"><Icon size={14} /></span></button>;
+                  })}
+                </div>
+              </div>
+              {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
+              <div className="career-route__hint"><span className="hint-ring" /> {language === "ar" ? "المؤشر يتحرك مع كل محطة تختارها" : "The marker moves with every station you select"}</div>
             </div>
           </div>
         </section>
