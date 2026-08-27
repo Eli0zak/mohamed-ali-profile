@@ -164,3 +164,9 @@
 - [x] إصلاح عطل زر Invite to Speak والتحقق من mailto على الديسكتوب والموبايل
 - [x] إضافة fallback واضح لنسخ بريد الدعوة وبياناتها عند عدم توفر تطبيق بريد
 - [x] اختبار زر الدعوة وRTL والموبايل وBuild الإنتاج قبل النشر
+
+- [x] إضافة Audience Lens بثلاثة مسارات: فرق المبيعات، المؤسسون، ومجتمعات التدريب داخل Speaking Profile.
+- [x] إضافة Invitation Builder لأنواع Talk وWorkshop وPanel مع تحديث الموضوع والنص والرابط تلقائيًا.
+- [x] دعم التبديل العربي/الإنجليزي وRTL والنسخ اليدوي داخل الدعوة الديناميكية.
+- [x] إضافة اختبارات helper وsource regression والتحقق البصري على desktop/mobile قبل حفظ checkpoint.
+- [x] حفظ checkpoint نهائي بعد اعتماد Speaking Profile الديناميكي.

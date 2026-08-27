@@ -17,6 +17,15 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("linkedinUrl");
   });
 
+  it("keeps the Speaking Profile audience lens and invitation builder wired", () => {
+    expect(homeSource).toContain("speakingAudienceOptions.map");
+    expect(homeSource).toContain("speakingInviteOptions.map");
+    expect(homeSource).toContain('setSpeakingAudience(option.id)');
+    expect(homeSource).toContain('setSpeakingInviteKind(option.id)');
+    expect(homeSource).toContain("getSpeakingInviteCopy");
+    expect(homeSource).toContain('dir={language === "ar" ? "rtl" : "ltr"}');
+  });
+
   it("keeps the smart contact menu available with direct channels", () => {
     expect(homeSource).toContain('className={`smart-contact');
     expect(homeSource).toContain("mailto:mohamed280ali90@gmail.com");

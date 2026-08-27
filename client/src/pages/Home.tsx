@@ -54,7 +54,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
 import { CAREER_ROUTE_D, getCareerRouteGeometry, getCareerRoutePoint, type CareerRouteGeometry } from "@/lib/careerRoute";
 import { getCareerProgressPercent, getNextCareerStationIndex } from "@/lib/careerNavigation";
-import { speakingInviteCopyText, speakingInviteHref, SPEAKING_INVITE_EMAIL } from "@/lib/speakingInvite";
+import { buildSpeakingInviteHref, getSpeakingInviteCopy, getSpeakingInviteCopyText, speakingAudienceOptions, speakingInviteOptions, SPEAKING_INVITE_EMAIL, type SpeakingAudience, type SpeakingInviteKind } from "@/lib/speakingInvite";
 
 type CompanyType = "full-time" | "consulting";
 type VisitorMode = "recruiter" | "client";
@@ -976,6 +976,8 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const [visitorMode, setVisitorMode] = useState<VisitorMode>("recruiter");
+  const [speakingAudience, setSpeakingAudience] = useState<SpeakingAudience>("sales-teams");
+  const [speakingInviteKind, setSpeakingInviteKind] = useState<SpeakingInviteKind>("talk");
   const [smartContactOpen, setSmartContactOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const scrollProgress = useScrollProgress();
@@ -1025,6 +1027,9 @@ export default function Home() {
   const scrolled = useScrollState();
   const isMobile = useIsMobile();
   const reducedMotion = useReducedMotion();
+  const speakingInviteCopy = useMemo(() => getSpeakingInviteCopy({ audience: speakingAudience, kind: speakingInviteKind, language }), [speakingAudience, speakingInviteKind, language]);
+  const speakingInviteHref = useMemo(() => buildSpeakingInviteHref({ subject: speakingInviteCopy.subject, body: speakingInviteCopy.body }), [speakingInviteCopy]);
+  const speakingInviteCopyText = useMemo(() => getSpeakingInviteCopyText({ subject: speakingInviteCopy.subject, body: speakingInviteCopy.body }), [speakingInviteCopy]);
   useReveal();
   const trainedCount = useCountUp(750);
   const partnerCount = useCountUp(13, 1100);
@@ -1465,7 +1470,52 @@ export default function Home() {
                 const itemCaption = language === "ar" ? (proofItem.captionAr ?? itemTitle) : (proofItem.caption ?? itemTitle);
                 return <div className={`proof-detail__panel ${selectedProofCategory.id === "events" ? "proof-detail__panel--featured" : ""}`} style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
                   <div className="proof-detail__header"><div>{selectedProofCategory.id === "events" && <span className="proof-detail__featured-badge"><Sparkles size={13} /> {language === "ar" ? "فعالية مميزة — متحدث" : "Featured speaking engagement"}</span>}<p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
-                  {selectedProofCategory.id === "events" && <div className="speaking-profile"><div><p className="company-kicker">{language === "ar" ? "Speaking Profile" : "Speaking Profile"}</p><h5>{language === "ar" ? "من قاعة الفعالية إلى حوار تجاري مؤثر" : "From the event room to a sharper commercial conversation"}</h5><p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p></div><div className="speaking-profile__topics"><span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span><span>{language === "ar" ? "Business Development" : "Business Development"}</span><span>{language === "ar" ? "Team performance" : "Team performance"}</span></div><div className="speaking-profile__actions"><a className="button button--gold" href={speakingInviteHref} target="_self"><Mail size={15} /> {language === "ar" ? "دعوة للتحدث" : "Invite to speak"}</a><button className="button button--ghost" type="button" onClick={copySpeakingInvite}><CopyIcon size={15} /> {copiedKey === "speaking-invite" ? (language === "ar" ? "تم النسخ" : "Copied") : (language === "ar" ? "نسخ بيانات الدعوة" : "Copy invite details")}</button><a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a></div><p className="speaking-profile__fallback" aria-live="polite">{copiedKey === "speaking-invite" ? (language === "ar" ? "تم نسخ البريد والموضوع ونص الدعوة." : "Email, subject, and invite template copied.") : copiedKey === "speaking-invite-failed" ? (language === "ar" ? "لم يتم النسخ تلقائيًا. حدد النص يدويًا من الحقل التالي." : "Copy was unavailable. Select the invite details manually below.") : (language === "ar" ? "إذا لم يفتح تطبيق البريد، استخدم نسخ بيانات الدعوة." : "If your email app does not open, use Copy invite details.")}</p>{copiedKey === "speaking-invite-failed" && <textarea className="speaking-profile__copy-fallback" value={speakingInviteCopyText} readOnly rows={5} aria-label={language === "ar" ? "بيانات دعوة التحدث" : "Speaking invitation details"} onFocus={(event) => event.currentTarget.select()} />}</div>}
+                  {selectedProofCategory.id === "events" && <div className="speaking-profile" dir={language === "ar" ? "rtl" : "ltr"}>
+                    <div className="speaking-profile__intro">
+                      <p className="company-kicker">Speaking Profile</p>
+                      <h5>{language === "ar" ? "من قاعة الفعالية إلى حوار تجاري مؤثر" : "From the event room to a sharper commercial conversation"}</h5>
+                      <p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p>
+                    </div>
+                    <div className="speaking-profile__topics" aria-label={language === "ar" ? "محاور التحدث" : "Speaking topics"}>
+                      <span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span>
+                      <span>{language === "ar" ? "Business Development" : "Business Development"}</span>
+                      <span>{language === "ar" ? "Team performance" : "Team performance"}</span>
+                    </div>
+                    <div className="speaking-profile__builder" aria-label={language === "ar" ? "منشئ دعوة التحدث" : "Speaking invitation builder"}>
+                      <div className="speaking-profile__builder-head">
+                        <span className="speaking-profile__builder-kicker"><Target size={14} /> {language === "ar" ? "عدسة الجمهور" : "Audience lens"}</span>
+                        <span className="speaking-profile__builder-signal"><Sparkles size={12} /> {language === "ar" ? "مخصص حسب احتياجك" : "Personalized to your need"}</span>
+                      </div>
+                      <div className="speaking-profile__builder-grid">
+                        <fieldset className="speaking-profile__field">
+                          <legend>{language === "ar" ? "لمن هذه الجلسة؟" : "Who is this for?"}</legend>
+                          <div className="speaking-profile__choices">
+                            {speakingAudienceOptions.map((option) => <button key={option.id} type="button" className={speakingAudience === option.id ? "speaking-profile__choice speaking-profile__choice--active" : "speaking-profile__choice"} onClick={() => setSpeakingAudience(option.id)} aria-pressed={speakingAudience === option.id}><span><strong>{option.label[language]}</strong><small>{option.detail[language]}</small></span>{speakingAudience === option.id && <Check size={14} aria-hidden="true" />}</button>)}
+                          </div>
+                        </fieldset>
+                        <fieldset className="speaking-profile__field">
+                          <legend>{language === "ar" ? "ما نوع المشاركة؟" : "What are you planning?"}</legend>
+                          <div className="speaking-profile__choices">
+                            {speakingInviteOptions.map((option) => <button key={option.id} type="button" className={speakingInviteKind === option.id ? "speaking-profile__choice speaking-profile__choice--active" : "speaking-profile__choice"} onClick={() => setSpeakingInviteKind(option.id)} aria-pressed={speakingInviteKind === option.id}><span><strong>{option.label[language]}</strong><small>{option.detail[language]}</small></span>{speakingInviteKind === option.id && <Check size={14} aria-hidden="true" />}</button>)}
+                          </div>
+                        </fieldset>
+                      </div>
+                      <AnimatePresence mode="wait" initial={false}>
+                        <motion.div key={`${speakingAudience}-${speakingInviteKind}-${language}`} className="speaking-profile__preview" aria-live="polite" initial={{ opacity: 0, y: reducedMotion ? 0 : 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reducedMotion ? 0 : -4 }} transition={{ duration: reducedMotion ? 0 : 0.2, ease: "easeOut" }}>
+                          <div className="speaking-profile__preview-meta"><span>{language === "ar" ? "الموضوع المقترح" : "Generated subject"}</span><b>{speakingInviteCopy.formatLabel}</b></div>
+                          <strong>{speakingInviteCopy.subject}</strong>
+                          <p>{speakingInviteCopy.focus}</p>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                    <div className="speaking-profile__actions">
+                      <a className="button button--gold" href={speakingInviteHref} target="_self"><Mail size={15} /> {language === "ar" ? "إرسال " + speakingInviteCopy.formatLabel : "Send " + speakingInviteCopy.formatLabel + " invite"}</a>
+                      <button className="button button--ghost" type="button" onClick={copySpeakingInvite}><CopyIcon size={15} /> {copiedKey === "speaking-invite" ? (language === "ar" ? "تم النسخ" : "Copied") : (language === "ar" ? "نسخ بيانات الدعوة" : "Copy invite details")}</button>
+                      <a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a>
+                    </div>
+                    <p className="speaking-profile__fallback" aria-live="polite">{copiedKey === "speaking-invite" ? (language === "ar" ? "تم نسخ البريد والموضوع ونص الدعوة." : "Email, subject, and invite template copied.") : copiedKey === "speaking-invite-failed" ? (language === "ar" ? "لم يتم النسخ تلقائيًا. حدد النص يدويًا من الحقل التالي." : "Copy was unavailable. Select the invite details manually below.") : (language === "ar" ? "إذا لم يفتح تطبيق البريد، استخدم نسخ بيانات الدعوة." : "If your email app does not open, use Copy invite details.")}</p>
+                    {copiedKey === "speaking-invite-failed" && <textarea className="speaking-profile__copy-fallback" value={speakingInviteCopyText} readOnly rows={5} aria-label={language === "ar" ? "بيانات دعوة التحدث" : "Speaking invitation details"} onFocus={(event) => event.currentTarget.select()} />}
+                  </div>}
                   <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
                   {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
                 </div>;
