@@ -22,4 +22,18 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("mailto:mohamed280ali90@gmail.com");
     expect(homeSource).toContain("https://wa.me/201030537773");
   });
+
+  it("removes the inactive case study path while keeping the value snapshot action", () => {
+    expect(homeSource).not.toContain('href="#case-study"');
+    expect(homeSource).not.toContain('id="case-study"');
+    expect(homeSource).toContain('<section className="value-snapshot container"');
+    expect(homeSource).toContain('href={visitorMode === "recruiter" ? "#companies" : "#training"}');
+  });
+
+  it("keeps every smart contact option actionable", () => {
+    expect(homeSource).toContain('href="mailto:mohamed280ali90@gmail.com"');
+    expect(homeSource).toContain('href={linkedinUrl}');
+    expect(homeSource).toContain('href="https://wa.me/201030537773"');
+    expect(homeSource).toContain("Speaking%20invitation%20for%20Mohamed%20Ali");
+  });
 });

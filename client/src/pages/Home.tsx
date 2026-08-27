@@ -1043,7 +1043,6 @@ export default function Home() {
         <nav className={`desktop-nav ${menuOpen ? "desktop-nav--open" : ""}`} aria-label="Primary navigation">
           <a href="#companies" onClick={() => setMenuOpen(false)}>{language === "en" ? "Orbit" : "الكوكبة"}</a>
           <a href="#journey" onClick={() => setMenuOpen(false)}>{language === "en" ? "Journey" : "المسار"}</a>
-          <a href="#case-study" onClick={() => setMenuOpen(false)}>{language === "en" ? "Case Study" : "دراسة حالة"}</a>
           <a href="#training" onClick={() => setMenuOpen(false)}>{language === "en" ? "Training" : "التدريب"}</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>{language === "en" ? "Contact" : "التواصل"}</a>
           <Link href="/career-gateway" className="text-[#d4af37] font-semibold flex items-center gap-1" onClick={() => setMenuOpen(false)}>
@@ -1208,18 +1207,6 @@ export default function Home() {
                 return <article className="timeline-card" data-reveal key={item.company} style={{ "--timeline-delay": `${index * 90}ms` } as React.CSSProperties}><div className="timeline-card__index">0{index + 1}</div><div className="timeline-card__logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="timeline-card__content"><p className="company-kicker">{item.company}</p><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="timeline-card__meta"><span><Icon size={14} /> {homeCopy[language].journey.trajectory}</span><span className="timeline-year">{item.year}</span></div></div><ArrowUpRight className="timeline-card__arrow" size={20} /></article>;
               })}
             </div>
-          </div>
-        </section>
-
-        <section id="case-study" className="case-study-section section-dark">
-          <div className="container">
-            <SectionIntro eyebrow={language === "ar" ? "دراسة حالة موثقة · 01" : "Documented case study · 01"} title={language === "ar" ? "من إطلاق فرع جديد إلى نظام نمو قابل للتكرار" : "From a new-branch launch to a repeatable growth system"} copy={language === "ar" ? "قصة مختصرة من تجربة JCC Training Academy، مبنية على بيانات الدور والنتائج المسجلة في ملف محمد المهني." : "A concise story from the JCC Training Academy experience, built from the role data and outcomes recorded in Mohamed's professional profile."} language={language} />
-            <div className="case-study-grid">
-              <article className="case-study-card" data-reveal><span className="case-study-card__number">01</span><p className="company-kicker">{language === "ar" ? "التحدي" : "Challenge"}</p><h3>{language === "ar" ? "إطلاق فرع جديد من الصفر" : "Launch a new branch from the ground up"}</h3><p>{language === "ar" ? "بدأت المهمة قبل الإطلاق التجاري بمرحلة تأسيس وتجهيز مدتها شهران، مع الحاجة إلى بناء هيكل واضح للتشغيل والمبيعات والتعليم." : "The assignment began with a two-month setup and readiness phase before commercial launch, requiring a clear structure across Sales, Operations, and Education."}</p></article>
-              <article className="case-study-card" data-reveal><span className="case-study-card__number">02</span><p className="company-kicker">{language === "ar" ? "الفعل" : "Action"}</p><h3>{language === "ar" ? "بناء الفريق والنظام معًا" : "Build the team and the system together"}</h3><p>{language === "ar" ? "تم تأسيس سير العمل، وتوظيف وتدريب فريق المبيعات، ووضع مؤشرات أداء وآليات متابعة، مع تحسين إدارة العملاء والمتابعة والتحويل." : "Built operating workflows, recruited and trained the sales team, established KPIs and reporting, and improved lead management, follow-up discipline, and conversion practices."}</p></article>
-              <article className="case-study-card case-study-card--outcome" data-reveal><span className="case-study-card__number">03</span><p className="company-kicker">{language === "ar" ? "النتيجة" : "Outcome"}</p><h3>{language === "ar" ? "نمو تجاري موثق خلال الأشهر الأولى" : "Documented commercial growth in the first months"}</h3><p>{language === "ar" ? "ارتفعت الإيرادات الشهرية من 150 ألف جنيه في الشهر الأول إلى 250 ألفًا ثم 300 ألف، مع وصول الذروة إلى 450 ألف جنيه شهريًا." : "Monthly revenue moved from EGP 150K in month one to EGP 250K and EGP 300K, reaching a peak of EGP 450K per month."}</p><strong>{language === "ar" ? "150K → 450K جنيه مصري / شهريًا" : "EGP 150K → EGP 450K / month"}</strong></article>
-            </div>
-            <div className="case-study-footer"><span><Check size={15} /> {language === "ar" ? "الأرقام مبنية على بيانات الدور المقدمة في الملف المهني" : "Figures are based on the role data provided in the professional profile"}</span><a className="text-link" href={asset.cv} download="Mohamed-Ali-CV.pdf">{language === "ar" ? "راجع السيرة الذاتية" : "Review the CV"} <Download size={15} /></a></div>
           </div>
         </section>
 
