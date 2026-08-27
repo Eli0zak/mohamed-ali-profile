@@ -147,3 +147,7 @@
 - [x] Remove Career Orbit background artifact and isolate the section background from legacy layers
 - [x] Drive traveler, trail, particles, and station handoff from the actual SVG path geometry
 - [x] Verify Career Orbit motion, Mission Control updates, RTL/mobile behavior, tests, and production build
+- [x] إضافة تنقل سلس بين محطات Career Orbit عبر مفاتيح الأسهم مع دعم التركيز وقارئات الشاشة
+- [x] إضافة مؤشر تقدم خطي أسفل الخريطة يعرض النسبة الإجمالية للرحلة المهنية
+- [x] إضافة لمسات إبداعية خفيفة مرتبطة بالتقدم دون تشويش بصري أو كسر RTL والموبايل
+- [x] اختبار تجربة لوحة المفاتيح ومؤشر التقدم والبناء والمعاينة المتجاوبة
