@@ -1,5 +1,5 @@
 /* مدار النفوذ: الصفحة الرئيسية تجمع بين السرد التحريري، الكوكبة المدارية، ووضوح الإنجاز. */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import {
   ArrowDown,
@@ -50,6 +50,7 @@ import { Input } from "@/components/ui/input";
 import { useLanguage, toggleLanguage, type Language } from "@/hooks/useLanguage";
 import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
+import { CAREER_ROUTE_D, getCareerRouteGeometry, type CareerRouteGeometry } from "@/lib/careerRoute";
 
 type CompanyType = "full-time" | "consulting";
 type VisitorMode = "recruiter" | "client";
@@ -464,10 +465,10 @@ const companies: Company[] = [
 ];
 
 const timelinePositions = [
-  { left: "9%", top: "61%" },
-  { left: "35%", top: "26%" },
-  { left: "62%", top: "65%" },
-  { left: "89%", top: "29%" },
+  { left: "8%", top: "62%" },
+  { left: "35%", top: "32%" },
+  { left: "62%", top: "58%" },
+  { left: "93%", top: "36%" },
 ];
 const timeline = [
   {
@@ -976,6 +977,8 @@ export default function Home() {
   const [hoveredTimelineIndex, setHoveredTimelineIndex] = useState<number | null>(null);
   const [timelineModalOpen, setTimelineModalOpen] = useState(false);
   const [pausedBadge, setPausedBadge] = useState<string | null>(null);
+  const careerPathRef = useRef<SVGPathElement | null>(null);
+  const [routeGeometry, setRouteGeometry] = useState<CareerRouteGeometry | null>(null);
   const [selectedProofCategory, setSelectedProofCategory] = useState<ProofCategory | null>(null);
   const [selectedProofIndex, setSelectedProofIndex] = useState(0);
   const [lightboxItem, setLightboxItem] = useState<{ category: ProofCategory; item: ProofItem } | null>(null);
@@ -1038,7 +1041,28 @@ export default function Home() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [lightboxItem]);
+  useEffect(() => {
+    const path = careerPathRef.current;
+    if (!path) return;
+    const measureRoute = () => setRouteGeometry(getCareerRouteGeometry(path));
+    measureRoute();
+    window.addEventListener("resize", measureRoute);
+    return () => window.removeEventListener("resize", measureRoute);
+  }, []);
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const activeRoutePoint = routeGeometry?.stations[selectedTimelineIndex] ?? {
+    left: timelinePositions[selectedTimelineIndex].left,
+    top: timelinePositions[selectedTimelineIndex].top,
+    angle: 0,
+    progress: selectedTimelineIndex / Math.max(timeline.length - 1, 1),
+  };
+  const routeCssVars = {
+    "--traveler-left": activeRoutePoint.left,
+    "--traveler-top": activeRoutePoint.top,
+    "--traveler-angle": `${activeRoutePoint.angle}deg`,
+  } as React.CSSProperties;
+  const travelerStyle = { left: activeRoutePoint.left, top: activeRoutePoint.top, ...routeCssVars } as React.CSSProperties;
+  const trailStyle = routeCssVars;
   const sendWhatsApp = (event: React.FormEvent) => {
     event.preventDefault();
     const message = `Hello Mohamed, my name is ${formState.name}. Email: ${formState.email}. ${formState.details}`;
@@ -1237,7 +1261,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="journey" className="journey-section career-route-section" style={{ backgroundImage: `linear-gradient(180deg, rgba(3,7,18,.98), rgba(3,7,18,.9)), url(${asset.career})` }}>
+        <section id="journey" className="journey-section career-route-section">
           <div className="container">
             <SectionIntro eyebrow={homeCopy[language].journey.eyebrow} title={language === "ar" ? "مدار مهني بُني خطوة بخطوة" : "The Career Orbit That Built My Commercial Edge"} copy={language === "ar" ? "كل محطة أضافت طبقة جديدة: قيادة، نمو، تشغيل، ثم بناء فرق وأنظمة قابلة للتوسع." : "Each station added a new layer of leadership, growth, operations, and scalable team-building."} language={language} />
             <div className="career-route" dir={language === "ar" ? "rtl" : "ltr"}>
@@ -1246,16 +1270,22 @@ export default function Home() {
                 <p>{language === "ar" ? "اضغط على أي محطة لاكتشاف الدور والدليل وراء الانتقال التالي." : "Select a station to reveal the role, proof, and next move behind the transition."}</p>
               </div>
               <div className="career-route__map" aria-label={language === "ar" ? "خريطة الرحلة المهنية" : "Career journey map"}>
-                <svg className="career-route__path" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true"><path className="career-route__path-base" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /><path className="career-route__path-glow" d="M80 205 C170 60 245 60 350 105 S500 290 625 190 S800 55 930 120" /></svg>
-                <span className="career-route__trail" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span><span className="career-route__traveler" style={{ left: timelinePositions[selectedTimelineIndex].left, top: timelinePositions[selectedTimelineIndex].top }} aria-hidden="true"><span>✦</span></span>
+                <svg className="career-route__path" viewBox="0 0 1000 330" preserveAspectRatio="none" aria-hidden="true"><path ref={careerPathRef} className="career-route__path-base" d={CAREER_ROUTE_D} /><path className="career-route__path-glow" d={CAREER_ROUTE_D} /></svg>
+                <span className="career-route__trail" style={trailStyle} data-route-progress={activeRoutePoint.progress.toFixed(4)} aria-hidden="true"><i /><i /><i /><i /><i /><i /></span><span className="career-route__traveler" style={travelerStyle} data-route-progress={activeRoutePoint.progress.toFixed(4)} aria-hidden="true"><span>✦</span></span>
                 <div className="career-route__stations" role="list">
                   {timeline.map((item, index) => {
                     const Icon = item.icon;
                     const localized = language === "ar" ? timelineArabic[item.company] : undefined;
                     const active = selectedTimelineIndex === index;
-                    return <button className={`career-station ${active ? "career-station--active" : ""}`} type="button" role="listitem" key={item.company} onClick={() => setSelectedTimelineIndex(index)} onMouseEnter={() => setHoveredTimelineIndex(index)} onMouseLeave={() => setHoveredTimelineIndex(null)} onFocus={() => setHoveredTimelineIndex(index)} onBlur={() => setHoveredTimelineIndex(null)} style={timelinePositions[index] as React.CSSProperties} aria-pressed={active} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index}><span>{language === "ar" ? "اضغط لاكتشاف المحطة" : "Select to discover"}</span><strong>{localized?.role ?? item.role}</strong></span><span className="career-station__icon"><Icon size={14} /></span></button>;
+                    const stationPosition = routeGeometry?.stations[index] ?? timelinePositions[index];
+                    return <button className={`career-station ${active ? "career-station--active career-station--handoff" : ""} ${index < selectedTimelineIndex ? "career-station--visited" : ""}`} type="button" role="listitem" key={item.company} onClick={() => setSelectedTimelineIndex(index)} onMouseEnter={() => setHoveredTimelineIndex(index)} onMouseLeave={() => setHoveredTimelineIndex(null)} onFocus={() => setHoveredTimelineIndex(index)} onBlur={() => setHoveredTimelineIndex(null)} style={{ left: stationPosition.left, top: stationPosition.top }} aria-pressed={active} aria-label={`${language === "ar" ? "فتح محطة" : "Open station"}: ${item.company}`}><span className="career-station__halo" /><span className="career-station__number">0{index + 1}</span><span className="career-station__logo"><img src={item.logo} alt="" /></span><span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span><span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index}><span>{language === "ar" ? "اضغط لاكتشاف المحطة" : "Select to discover"}</span><strong>{localized?.role ?? item.role}</strong></span><span className="career-station__icon"><Icon size={14} /></span></button>;
                   })}
                 </div>
+              </div>
+              <div className="career-route__mission" aria-live="polite">
+                <span className="career-route__mission-beacon" aria-hidden="true"><span /></span>
+                <div><span className="career-route__mission-kicker">{language === "ar" ? "MISSION CONTROL" : "MISSION CONTROL"}</span><strong>{language === "ar" ? `المحطة الحالية: ${timeline[selectedTimelineIndex].company}` : `Current station: ${timeline[selectedTimelineIndex].company}`}</strong><span>{language === "ar" ? `الخطوة التالية: ${selectedTimelineIndex < timeline.length - 1 ? timeline[selectedTimelineIndex + 1].company : "المرحلة التالية"}` : `Next signal: ${selectedTimelineIndex < timeline.length - 1 ? timeline[selectedTimelineIndex + 1].company : "What comes next"}`}</span></div>
+                <span className="career-route__mission-progress">{String(selectedTimelineIndex + 1).padStart(2, "0")} / {String(timeline.length).padStart(2, "0")}</span>
               </div>
               {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div><button className="career-route__detail-button" type="button" onClick={() => setTimelineModalOpen(true)}>{language === "ar" ? "عرض التفاصيل" : "View details"}<ArrowUpRight size={15} /></button></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
               {timelineModalOpen && (() => { const item = timeline[selectedTimelineIndex]; const localized = language === "ar" ? timelineArabic[item.company] : undefined; const highlights = language === "ar" ? item.highlights.ar : item.highlights.en; return <div className="career-modal" role="dialog" aria-modal="true" aria-labelledby="career-modal-title" onClick={() => setTimelineModalOpen(false)}><div className="career-modal__panel" onClick={(event) => event.stopPropagation()}><button className="career-modal__close" type="button" onClick={() => setTimelineModalOpen(false)} aria-label={language === "ar" ? "إغلاق التفاصيل" : "Close details"}><X size={18} /></button><div className="career-modal__eyebrow">0{selectedTimelineIndex + 1} / {item.year}</div><div className="career-modal__brand"><img src={item.logo} alt={`${item.company} logo`} /><div><span className="company-kicker">{item.company}</span><h3 id="career-modal-title">{localized?.role ?? item.role}</h3></div></div><p className="career-modal__intro">{localized?.copy ?? item.copy}</p><div className="career-modal__section"><span className="company-kicker">{language === "ar" ? "أبرز ما تم بناؤه" : "Selected proof points"}</span><ul>{highlights.map((highlight) => <li key={highlight}><Check size={15} />{highlight}</li>)}</ul></div><button className="button button--gold" type="button" onClick={() => { setTimelineModalOpen(false); scrollTo("contact"); }}>{language === "ar" ? "ابدأ محادثة حول الدور" : "Start a conversation about this role"}<ArrowUpRight size={16} /></button></div></div>; })()}

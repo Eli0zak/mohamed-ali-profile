@@ -138,3 +138,12 @@
 - [x] إضافة Hover Preview لشعار الشركة والنبذة قبل الضغط.
 - [x] إضافة زر عرض التفاصيل وModal للإنجازات والمشاريع الخاصة بكل محطة.
 - [x] اختبار التفاعل والأداء والاستجابة قبل حفظ نسخة جديدة.
+- [x] إزالة المثلث الأحمر الدخيل وعزل خلفية Career Orbit عن خلفية Hero.
+- [x] جعل حركة الصاروخ تتبع مسار SVG الحقيقي بدل الإحداثيات التقريبية.
+- [x] تنفيذ Orbital Handoff عند الانتقال بين المحطات.
+- [x] إضافة Signal Trail واضح ومتزن خلف الصاروخ.
+- [x] إضافة Mission Control يعرض المحطة الحالية والدور والمحطة التالية.
+- [x] اختبار التجربة على الديسكتوب والموبايل قبل حفظ النسخة.
+- [x] Remove Career Orbit background artifact and isolate the section background from legacy layers
+- [x] Drive traveler, trail, particles, and station handoff from the actual SVG path geometry
+- [x] Verify Career Orbit motion, Mission Control updates, RTL/mobile behavior, tests, and production build
