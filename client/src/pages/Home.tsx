@@ -1043,6 +1043,7 @@ export default function Home() {
         <nav className={`desktop-nav ${menuOpen ? "desktop-nav--open" : ""}`} aria-label="Primary navigation">
           <a href="#companies" onClick={() => setMenuOpen(false)}>{language === "en" ? "Orbit" : "الكوكبة"}</a>
           <a href="#journey" onClick={() => setMenuOpen(false)}>{language === "en" ? "Journey" : "المسار"}</a>
+          <a href="#ownership" onClick={() => setMenuOpen(false)}>{language === "en" ? "Own from day one" : "من أول يوم"}</a>
           <a href="#training" onClick={() => setMenuOpen(false)}>{language === "en" ? "Training" : "التدريب"}</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>{language === "en" ? "Contact" : "التواصل"}</a>
           <Link href="/career-gateway" className="text-[#d4af37] font-semibold flex items-center gap-1" onClick={() => setMenuOpen(false)}>
@@ -1153,8 +1154,9 @@ export default function Home() {
           <div className="hero-bottomline container"><span>{homeCopy[language].hero.bottom}</span><ArrowDown size={16} /><span className="hero-bottomline__code">MA / 001 — 2026</span></div>
         </section>
 
-        <section className="value-snapshot container" aria-labelledby="value-snapshot-title" data-reveal>
+        <section className={`value-snapshot value-snapshot--${visitorMode} container`} aria-labelledby="value-snapshot-title" data-mode={visitorMode} data-reveal>
           <div className="value-snapshot__intro">
+            <span className="value-snapshot__mode">{visitorMode === "recruiter" ? (language === "ar" ? "مسار التوظيف" : "Recruiter path") : (language === "ar" ? "مسار الشراكة" : "Client path")}</span>
             <p className="company-kicker">{language === "ar" ? "لقطة القيمة" : "Value snapshot"}</p>
             <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكن أن يبنيه محمد معك؟" : "What can Mohamed build with you?")}</h2>
             <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمشكلات التجارية التي أتعامل معها." : "A quick read on the role and commercial problems I help solve.") : (language === "ar" ? "ملخص سريع للخدمات والنتائج العملية التي يمكن تطويرها معًا." : "A quick read on the practical work we can develop together.")}</p>
@@ -1165,7 +1167,31 @@ export default function Home() {
               <div><h3>{title[language]}</h3><p>{detail[language]}</p></div>
             </article>)}
           </div>
-          <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد المسار التجاري" : "See the commercial orbit") : (language === "ar" ? "شاهد مسار التدريب" : "See the training orbit")} <ArrowRight size={15} /></a>
+          <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "استكشف مسار التدريب" : "Explore the training path")} <ArrowRight size={15} /></a>
+        </section>
+
+        <section id="ownership" className={`ownership-section ownership-section--${visitorMode} section-dark`} data-reveal>
+          <div className="container">
+            <div className="ownership-heading">
+              <div>
+                <p className="eyebrow"><span className="eyebrow-dot" /> {language === "ar" ? "من أول يوم" : "From day one"}</p>
+                <h2>{language === "ar" ? "ما الذي أستطيع أن أتولاه معك فورًا؟" : "What I can own from day one"}</h2>
+              </div>
+              <p>{visitorMode === "recruiter" ? (language === "ar" ? "دور واضح داخل فريق يبحث عن نمو منظم، متابعة أقوى، وأداء يمكن قياسه." : "A clear role inside a team that needs structured growth, stronger follow-up, and measurable execution.") : (language === "ar" ? "تدخل عملي يبدأ من المشكلة التجارية وينتهي بخطوات يستطيع فريقك تطبيقها." : "Practical support that starts with the commercial problem and ends with steps your team can use.")}</p>
+            </div>
+            <div className="ownership-grid">
+              {(visitorMode === "recruiter" ? [
+                { number: "01", title: language === "ar" ? "قيادة أرضية المبيعات" : "Lead the sales floor", detail: language === "ar" ? "ترتيب الأولويات، متابعة الأداء، وتحويل الأهداف إلى إيقاع يومي واضح." : "Set priorities, inspect performance, and turn targets into a clear operating rhythm." },
+                { number: "02", title: language === "ar" ? "امتلاك مسار النمو" : "Own the growth motion", detail: language === "ar" ? "ربط تطوير الأعمال بالمتابعة ومؤشرات الأداء بدل ترك الفرص في المنتصف." : "Connect Business Development, follow-up, and KPIs so opportunities do not stall." },
+                { number: "03", title: language === "ar" ? "رفع جاهزية الفريق" : "Raise team readiness", detail: language === "ar" ? "تدريب عملي ومراجعة مستمرة تجعل الأداء أكثر اتساقًا." : "Practical coaching and continuous review that make performance more consistent." },
+              ] : [
+                { number: "01", title: language === "ar" ? "تشخيص عنق الزجاجة" : "Diagnose the bottleneck", detail: language === "ar" ? "فهم أين يتعطل جذب العميل أو المتابعة أو التحويل قبل اقتراح الحل." : "Find where acquisition, follow-up, or conversion is getting stuck before prescribing a fix." },
+                { number: "02", title: language === "ar" ? "تصميم تدخل قابل للتطبيق" : "Design a usable intervention", detail: language === "ar" ? "تحويل المشكلة إلى ورشة أو playbook أو سير عمل يناسب فريقك." : "Turn the problem into a workshop, playbook, or workflow that fits your team." },
+                { number: "03", title: language === "ar" ? "ترك نظام يستمر" : "Leave a system behind", detail: language === "ar" ? "قياس الفهم والتطبيق حتى لا تنتهي القيمة بانتهاء الجلسة." : "Measure understanding and application so the value continues after the session." },
+              ]).map((item) => <article className="ownership-card" key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.detail}</p></article>)}
+            </div>
+            <a className="ownership-cta" href="#contact">{visitorMode === "recruiter" ? (language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role") : (language === "ar" ? "ابدأ محادثة شراكة" : "Start a partnership conversation")} <ArrowUpRight size={16} /></a>
+          </div>
         </section>
 
         <section className="signal-section signal-section--motion container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title} style={{ "--signal-delay": `${index * 70}ms` } as React.CSSProperties}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>

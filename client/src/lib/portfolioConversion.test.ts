@@ -26,7 +26,7 @@ describe("portfolio conversion surfaces", () => {
   it("removes the inactive case study path while keeping the value snapshot action", () => {
     expect(homeSource).not.toContain('href="#case-study"');
     expect(homeSource).not.toContain('id="case-study"');
-    expect(homeSource).toContain('<section className="value-snapshot container"');
+    expect(homeSource).toContain('value-snapshot value-snapshot--${visitorMode} container');
     expect(homeSource).toContain('href={visitorMode === "recruiter" ? "#companies" : "#training"}');
   });
 
