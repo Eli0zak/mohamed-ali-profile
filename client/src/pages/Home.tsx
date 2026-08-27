@@ -975,6 +975,15 @@ export default function Home() {
   const partnerCount = useCountUp(13, 1100);
   const fullTime = useMemo(() => companies.filter((company) => company.type === "full-time"), []);
   const consulting = useMemo(() => companies.filter((company) => company.type === "consulting"), []);
+  const valueSnapshotItems = visitorMode === "recruiter" ? [
+    { icon: BriefcaseBusiness, title: { en: "Commercial leadership", ar: "قيادة تجارية" }, detail: { en: "Sales leadership, branch management, and Business Development ownership.", ar: "قيادة المبيعات وإدارة الفروع وامتلاك مسؤولية تطوير الأعمال." } },
+    { icon: TrendingUp, title: { en: "Revenue systems", ar: "أنظمة الإيرادات" }, detail: { en: "Funnels, KPIs, forecasting, and follow-up discipline that make growth visible.", ar: "قمع مبيعات ومؤشرات أداء وتوقعات ومتابعة تجعل النمو واضحًا وقابلًا للإدارة." } },
+    { icon: Users, title: { en: "Team performance", ar: "أداء الفريق" }, detail: { en: "Recruit, coach, and raise consistency across the sales floor.", ar: "توظيف وتدريب ورفع اتساق الأداء داخل فريق المبيعات." } },
+  ] : [
+    { icon: GraduationCap, title: { en: "Sales enablement", ar: "تمكين المبيعات" }, detail: { en: "Turn playbooks into practical behaviors your team can practice.", ar: "تحويل أساليب البيع إلى سلوكيات عملية يستطيع فريقك تطبيقها." } },
+    { icon: Zap, title: { en: "Growth operations", ar: "عمليات النمو" }, detail: { en: "Connect leads, people, and performance through clearer workflows.", ar: "ربط العملاء المحتملين والأفراد والأداء من خلال سير عمل أوضح." } },
+    { icon: Mic2, title: { en: "Practical delivery", ar: "تنفيذ عملي" }, detail: { en: "Workshops and consulting grounded in live commercial rooms.", ar: "ورش واستشارات نابعة من واقع غرف المبيعات والعمل التجاري." } },
+  ];
 
   const handleLanguageToggle = () => setLanguage((current) => toggleLanguage(current));
   const openProofCategory = (category: ProofCategory) => {
@@ -1143,6 +1152,21 @@ export default function Home() {
             </div>
           </div>
           <div className="hero-bottomline container"><span>{homeCopy[language].hero.bottom}</span><ArrowDown size={16} /><span className="hero-bottomline__code">MA / 001 — 2026</span></div>
+        </section>
+
+        <section className="value-snapshot container" aria-labelledby="value-snapshot-title" data-reveal>
+          <div className="value-snapshot__intro">
+            <p className="company-kicker">{language === "ar" ? "لقطة القيمة" : "Value snapshot"}</p>
+            <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكن أن يبنيه محمد معك؟" : "What can Mohamed build with you?")}</h2>
+            <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمشكلات التجارية التي أتعامل معها." : "A quick read on the role and commercial problems I help solve.") : (language === "ar" ? "ملخص سريع للخدمات والنتائج العملية التي يمكن تطويرها معًا." : "A quick read on the practical work we can develop together.")}</p>
+          </div>
+          <div className="value-snapshot__items">
+            {valueSnapshotItems.map(({ icon: Icon, title, detail }, index) => <article className="value-snapshot__item" key={title.en} style={{ "--snapshot-delay": `${index * 70}ms` } as React.CSSProperties}>
+              <span className="value-snapshot__icon"><Icon size={16} /></span>
+              <div><h3>{title[language]}</h3><p>{detail[language]}</p></div>
+            </article>)}
+          </div>
+          <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد المسار التجاري" : "See the commercial orbit") : (language === "ar" ? "شاهد مسار التدريب" : "See the training orbit")} <ArrowRight size={15} /></a>
         </section>
 
         <section className="signal-section signal-section--motion container" data-reveal>{homeCopy[language].signals.map(([title, detail], index) => <div className="signal-cell" key={title} style={{ "--signal-delay": `${index * 70}ms` } as React.CSSProperties}><span className="signal-number">{["01", "EGP 5M", "15+", "06"][index]}</span><strong>{title}</strong><small>{detail}</small></div>)}</section>
