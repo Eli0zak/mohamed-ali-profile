@@ -3223,7 +3223,13 @@
 .speaking-profile h5 { margin: 0 0 .4rem; color: #f8fafc; font-size: 1rem; }
 .speaking-profile p { margin: 0; color: #a8b5c7; font-size: .78rem; line-height: 1.65; }
 .speaking-profile__topics { display: flex; flex-wrap: wrap; align-content: center; gap: .45rem; }
-.speaking-profile__topics span { padding: .38rem .55rem; border: 1px solid rgba(103,232,249,.22); border-radius: 999px; color: #cffafe; font-size: .67rem; }
+.speaking-profile__topics span { display: inline-flex; align-items: center; gap: .38rem; padding: .38rem .55rem; border: 1px solid rgba(103,232,249,.22); border-radius: 999px; color: #cffafe; font-size: .67rem; }
+.speaking-profile__topics small { color: #67e8f9; font-size: .56rem; font-weight: 800; letter-spacing: .06em; }
+.speaking-profile__orbit-bridge { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-top: -.15rem; padding: .55rem .7rem; border-block: 1px solid rgba(103,232,249,.1); color: #8fa4ba; font-size: .64rem; line-height: 1.45; }
+.speaking-profile__orbit-bridge span, .speaking-profile__orbit-bridge a { display: inline-flex; align-items: center; gap: .35rem; }
+.speaking-profile__orbit-bridge span svg { color: #fbbf24; flex: 0 0 auto; }
+.speaking-profile__orbit-bridge a { color: #fbbf24; font-weight: 800; text-decoration: none; white-space: nowrap; transition: color .18s ease, transform .18s ease; }
+.speaking-profile__orbit-bridge a:hover, .speaking-profile__orbit-bridge a:focus-visible { color: #fde68a; transform: translateX(2px); }
 .speaking-profile__actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .55rem; }
 .speaking-profile__actions .button { padding: .58rem .8rem; font-size: .72rem; }
 
@@ -3268,6 +3274,7 @@
   .speaking-profile { grid-template-columns: 1fr; margin: 0 .85rem .9rem; padding: .9rem; }
   .speaking-profile__builder { grid-column: auto; }
   .speaking-profile__builder-grid { grid-template-columns: 1fr; }
+  .speaking-profile__orbit-bridge { align-items: flex-start; flex-direction: column; gap: .35rem; }
   .speaking-profile__actions { grid-column: auto; }
   .speaking-profile__actions .button { flex: 1 1 9rem; }
   .smart-contact { right: .75rem; bottom: .75rem; }

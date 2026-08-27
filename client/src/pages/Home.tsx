@@ -1477,9 +1477,13 @@ export default function Home() {
                       <p>{language === "ar" ? "متحدث يمثل خبرته الشخصية في المبيعات وتطوير الأعمال، ويحوّل الخبرة العملية إلى أفكار قابلة للنقاش والتطبيق." : "A speaker who brings a personal Sales and Business Development perspective into practical, relevant conversations."}</p>
                     </div>
                     <div className="speaking-profile__topics" aria-label={language === "ar" ? "محاور التحدث" : "Speaking topics"}>
-                      <span>{language === "ar" ? "Sales mindset" : "Sales mindset"}</span>
-                      <span>{language === "ar" ? "Business Development" : "Business Development"}</span>
-                      <span>{language === "ar" ? "Team performance" : "Team performance"}</span>
+                      <span><small>01</small>{language === "ar" ? "عقلية المبيعات" : "Sales mindset"}</span>
+                      <span><small>02</small>{language === "ar" ? "تطوير الأعمال" : "Business Development"}</span>
+                      <span><small>03</small>{language === "ar" ? "أداء الفرق" : "Team performance"}</span>
+                    </div>
+                    <div className="speaking-profile__orbit-bridge">
+                      <span><Sparkles size={13} /> {language === "ar" ? "كل جلسة تبدأ من محطة حقيقية في المدار المهني" : "Every session starts from a real station in the career orbit"}</span>
+                      <a href="#companies">{language === "ar" ? "استكشف الرحلة المهنية" : "Explore the career orbit"} <ArrowUpRight size={14} /></a>
                     </div>
                     <div className="speaking-profile__builder" aria-label={language === "ar" ? "منشئ دعوة التحدث" : "Speaking invitation builder"}>
                       <div className="speaking-profile__builder-head">
