@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 
 describe("portfolio conversion surfaces", () => {
   const homeSource = readFileSync(resolve(process.cwd(), "client/src/pages/Home.tsx"), "utf8");
+  const stylesSource = readFileSync(resolve(process.cwd(), "client/src/index.css"), "utf8");
 
   it("keeps the recruiter and client choice accessible in the hero", () => {
     expect(homeSource).toContain('className="visitor-path"');
@@ -52,5 +53,14 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain('href="https://wa.me/201030537773"');
     expect(homeSource).toContain("href={speakingInviteHref}");
     expect(homeSource).toContain("SPEAKING_INVITE_EMAIL");
+  });
+
+  it("adds a gentle event-image hover without sacrificing reduced-motion support", () => {
+    expect(stylesSource).toContain(".proof-detail__image-button::after");
+    expect(stylesSource).toContain(".proof-detail__image-button::before");
+    expect(stylesSource).toContain(".proof-detail__image-button:hover img");
+    expect(stylesSource).toContain("transform: scale(1.045)");
+    expect(stylesSource).toContain("transition: opacity 180ms ease");
+    expect(stylesSource).toContain("transition: none;");
   });
 });
