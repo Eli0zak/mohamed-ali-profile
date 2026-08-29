@@ -11,16 +11,16 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("Client · Training & consulting");
   });
 
-  it("keeps GDG speaking profile actions connected to real contact paths", () => {
-    expect(homeSource).toContain('className="speaking-profile"');
-    expect(homeSource).toContain("Invite to speak");
-    expect(homeSource).toContain("linkedinUrl");
+  it("keeps GDG evidence and the image lightbox without a duplicate speaking profile", () => {
+    expect(homeSource).toContain('selectedProofCategory.id === "events"');
+    expect(homeSource).toContain('className="proof-detail__content"');
+    expect(homeSource).toContain('className="proof-lightbox"');
+    expect(homeSource).not.toContain('className="speaking-profile"');
   });
 
-  it("keeps the Speaking Profile invite engine bilingual without a duplicate builder", () => {
+  it("keeps the public speaking invite engine available through the contact surface", () => {
     expect(homeSource).toContain('getSpeakingInviteCopy({ audience: "sales-teams", kind: "talk", language })');
     expect(homeSource).toContain("speakingInviteHref");
-    expect(homeSource).toContain('dir={language === "ar" ? "rtl" : "ltr"}');
     expect(homeSource).not.toContain("speakingAudienceOptions.map");
     expect(homeSource).not.toContain("speakingInviteOptions.map");
   });
@@ -38,12 +38,12 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain('href={visitorMode === "recruiter" ? "#companies" : "#training"}');
   });
 
-  it("keeps Speaking Profile compact when the advanced builder is not needed", () => {
+  it("does not render the removed speaking profile or duplicate invitation controls", () => {
     expect(homeSource).not.toContain("speakingBuilderOpen");
     expect(homeSource).not.toContain("Tailor the speaking invitation");
-    expect(homeSource).not.toContain('className="speaking-profile__builder-toggle-row"');
-    expect(homeSource).not.toContain('id="speaking-invitation-builder"');
-    expect(homeSource).toContain('className="speaking-profile__actions"');
+    expect(homeSource).not.toContain("speaking-profile__");
+    expect(homeSource).not.toContain("copySpeakingInvite");
+    expect(homeSource).not.toContain("getSpeakingInviteCopyText");
   });
 
   it("keeps every smart contact option actionable", () => {

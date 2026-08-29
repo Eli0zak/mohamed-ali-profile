@@ -183,3 +183,8 @@
 - [x] إزالة صف Tailor the speaking invitation / Customize invite من Speaking Profile لأنه يكرر طرق التواصل الموجودة في نهاية الموقع.
 - [x] تنظيف state وCSS والاختبارات المرتبطة بالصف المحذوف دون كسر زر الإرسال أو النسخ أو LinkedIn.
 - [x] اختبار Speaking Profile على desktop/mobile ثم حفظ checkpoint جديد قابل للرجوع.
+
+- [x] إزالة Speaking Profile بالكامل من قسم Events لأن وسائل التواصل موجودة بوضوح في نهاية الموقع.
+- [x] الحفاظ على عنوان Events وفعالية GDG والصور وLightbox دون حذف الدليل البصري.
+- [x] تنظيف الدعوة والمراجع وCSS والاختبارات المرتبطة بالقسم المحذوف دون التأثير على Smart Contact العام.
+- [x] اختبار Events على desktop/mobile وRTL ثم حفظ checkpoint جديد قابل للرجوع.
