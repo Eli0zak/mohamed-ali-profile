@@ -179,3 +179,7 @@
 - [x] توحيد اتجاه ومحاذاة عنوان ووصف What I Can Own From Day One مع Partner Constellation.
 - [x] ضبط المسافة بين العنوان والوصف وتخطيط RTL دون التأثير على بطاقات القسم أو مؤشرات الإحصائيات.
 - [x] اختبار المحاذاة على desktop/mobile بالعربية والإنجليزية ثم حفظ checkpoint جديد.
+
+- [x] إزالة صف Tailor the speaking invitation / Customize invite من Speaking Profile لأنه يكرر طرق التواصل الموجودة في نهاية الموقع.
+- [x] تنظيف state وCSS والاختبارات المرتبطة بالصف المحذوف دون كسر زر الإرسال أو النسخ أو LinkedIn.
+- [x] اختبار Speaking Profile على desktop/mobile ثم حفظ checkpoint جديد قابل للرجوع.

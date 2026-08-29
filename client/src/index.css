@@ -3235,36 +3235,6 @@
 
 
 .speaking-profile__intro { min-width: 0; }
-.speaking-profile__builder-toggle-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .55rem .7rem; border: 1px solid rgba(103,232,249,.12); border-radius: .7rem; background: rgba(3,7,18,.24); }
-.speaking-profile__builder-toggle-copy { display: grid; gap: .12rem; min-width: 0; }
-.speaking-profile__builder-toggle-copy strong { color: #dbeafe; font-size: .68rem; line-height: 1.3; }
-.speaking-profile__builder-toggle-copy small { color: #8293a8; font-size: .6rem; line-height: 1.35; }
-.speaking-profile__builder-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .3rem; flex: 0 0 auto; min-height: 2rem; padding: .42rem .62rem; border: 1px solid rgba(251,191,36,.3); border-radius: .55rem; color: #fbbf24; background: rgba(251,191,36,.07); font: inherit; font-size: .65rem; font-weight: 800; cursor: pointer; transition: background .18s ease, border-color .18s ease, color .18s ease; }
-.speaking-profile__builder-toggle:hover, .speaking-profile__builder-toggle:focus-visible { border-color: rgba(251,191,36,.58); color: #fde68a; background: rgba(251,191,36,.13); }
-.speaking-profile__builder-chevron { transition: transform .18s ease; }
-.speaking-profile__builder-chevron--open { transform: rotate(180deg); }
-.speaking-profile__builder { grid-column: 1 / -1; position: relative; padding: .85rem; border: 1px solid rgba(103,232,249,.16); border-radius: .8rem; background: rgba(3,7,18,.38); box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 12px 28px rgba(0,0,0,.12); transform: perspective(900px) translateZ(0); transition: transform .22s cubic-bezier(.23,1,.32,1), border-color .22s ease, box-shadow .22s ease; }
-.speaking-profile__builder::before { content: ""; position: absolute; inset: .55rem; border: 1px dashed rgba(103,232,249,.1); border-radius: .58rem; pointer-events: none; }
-.speaking-profile__builder:hover { transform: perspective(900px) translateY(-1px) rotateX(.35deg); border-color: rgba(103,232,249,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 16px 34px rgba(0,0,0,.18); }
-.speaking-profile__builder-head, .speaking-profile__preview-meta { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: .7rem; }
-.speaking-profile__builder-kicker, .speaking-profile__builder-signal { display: inline-flex; align-items: center; gap: .35rem; color: #67e8f9; font-size: .64rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
-.speaking-profile__builder-signal { color: #fbbf24; font-size: .59rem; letter-spacing: .04em; text-transform: none; }
-.speaking-profile__builder-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .8rem; }
-.speaking-profile__field { min-width: 0; margin: 0; padding: 0; border: 0; }
-.speaking-profile__field legend { margin-bottom: .45rem; color: #dbeafe; font-size: .69rem; font-weight: 800; }
-.speaking-profile__choices { display: grid; gap: .4rem; }
-.speaking-profile__choice { display: flex; align-items: center; justify-content: space-between; gap: .55rem; width: 100%; min-height: 3.05rem; padding: .52rem .62rem; border: 1px solid rgba(148,163,184,.16); border-radius: .62rem; background: rgba(15,28,48,.42); color: #cbd5e1; text-align: start; cursor: pointer; transition: transform .18s cubic-bezier(.23,1,.32,1), border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease; }
-.speaking-profile__choice:hover, .speaking-profile__choice:focus-visible { transform: translateY(-2px); border-color: rgba(103,232,249,.52); color: #f8fafc; outline: none; box-shadow: 0 7px 18px rgba(0,0,0,.18); }
-.speaking-profile__choice--active { border-color: rgba(251,191,36,.62); background: linear-gradient(120deg, rgba(251,191,36,.13), rgba(103,232,249,.06)); color: #fef3c7; box-shadow: inset 0 0 0 1px rgba(251,191,36,.08); }
-.speaking-profile__choice > span { display: grid; gap: .13rem; min-width: 0; }
-.speaking-profile__choice strong { font-size: .7rem; line-height: 1.25; }
-.speaking-profile__choice small { overflow: hidden; color: #8293a8; font-size: .6rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
-.speaking-profile__choice svg { flex: 0 0 auto; color: #fbbf24; }
-.speaking-profile__preview { position: relative; z-index: 1; margin-top: .8rem; padding: .7rem .75rem; border-inline-start: 2px solid #fbbf24; border-radius: 0 .55rem .55rem 0; background: linear-gradient(90deg, rgba(251,191,36,.11), rgba(251,191,36,.03)); }
-.speaking-profile__preview-meta { color: #8293a8; font-size: .59rem; letter-spacing: .05em; text-transform: uppercase; }
-.speaking-profile__preview-meta b { color: #67e8f9; font-size: .59rem; letter-spacing: 0; text-transform: none; }
-.speaking-profile__preview > strong { display: block; margin-top: .32rem; color: #f8fafc; font-size: .75rem; line-height: 1.4; }
-.speaking-profile__preview > p { margin-top: .28rem; color: #9aaabd; font-size: .68rem; line-height: 1.55; }
 
 /* Persistent smart contact */
 .smart-contact { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; gap: .6rem; }
@@ -3280,10 +3250,6 @@
   .visitor-path__options { display: grid; grid-template-columns: 1fr; }
   .visitor-path__option { width: 100%; justify-content: flex-start; }
   .speaking-profile { grid-template-columns: 1fr; margin: 0 .85rem .9rem; padding: .9rem; }
-  .speaking-profile__builder { grid-column: auto; }
-  .speaking-profile__builder-grid { grid-template-columns: 1fr; }
-  .speaking-profile__builder-toggle-row { align-items: flex-start; flex-direction: column; }
-  .speaking-profile__builder-toggle { width: 100%; }
   .speaking-profile__orbit-bridge { align-items: flex-start; flex-direction: column; gap: .35rem; }
   .speaking-profile__actions { grid-column: auto; }
   .speaking-profile__actions .button { flex: 1 1 9rem; }
@@ -3293,7 +3259,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .visitor-path__option, .smart-contact__trigger, .smart-contact__menu, .speaking-profile__choice, .speaking-profile__builder { transition: none; animation: none; }
+  .visitor-path__option, .smart-contact__trigger, .smart-contact__menu { transition: none; animation: none; }
 }
 
 /* Evidence-led case study */

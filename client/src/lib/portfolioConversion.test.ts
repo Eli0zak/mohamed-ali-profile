@@ -17,13 +17,12 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("linkedinUrl");
   });
 
-  it("keeps the Speaking Profile audience lens and invitation builder wired", () => {
-    expect(homeSource).toContain("speakingAudienceOptions.map");
-    expect(homeSource).toContain("speakingInviteOptions.map");
-    expect(homeSource).toContain('setSpeakingAudience(option.id)');
-    expect(homeSource).toContain('setSpeakingInviteKind(option.id)');
-    expect(homeSource).toContain("getSpeakingInviteCopy");
+  it("keeps the Speaking Profile invite engine bilingual without a duplicate builder", () => {
+    expect(homeSource).toContain('getSpeakingInviteCopy({ audience: "sales-teams", kind: "talk", language })');
+    expect(homeSource).toContain("speakingInviteHref");
     expect(homeSource).toContain('dir={language === "ar" ? "rtl" : "ltr"}');
+    expect(homeSource).not.toContain("speakingAudienceOptions.map");
+    expect(homeSource).not.toContain("speakingInviteOptions.map");
   });
 
   it("keeps the smart contact menu available with direct channels", () => {
@@ -39,11 +38,12 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain('href={visitorMode === "recruiter" ? "#companies" : "#training"}');
   });
 
-  it("keeps the advanced invitation builder opt-in and compact by default", () => {
-    expect(homeSource).toContain("speakingBuilderOpen &&");
-    expect(homeSource).toContain('className="speaking-profile__builder-toggle-row"');
-    expect(homeSource).toContain('className="speaking-profile__builder-toggle"');
-    expect(homeSource).toContain('aria-controls="speaking-invitation-builder"');
+  it("keeps Speaking Profile compact when the advanced builder is not needed", () => {
+    expect(homeSource).not.toContain("speakingBuilderOpen");
+    expect(homeSource).not.toContain("Tailor the speaking invitation");
+    expect(homeSource).not.toContain('className="speaking-profile__builder-toggle-row"');
+    expect(homeSource).not.toContain('id="speaking-invitation-builder"');
+    expect(homeSource).toContain('className="speaking-profile__actions"');
   });
 
   it("keeps every smart contact option actionable", () => {

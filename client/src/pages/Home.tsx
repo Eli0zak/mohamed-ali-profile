@@ -12,7 +12,6 @@ import {
   BriefcaseBusiness,
   Check,
   Copy as CopyIcon,
-  ChevronDown,
   Download,
   ExternalLink,
   Facebook,
@@ -54,7 +53,7 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { Textarea } from "@/components/ui/textarea";
 import { CAREER_ROUTE_D, getCareerRouteGeometry, getCareerRoutePoint, type CareerRouteGeometry } from "@/lib/careerRoute";
 import { getCareerProgressPercent, getNextCareerStationIndex } from "@/lib/careerNavigation";
-import { buildSpeakingInviteHref, getSpeakingInviteCopy, getSpeakingInviteCopyText, speakingAudienceOptions, speakingInviteOptions, SPEAKING_INVITE_EMAIL, type SpeakingAudience, type SpeakingInviteKind } from "@/lib/speakingInvite";
+import { buildSpeakingInviteHref, getSpeakingInviteCopy, getSpeakingInviteCopyText, SPEAKING_INVITE_EMAIL } from "@/lib/speakingInvite";
 
 type CompanyType = "full-time" | "consulting";
 type VisitorMode = "recruiter" | "client";
@@ -976,9 +975,6 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareMenuOpen, setShareMenuOpen] = useState(false);
   const [visitorMode, setVisitorMode] = useState<VisitorMode>("recruiter");
-  const [speakingAudience, setSpeakingAudience] = useState<SpeakingAudience>("sales-teams");
-  const [speakingInviteKind, setSpeakingInviteKind] = useState<SpeakingInviteKind>("talk");
-  const [speakingBuilderOpen, setSpeakingBuilderOpen] = useState(false);
   const [smartContactOpen, setSmartContactOpen] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const scrollProgress = useScrollProgress();
@@ -1028,7 +1024,7 @@ export default function Home() {
   const scrolled = useScrollState();
   const isMobile = useIsMobile();
   const reducedMotion = useReducedMotion();
-  const speakingInviteCopy = useMemo(() => getSpeakingInviteCopy({ audience: speakingAudience, kind: speakingInviteKind, language }), [speakingAudience, speakingInviteKind, language]);
+  const speakingInviteCopy = useMemo(() => getSpeakingInviteCopy({ audience: "sales-teams", kind: "talk", language }), [language]);
   const speakingInviteHref = useMemo(() => buildSpeakingInviteHref({ subject: speakingInviteCopy.subject, body: speakingInviteCopy.body }), [speakingInviteCopy]);
   const speakingInviteCopyText = useMemo(() => getSpeakingInviteCopyText({ subject: speakingInviteCopy.subject, body: speakingInviteCopy.body }), [speakingInviteCopy]);
   useReveal();
@@ -1486,38 +1482,7 @@ export default function Home() {
                       <span><Sparkles size={13} /> {language === "ar" ? "كل جلسة تبدأ من محطة حقيقية في المدار المهني" : "Every session starts from a real station in the career orbit"}</span>
                       <a href="#companies">{language === "ar" ? "استكشف الرحلة المهنية" : "Explore the career orbit"} <ArrowUpRight size={14} /></a>
                     </div>
-                    <div className="speaking-profile__builder-toggle-row">
-                      <span className="speaking-profile__builder-toggle-copy"><strong>{language === "ar" ? "دعوة مخصصة حسب المناسبة" : "Tailor the speaking invitation"}</strong><small>{language === "ar" ? "افتح الخيارات فقط إذا كنت تريد تخصيصها" : "Open the options only when you want to customize it"}</small></span>
-                      <button type="button" className="speaking-profile__builder-toggle" onClick={() => setSpeakingBuilderOpen((open) => !open)} aria-expanded={speakingBuilderOpen} aria-controls="speaking-invitation-builder"><Target size={14} /> {speakingBuilderOpen ? (language === "ar" ? "إخفاء الخيارات" : "Hide options") : (language === "ar" ? "تخصيص الدعوة" : "Customize invite")} <ChevronDown size={14} className={speakingBuilderOpen ? "speaking-profile__builder-chevron speaking-profile__builder-chevron--open" : "speaking-profile__builder-chevron"} /></button>
-                    </div>
-                    {speakingBuilderOpen && <div id="speaking-invitation-builder" className="speaking-profile__builder" aria-label={language === "ar" ? "منشئ دعوة التحدث" : "Speaking invitation builder"}>
-                      <div className="speaking-profile__builder-head">
-                        <span className="speaking-profile__builder-kicker"><Target size={14} /> {language === "ar" ? "عدسة الجمهور" : "Audience lens"}</span>
-                        <span className="speaking-profile__builder-signal"><Sparkles size={12} /> {language === "ar" ? "مخصص حسب احتياجك" : "Personalized to your need"}</span>
-                      </div>
-                      <div className="speaking-profile__builder-grid">
-                        <fieldset className="speaking-profile__field">
-                          <legend>{language === "ar" ? "لمن هذه الجلسة؟" : "Who is this for?"}</legend>
-                          <div className="speaking-profile__choices">
-                            {speakingAudienceOptions.map((option) => <button key={option.id} type="button" className={speakingAudience === option.id ? "speaking-profile__choice speaking-profile__choice--active" : "speaking-profile__choice"} onClick={() => setSpeakingAudience(option.id)} aria-pressed={speakingAudience === option.id}><span><strong>{option.label[language]}</strong><small>{option.detail[language]}</small></span>{speakingAudience === option.id && <Check size={14} aria-hidden="true" />}</button>)}
-                          </div>
-                        </fieldset>
-                        <fieldset className="speaking-profile__field">
-                          <legend>{language === "ar" ? "ما نوع المشاركة؟" : "What are you planning?"}</legend>
-                          <div className="speaking-profile__choices">
-                            {speakingInviteOptions.map((option) => <button key={option.id} type="button" className={speakingInviteKind === option.id ? "speaking-profile__choice speaking-profile__choice--active" : "speaking-profile__choice"} onClick={() => setSpeakingInviteKind(option.id)} aria-pressed={speakingInviteKind === option.id}><span><strong>{option.label[language]}</strong><small>{option.detail[language]}</small></span>{speakingInviteKind === option.id && <Check size={14} aria-hidden="true" />}</button>)}
-                          </div>
-                        </fieldset>
-                      </div>
-                      <AnimatePresence mode="wait" initial={false}>
-                        <motion.div key={`${speakingAudience}-${speakingInviteKind}-${language}`} className="speaking-profile__preview" aria-live="polite" initial={{ opacity: 0, y: reducedMotion ? 0 : 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reducedMotion ? 0 : -4 }} transition={{ duration: reducedMotion ? 0 : 0.2, ease: "easeOut" }}>
-                          <div className="speaking-profile__preview-meta"><span>{language === "ar" ? "الموضوع المقترح" : "Generated subject"}</span><b>{speakingInviteCopy.formatLabel}</b></div>
-                          <strong>{speakingInviteCopy.subject}</strong>
-                          <p>{speakingInviteCopy.focus}</p>
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-}                    <div className="speaking-profile__actions">
+                    <div className="speaking-profile__actions">
                       <a className="button button--gold" href={speakingInviteHref} target="_self"><Mail size={15} /> {language === "ar" ? "إرسال " + speakingInviteCopy.formatLabel : "Send " + speakingInviteCopy.formatLabel + " invite"}</a>
                       <button className="button button--ghost" type="button" onClick={copySpeakingInvite}><CopyIcon size={15} /> {copiedKey === "speaking-invite" ? (language === "ar" ? "تم النسخ" : "Copied") : (language === "ar" ? "نسخ بيانات الدعوة" : "Copy invite details")}</button>
                       <a className="button button--ghost" href={linkedinUrl} target="_blank" rel="noopener noreferrer"><Linkedin size={15} /> LinkedIn</a>
