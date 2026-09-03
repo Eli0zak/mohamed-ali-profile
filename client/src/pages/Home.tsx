@@ -1153,7 +1153,7 @@ export default function Home() {
       <div className="ambient-noise" aria-hidden="true" />
       <header className={`site-nav ${scrolled ? "site-nav--scrolled" : ""}`}>
         <a className="brand-lockup" href="#top" aria-label="Mohamed Ali home">
-          <span className="brand-mark"><img src={asset.mark} alt="" /></span>
+          <span className="brand-mark"><img src={asset.mark} alt="" /><span className="brand-mark__monogram" aria-hidden="true">MA</span></span>
           <span><strong>Mohamed Ali</strong><small>Growth systems / 06</small></span>
         </a>
         <nav className={`desktop-nav ${menuOpen ? "desktop-nav--open" : ""}`} aria-label="Primary navigation">
