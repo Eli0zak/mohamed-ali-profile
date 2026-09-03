@@ -745,17 +745,6 @@
   font-size: 0.82rem !important;
   letter-spacing: 0.12em !important;
 }
-.orbit-center small {
-  position: relative;
-  z-index: 2;
-  font-size: 0.5rem;
-  color: #9ca3af;
-  line-height: 1;
-}
-.orbit-center__micro-label {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
 .orbit-center__caption {
   position: absolute;
   top: calc(50% + 52px);

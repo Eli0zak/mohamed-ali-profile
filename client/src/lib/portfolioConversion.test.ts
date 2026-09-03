@@ -67,6 +67,8 @@ describe("portfolio conversion surfaces", () => {
   it("keeps the MA Impact Core clear and interactive without changing the constellation structure", () => {
     expect(homeSource).toContain('className={`orbit-center ${orbitCoreOpen ? "orbit-center--open" : ""}`}');
     expect(homeSource).toContain("Commercial Growth Core");
+    expect(homeSource).not.toContain('className="orbit-center__micro-label"');
+    expect(stylesSource).not.toContain(".orbit-center__micro-label");
     expect(homeSource).toContain("aria-controls=\"orbit-core-brief\"");
     expect(homeSource).toContain("paused={selectedCompany !== null || pausedBadge !== null || orbitCoreOpen}");
     expect(stylesSource).toContain(".orbit-center__caption");

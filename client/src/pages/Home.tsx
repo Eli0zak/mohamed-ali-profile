@@ -1331,7 +1331,6 @@ export default function Home() {
                   <div className="orbit-center__pulse" />
                   <img src={asset.mark} alt="" aria-hidden="true" />
                   <span className="orbit-center__initials">MA</span>
-                  <small className="orbit-center__micro-label">impact core</small>
                 </button>
                 <span className="orbit-center__caption" aria-hidden="true">{language === "ar" ? "محور النمو التجاري" : "Commercial Growth Core"}</span>
                 <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null || orbitCoreOpen} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
