@@ -8,7 +8,7 @@ import {
 } from "./careerRoute";
 
 const lineThroughRouteAnchors = (): CareerRoutePath => ({
-  getTotalLength: () => 900,
+  getTotalLength: () => 1200,
   getPointAtLength: (length) => {
     const segment = Math.min(Math.floor(length / 300), CAREER_ROUTE_ANCHORS.length - 2);
     const localProgress = (length - segment * 300) / 300;
@@ -47,9 +47,10 @@ describe("career route geometry", () => {
     const geometry = getCareerRouteGeometry(lineThroughRouteAnchors());
 
     expect(geometry.stationProgress[0]).toBe(0);
-    expect(geometry.stationProgress[1]).toBeCloseTo(1 / 3, 5);
-    expect(geometry.stationProgress[2]).toBeCloseTo(2 / 3, 5);
-    expect(geometry.stationProgress[3]).toBe(1);
+    expect(geometry.stationProgress[1]).toBeCloseTo(1 / 4, 5);
+    expect(geometry.stationProgress[2]).toBeCloseTo(2 / 4, 5);
+    expect(geometry.stationProgress[3]).toBeCloseTo(3 / 4, 5);
+    expect(geometry.stationProgress[4]).toBe(1);
     geometry.stations.forEach((station, index) => {
       expect(station.x).toBeCloseTo(CAREER_ROUTE_ANCHORS[index].x, 3);
       expect(station.y).toBeCloseTo(CAREER_ROUTE_ANCHORS[index].y, 3);

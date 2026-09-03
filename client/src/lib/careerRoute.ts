@@ -2,11 +2,12 @@ export const CAREER_ROUTE_D = "M80 205 C170 60 245 60 350 105 S500 290 625 190 S
 
 export const CAREER_ROUTE_VIEWBOX = { width: 1000, height: 330 } as const;
 
-/** The four milestone anchors are points from the SVG path itself, not CSS percentages. */
+/** The five milestone anchors are points from the SVG path itself, not CSS percentages. */
 export const CAREER_ROUTE_ANCHORS = [
   { x: 80, y: 205 },
-  { x: 350, y: 105 },
-  { x: 625, y: 190 },
+  { x: 245, y: 72 },
+  { x: 500, y: 290 },
+  { x: 720, y: 112 },
   { x: 930, y: 120 },
 ] as const;
 
@@ -104,7 +105,7 @@ export const getCareerRoutePoint = (path: CareerRoutePath, progress: number): Ca
 export const getCareerRouteGeometry = (path: CareerRoutePath): CareerRouteGeometry => {
   const totalLength = path.getTotalLength();
   if (!Number.isFinite(totalLength) || totalLength <= 0) {
-    return { totalLength: 0, stationProgress: [0, 0, 0, 0], stations: [] };
+    return { totalLength: 0, stationProgress: [0, 0, 0, 0, 0], stations: [] };
   }
 
   const stationProgress = CAREER_ROUTE_ANCHORS.map((anchor, index) => {

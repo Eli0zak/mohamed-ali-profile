@@ -468,8 +468,9 @@ const companies: Company[] = [
 
 const timelinePositions = [
   { left: "8%", top: "62%" },
-  { left: "35%", top: "32%" },
-  { left: "62%", top: "58%" },
+  { left: "25%", top: "22%" },
+  { left: "48%", top: "82%" },
+  { left: "72%", top: "34%" },
   { left: "93%", top: "36%" },
 ];
 const timeline = [
@@ -483,6 +484,17 @@ const timeline = [
     highlights: { en: ["Five leadership promotions in approximately two years.", "Owned branch performance and team rhythm.", "Built the leadership foundation for commercial growth."], ar: ["خمس ترقيات قيادية خلال نحو عامين.", "امتلكت أداء الفرع وإيقاع الفريق.", "بنيت الأساس القيادي للنمو التجاري."] },
     impactTags: { en: ["Leadership", "Operations", "Team rhythm"], ar: ["قيادة", "تشغيل", "إيقاع الفريق"] },
     transition: { en: "From leading a branch to building a repeatable commercial rhythm.", ar: "من قيادة الفرع إلى بناء إيقاع تجاري قابل للتكرار." },
+  },
+  {
+    year: "2023 — 2024",
+    company: "MEC Academy",
+    role: "Senior Sales Consultant → Sales Team Leader → Head of Quality Assurance",
+    logo: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg",
+    copy: "Progressed from senior sales execution into team leadership and quality assurance, building the coaching and service standards behind a stronger customer experience.",
+    icon: Check,
+    highlights: { en: ["Progressed from Senior Sales Consultant to Sales Team Leader, then Head of Quality Assurance.", "Built coaching and quality standards across the sales and service experience.", "Connected frontline sales performance with repeatable team and service systems."], ar: ["تدرجت من استشاري مبيعات أول إلى قائد فريق المبيعات ثم رئيس ضمان الجودة.", "أسست أطرًا للتدريب ومعايير للجودة عبر تجربة المبيعات والخدمة.", "ربطت أداء المبيعات في الواجهة بأنظمة قابلة للتكرار للفريق والخدمة."] },
+    impactTags: { en: ["Quality", "Team leadership", "Sales systems"], ar: ["جودة", "قيادة الفريق", "أنظمة المبيعات"] },
+    transition: { en: "From leading the branch floor to designing the standards behind consistent performance.", ar: "من قيادة أرضية المبيعات إلى تصميم المعايير خلف الأداء المتسق." },
   },
   {
     year: "2024 — 2025",
@@ -704,6 +716,7 @@ const homeCopy = {
 
 const timelineArabic: Record<string, { role: string; copy: string }> = {
   "Harvest British College": { role: "مدير فرع", copy: "ترقيت سريعاً عبر خمسة مناصب قيادية خلال نحو عامين." },
+  "MEC Academy": { role: "رئيس ضمان الجودة ← قائد فريق المبيعات ← استشاري مبيعات أول", copy: "تدرجت من المبيعات إلى قيادة الفريق ثم تأسيس أطر ضمان الجودة والتدريب." },
   "Russian Cultural Center": { role: "قائد فريق المبيعات ← أخصائي تطوير أعمال", copy: "قدت فريق المبيعات واستراتيجية التوسع، وساهمت في نمو الإيراد الشهري من 2 إلى 5 ملايين جنيه." },
   "Be Fluent": { role: "مطور أعمال ← مدير فرع ← مستشار", copy: "أدرت عمليات الفروع بالكامل وأطلقت فرعين جديدين قبل الانتقال إلى العمل الاستشاري." },
   "JCC Training Academy": { role: "مدير فرع وقائد تطوير الأعمال", copy: "عضو مؤسس: افتتحت فرعاً من الصفر ووسّعت الإيراد الشهري من 150 إلى 450 ألف جنيه في أول خمسة أشهر تشغيل." },
@@ -1331,7 +1344,7 @@ export default function Home() {
             <SectionIntro eyebrow={homeCopy[language].journey.eyebrow} title={language === "ar" ? "مدار مهني بُني خطوة بخطوة" : "The Career Orbit That Built My Commercial Edge"} copy={language === "ar" ? "كل محطة أضافت طبقة جديدة: قيادة، نمو، تشغيل، ثم بناء فرق وأنظمة قابلة للتوسع." : "Each station added a new layer of leadership, growth, operations, and scalable team-building."} language={language} />
             <div className="career-route" dir={language === "ar" ? "rtl" : "ltr"}>
               <div className="career-route__header">
-                <div><span className="career-route__eyebrow">{language === "ar" ? "CAREER ROUTE / 04 STATIONS" : "CAREER ROUTE / 04 STATIONS"}</span><h3>{language === "ar" ? "من محطة إلى محطة" : "From station to station"}</h3></div>
+                <div><span className="career-route__eyebrow">{language === "ar" ? "CAREER ROUTE / 05 STATIONS" : "CAREER ROUTE / 05 STATIONS"}</span><h3>{language === "ar" ? "من محطة إلى محطة" : "From station to station"}</h3></div>
                 <p>{language === "ar" ? "اضغط على أي محطة لاكتشاف الدور والدليل وراء الانتقال التالي." : "Select a station to reveal the role, proof, and next move behind the transition."}</p>
               </div>
               <div className="career-route__map" aria-label={language === "ar" ? "خريطة الرحلة المهنية" : "Career journey map"}>
