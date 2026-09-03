@@ -990,6 +990,7 @@ export default function Home() {
   const [smartContactOpen, setSmartContactOpen] = useState(false);
   const scrollProgress = useScrollProgress();
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [orbitCoreOpen, setOrbitCoreOpen] = useState(false);
   const [selectedTimelineIndex, setSelectedTimelineIndex] = useState(0);
   const [hoveredTimelineIndex, setHoveredTimelineIndex] = useState<number | null>(null);
   const [timelineModalOpen, setTimelineModalOpen] = useState(false);
@@ -1319,14 +1320,27 @@ export default function Home() {
             <div className="orbit-layout">
               <div className="orbit-stage" data-reveal>
                 <div className="orbit-guide orbit-guide--outer" /><div className="orbit-guide orbit-guide--inner" />
-                <div className="orbit-center"><div className="orbit-center__pulse" /><img src={asset.mark} alt="" /><span>MA</span><small>impact<br />core</small></div>
-                <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
-                <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
+                <button
+                  className={`orbit-center ${orbitCoreOpen ? "orbit-center--open" : ""}`}
+                  type="button"
+                  aria-expanded={orbitCoreOpen}
+                  aria-controls="orbit-core-brief"
+                  aria-label={orbitCoreOpen ? (language === "ar" ? "إخفاء تعريف محور النمو التجاري" : "Hide Commercial Growth Core") : (language === "ar" ? "عرض تعريف محور النمو التجاري" : "Show Commercial Growth Core")}
+                  onClick={() => setOrbitCoreOpen((open) => !open)}
+                >
+                  <div className="orbit-center__pulse" />
+                  <img src={asset.mark} alt="" aria-hidden="true" />
+                  <span className="orbit-center__initials">MA</span>
+                  <small className="orbit-center__micro-label">impact core</small>
+                </button>
+                <span className="orbit-center__caption" aria-hidden="true">{language === "ar" ? "محور النمو التجاري" : "Commercial Growth Core"}</span>
+                <OrbitTrack companies={fullTime} ring="inner" paused={selectedCompany !== null || pausedBadge !== null || orbitCoreOpen} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
+                <OrbitTrack companies={consulting} ring="outer" paused={selectedCompany !== null || pausedBadge !== null || orbitCoreOpen} onPause={setPausedBadge} onSelect={setSelectedCompany} selectedCompanyId={selectedCompany?.id ?? null} />
                 <div className="orbit-annotation orbit-annotation--inner"><span />{homeCopy[language].orbit.inner}</div>
                 <div className="orbit-annotation orbit-annotation--outer"><span />{homeCopy[language].orbit.outer}</div>
               </div>
               <div className="orbit-aside" data-reveal>
-                {selectedCompany ? <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} language={language} /> : <div className="orbit-prompt"><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].orbit.promptEyebrow}</p><h3>{homeCopy[language].orbit.promptTitle}</h3><p>{homeCopy[language].orbit.promptCopy}</p><div className="orbit-prompt__hint"><span className="hint-ring" /><span>{language === "en" ? "Inner ring" : "المدار الداخلي"}<br /><b>{homeCopy[language].orbit.inner}</b></span><span className="hint-ring hint-ring--small" /><span>{language === "en" ? "Outer ring" : "المدار الخارجي"}<br /><b>{homeCopy[language].orbit.outer}</b></span></div><div className="orbit-prompt__count"><strong>{partnerCount}</strong><span>{homeCopy[language].orbit.partners}</span></div></div>}
+                {selectedCompany ? <AchievementCard company={selectedCompany} onClose={() => setSelectedCompany(null)} language={language} /> : orbitCoreOpen ? <div id="orbit-core-brief" className="orbit-core-summary" role="status"><p className="eyebrow"><span className="eyebrow-dot" /> {language === "ar" ? "محور الهوية" : "Identity core"}</p><h3>{language === "ar" ? "محور النمو التجاري" : "Commercial Growth Core"}</h3><p>{language === "ar" ? "تطوير الأعمال · قيادة المبيعات · التدريب" : "Business development · sales leadership · training"}</p><small>{language === "ar" ? "اضغط على MA مرة أخرى للعودة إلى استكشاف الشركاء." : "Press MA again to return to partner exploration."}</small></div> : <div className="orbit-prompt"><p className="eyebrow"><span className="eyebrow-dot" /> {homeCopy[language].orbit.promptEyebrow}</p><h3>{homeCopy[language].orbit.promptTitle}</h3><p>{homeCopy[language].orbit.promptCopy}</p><div className="orbit-prompt__hint"><span className="hint-ring" /><span>{language === "en" ? "Inner ring" : "المدار الداخلي"}<br /><b>{homeCopy[language].orbit.inner}</b></span><span className="hint-ring hint-ring--small" /><span>{language === "en" ? "Outer ring" : "المدار الخارجي"}<br /><b>{homeCopy[language].orbit.outer}</b></span></div><div className="orbit-prompt__count"><strong>{partnerCount}</strong><span>{homeCopy[language].orbit.partners}</span></div></div>}
               </div>
             </div>
             {isMobile && <Drawer open={Boolean(selectedCompany)} onOpenChange={(open) => { if (!open) setSelectedCompany(null); }}>

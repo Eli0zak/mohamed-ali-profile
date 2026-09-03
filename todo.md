@@ -205,3 +205,7 @@
 - [x] إضافة MEC Academy كمحطة ثانية في Career Route ليصبح المسار 5 محطات.
 - [x] تحديث ترتيب ومحتوى ومحاذاة المحطات مع الحفاظ على اسم Harvest British College.
 - [x] اختبار Career Orbit بعد إضافة المحطة على desktop وmobile وRTL وتشغيل الاختبارات والبناء.
+
+- [x] تنفيذ اتجاه A لـMA Impact Core: علامة MA أوضح، تعريف Commercial Growth Core، ونبضة ضوء وتفاعل خفيف.
+- [x] التحقق من أن تعديل Impact Core لا يغير ترتيب الشركات أو فكرة Partner Constellation ولا يسبب تداخلًا على الموبايل.
+- [x] تشغيل اختبارات Vitest والبناء وفحص desktop/mobile قبل حفظ checkpoint.

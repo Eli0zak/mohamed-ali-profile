@@ -63,4 +63,14 @@ describe("portfolio conversion surfaces", () => {
     expect(stylesSource).toContain("transition: opacity 180ms ease");
     expect(stylesSource).toContain("transition: none;");
   });
+
+  it("keeps the MA Impact Core clear and interactive without changing the constellation structure", () => {
+    expect(homeSource).toContain('className={`orbit-center ${orbitCoreOpen ? "orbit-center--open" : ""}`}');
+    expect(homeSource).toContain("Commercial Growth Core");
+    expect(homeSource).toContain("aria-controls=\"orbit-core-brief\"");
+    expect(homeSource).toContain("paused={selectedCompany !== null || pausedBadge !== null || orbitCoreOpen}");
+    expect(stylesSource).toContain(".orbit-center__caption");
+    expect(stylesSource).toContain(".orbit-core-summary");
+    expect(stylesSource).toContain("@media (prefers-reduced-motion: reduce)");
+  });
 });
