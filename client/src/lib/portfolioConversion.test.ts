@@ -12,6 +12,16 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("Client · Training & consulting");
   });
 
+  it("keeps distinct value propositions and conversion CTAs for both visitor paths", () => {
+    expect(homeSource).toContain("What can Mohamed add to your team?");
+    expect(homeSource).toContain("What can we improve together?");
+    expect(homeSource).toContain("Commercial diagnosis");
+    expect(homeSource).toContain("View CV");
+    expect(homeSource).toContain("Discuss a role");
+    expect(homeSource).toContain("Start a partnership");
+    expect(homeSource).toContain("See the delivery model");
+  });
+
   it("keeps GDG evidence and the image lightbox without a duplicate speaking profile", () => {
     expect(homeSource).toContain('selectedProofCategory.id === "events"');
     expect(homeSource).toContain('className="proof-detail__content"');

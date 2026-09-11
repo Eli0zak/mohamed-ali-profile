@@ -1022,13 +1022,13 @@ export default function Home() {
   const fullTime = useMemo(() => companies.filter((company) => company.type === "full-time"), []);
   const consulting = useMemo(() => companies.filter((company) => company.type === "consulting"), []);
   const valueSnapshotItems = visitorMode === "recruiter" ? [
-    { icon: BriefcaseBusiness, title: { en: "Commercial leadership", ar: "قيادة تجارية" }, detail: { en: "Sales leadership, branch management, and Business Development ownership.", ar: "قيادة المبيعات وإدارة الفروع وامتلاك مسؤولية تطوير الأعمال." } },
-    { icon: TrendingUp, title: { en: "Revenue systems", ar: "أنظمة الإيرادات" }, detail: { en: "Funnels, KPIs, forecasting, and follow-up discipline that make growth visible.", ar: "قمع مبيعات ومؤشرات أداء وتوقعات ومتابعة تجعل النمو واضحًا وقابلًا للإدارة." } },
-    { icon: Users, title: { en: "Team performance", ar: "أداء الفريق" }, detail: { en: "Recruit, coach, and raise consistency across the sales floor.", ar: "توظيف وتدريب ورفع اتساق الأداء داخل فريق المبيعات." } },
+    { icon: BriefcaseBusiness, title: { en: "Commercial leadership", ar: "قيادة تجارية" }, detail: { en: "Take ownership of sales leadership, branch management, and Business Development mandates.", ar: "امتلاك مسؤولية قيادة المبيعات وإدارة الفروع وتطوير الأعمال." } },
+    { icon: TrendingUp, title: { en: "Revenue systems", ar: "أنظمة الإيرادات" }, detail: { en: "Make funnels, KPIs, forecasting, and follow-up discipline visible and manageable.", ar: "جعل قمع المبيعات ومؤشرات الأداء والتوقعات والمتابعة واضحة وقابلة للإدارة." } },
+    { icon: Users, title: { en: "Team performance", ar: "أداء الفريق" }, detail: { en: "Coach the sales floor and build a more consistent operating rhythm.", ar: "تدريب فريق المبيعات وبناء إيقاع تشغيل أكثر اتساقًا." } },
   ] : [
-    { icon: GraduationCap, title: { en: "Sales enablement", ar: "تمكين المبيعات" }, detail: { en: "Turn playbooks into practical behaviors your team can practice.", ar: "تحويل أساليب البيع إلى سلوكيات عملية يستطيع فريقك تطبيقها." } },
-    { icon: Zap, title: { en: "Growth operations", ar: "عمليات النمو" }, detail: { en: "Connect leads, people, and performance through clearer workflows.", ar: "ربط العملاء المحتملين والأفراد والأداء من خلال سير عمل أوضح." } },
-    { icon: Mic2, title: { en: "Practical delivery", ar: "تنفيذ عملي" }, detail: { en: "Workshops and consulting grounded in live commercial rooms.", ar: "ورش واستشارات نابعة من واقع غرف المبيعات والعمل التجاري." } },
+    { icon: GraduationCap, title: { en: "Sales enablement", ar: "تمكين المبيعات" }, detail: { en: "Turn playbooks, role-plays, and coaching into repeatable team behavior.", ar: "تحويل أساليب البيع ولعب الأدوار والتدريب إلى سلوكيات متكررة داخل الفريق." } },
+    { icon: Zap, title: { en: "Commercial diagnosis", ar: "تشخيص تجاري" }, detail: { en: "Map where leads, follow-up, or conversion slow down before prioritising the fix.", ar: "تحديد موضع تعطل جذب العملاء أو المتابعة أو التحويل قبل ترتيب الحلول." } },
+    { icon: Mic2, title: { en: "Practical delivery", ar: "تنفيذ عملي" }, detail: { en: "Deliver workshops and consulting grounded in live commercial rooms—not generic theory.", ar: "تقديم ورش واستشارات نابعة من واقع العمل التجاري، لا من نظرية عامة فقط." } },
   ];
 
   const handleLanguageToggle = () => setLanguage((current) => toggleLanguage(current));
@@ -1254,9 +1254,17 @@ export default function Home() {
                     <span>{language === "ar" ? "تدريب أو استشارة" : "Client · Training & consulting"}</span>
                   </button>
                 </div>
-                <p className="visitor-path__hint">{visitorMode === "recruiter" ? (language === "ar" ? "ابدأ من المسار التجاري والنتائج القابلة للقياس." : "Start with commercial leadership and measurable outcomes.") : (language === "ar" ? "ابدأ من التدريب، بناء الأنظمة، وتحويل المعرفة إلى أداء." : "Start with training, systems, and turning knowledge into performance.")}</p>
+                <p className="visitor-path__hint">{visitorMode === "recruiter" ? (language === "ar" ? "ابدأ بالدور، والمسؤولية، والنتيجة التجارية التي تريد امتلاكها." : "Start with the role, the mandate, and the commercial result to own.") : (language === "ar" ? "ابدأ بتحدٍ تجاري، أو فريق يحتاج إلى تمكين، أو نظام تريد بناءه." : "Start with a commercial challenge, a team to enable, or a system to build.")}</p>
               </div>
-              <div className="hero-actions"><a className="button button--gold" href={asset.cv} download="Mohamed-Ali-CV.pdf"><Download size={17} /> {homeCopy[language].hero.download}</a><button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{homeCopy[language].hero.conversation} <ArrowUpRight size={17} /></button></div>
+              <div className="hero-actions">
+                {visitorMode === "recruiter" ? <>
+                  <a className="button button--gold" href={asset.cv} target="_blank" rel="noopener noreferrer"><FileText size={17} /> {language === "ar" ? "عرض السيرة الذاتية" : "View CV"}</a>
+                  <button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role"} <ArrowUpRight size={17} /></button>
+                </> : <>
+                  <button className="button button--gold" type="button" onClick={() => scrollTo("contact")}><MessageCircle size={17} /> {language === "ar" ? "ابدأ شراكة" : "Start a partnership"}</button>
+                  <button className="button button--ghost" type="button" onClick={() => scrollTo("training")}>{language === "ar" ? "استكشف التدريب والاستشارات" : "See training & consulting"} <ArrowUpRight size={17} /></button>
+                </>}
+              </div>
               <div className="contact-strip">
                 <a href="tel:+201030537773"><Phone size={14} />01030537773</a>
                 <a href="mailto:mohamed280ali90@gmail.com"><Mail size={14} />mohamed280ali90@gmail.com</a>
@@ -1277,10 +1285,10 @@ export default function Home() {
         <section className={`value-snapshot value-snapshot--${visitorMode} container`} aria-labelledby="value-snapshot-title" data-mode={visitorMode} data-reveal>
           <div className="value-snapshot__content" key={visitorMode}>
             <div className="value-snapshot__intro">
-            <span className="value-snapshot__mode">{visitorMode === "recruiter" ? (language === "ar" ? "مسار التوظيف" : "Recruiter path") : (language === "ar" ? "مسار الشراكة" : "Client path")}</span>
+            <span className="value-snapshot__mode">{visitorMode === "recruiter" ? (language === "ar" ? "مسار التوظيف" : "Recruiter path") : (language === "ar" ? "مسار العميل" : "Client path")}</span>
             <p className="company-kicker">{language === "ar" ? "لقطة القيمة" : "Value snapshot"}</p>
-            <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكن أن يبنيه محمد معك؟" : "What can Mohamed build with you?")}</h2>
-            <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمشكلات التجارية التي أتعامل معها." : "A quick read on the role and commercial problems I help solve.") : (language === "ar" ? "ملخص سريع للخدمات والنتائج العملية التي يمكن تطويرها معًا." : "A quick read on the practical work we can develop together.")}</p>
+            <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكننا تحسينه معًا؟" : "What can we improve together?")}</h2>
+            <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمسؤوليات والمشكلات التجارية التي أستطيع امتلاكها." : "A quick read on the role, mandate, and commercial problems I can own.") : (language === "ar" ? "تشخيص عنق الزجاجة، تمكين الفريق، وترك نظام يستمر بعد انتهاء التدخل." : "Diagnose the bottleneck, equip the team, and leave a system behind.")}</p>
           </div>
           <div className="value-snapshot__items">
             {valueSnapshotItems.map(({ icon: Icon, title, detail }, index) => <article className="value-snapshot__item" key={title.en} style={{ "--snapshot-delay": `${index * 70}ms` } as React.CSSProperties}>
@@ -1288,7 +1296,7 @@ export default function Home() {
               <div><h3>{title[language]}</h3><p>{detail[language]}</p></div>
             </article>)}
             </div>
-            <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "استكشف مسار التدريب" : "Explore the training path")} <ArrowRight size={15} /></a>
+            <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "شاهد نموذج التنفيذ" : "See the delivery model")} <ArrowRight size={15} /></a>
           </div>
         </section>
 
@@ -1299,7 +1307,7 @@ export default function Home() {
                 <p className="eyebrow"><span className="eyebrow-dot" /> {language === "ar" ? "من أول يوم" : "From day one"}</p>
                 <h2>{language === "ar" ? "ما الذي أستطيع أن أتولاه معك فورًا؟" : "What I can own from day one"}</h2>
               </div>
-              <p>{visitorMode === "recruiter" ? (language === "ar" ? "دور واضح داخل فريق يبحث عن نمو منظم، متابعة أقوى، وأداء يمكن قياسه." : "A clear role inside a team that needs structured growth, stronger follow-up, and measurable execution.") : (language === "ar" ? "تدخل عملي يبدأ من المشكلة التجارية وينتهي بخطوات يستطيع فريقك تطبيقها." : "Practical support that starts with the commercial problem and ends with steps your team can use.")}</p>
+              <p>{visitorMode === "recruiter" ? (language === "ar" ? "دور واضح داخل فريق يبحث عن نمو منظم، متابعة أقوى، وأداء يمكن قياسه." : "A clear role inside a team that needs structured growth, stronger follow-up, and measurable execution.") : (language === "ar" ? "تدخل عملي يبدأ من تشخيص المشكلة وينتهي بتطبيق يستطيع فريقك مواصلته." : "A practical engagement from diagnosis to adoption, designed for your team to continue.")}</p>
             </div>
             <div className="ownership-grid">
               {(visitorMode === "recruiter" ? [
@@ -1312,7 +1320,7 @@ export default function Home() {
                 { number: "03", title: language === "ar" ? "ترك نظام يستمر" : "Leave a system behind", detail: language === "ar" ? "قياس الفهم والتطبيق حتى لا تنتهي القيمة بانتهاء الجلسة." : "Measure understanding and application so the value continues after the session." },
               ]).map((item) => <article className="ownership-card" key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.detail}</p></article>)}
             </div>
-            <a className="ownership-cta" href="#contact">{visitorMode === "recruiter" ? (language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role") : (language === "ar" ? "ابدأ محادثة شراكة" : "Start a partnership conversation")} <ArrowUpRight size={16} /></a>
+            <a className="ownership-cta" href="#contact">{visitorMode === "recruiter" ? (language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role") : (language === "ar" ? "ابدأ شراكة" : "Start a partnership")} <ArrowUpRight size={16} /></a>
           </div>
         </section>
 
