@@ -9,7 +9,7 @@ describe("portfolio conversion surfaces", () => {
   it("keeps the recruiter and client choice accessible in the hero", () => {
     expect(homeSource).toContain('className="visitor-path"');
     expect(homeSource).toContain("Recruiter · Sales leadership");
-    expect(homeSource).toContain("Client · Training & consulting");
+    expect(homeSource).toContain("Client · Sales enablement & consulting");
   });
 
   it("keeps distinct value propositions and conversion CTAs for both visitor paths", () => {
@@ -18,8 +18,10 @@ describe("portfolio conversion surfaces", () => {
     expect(homeSource).toContain("Commercial diagnosis");
     expect(homeSource).toContain("View CV");
     expect(homeSource).toContain("Discuss a role");
-    expect(homeSource).toContain("Start a partnership");
-    expect(homeSource).toContain("See the delivery model");
+    expect(homeSource).toContain("Client · Sales enablement & consulting");
+    expect(homeSource).toContain("company workshop");
+    expect(homeSource).toContain("Discuss your sales challenge");
+    expect(homeSource).toContain("See company training");
   });
 
   it("keeps GDG evidence and the image lightbox without a duplicate speaking profile", () => {

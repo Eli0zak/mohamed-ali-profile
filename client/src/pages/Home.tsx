@@ -1251,18 +1251,18 @@ export default function Home() {
                   </button>
                   <button type="button" className={visitorMode === "client" ? "visitor-path__option visitor-path__option--active" : "visitor-path__option"} onClick={() => setVisitorMode("client")} aria-pressed={visitorMode === "client"}>
                     <Target size={15} />
-                    <span>{language === "ar" ? "تدريب أو استشارة" : "Client · Training & consulting"}</span>
+                    <span>{language === "ar" ? "تدريب وتمكين الشركات" : "Client · Sales enablement & consulting"}</span>
                   </button>
                 </div>
-                <p className="visitor-path__hint">{visitorMode === "recruiter" ? (language === "ar" ? "ابدأ بالدور، والمسؤولية، والنتيجة التجارية التي تريد امتلاكها." : "Start with the role, the mandate, and the commercial result to own.") : (language === "ar" ? "ابدأ بتحدٍ تجاري، أو فريق يحتاج إلى تمكين، أو نظام تريد بناءه." : "Start with a commercial challenge, a team to enable, or a system to build.")}</p>
+                <p className="visitor-path__hint">{visitorMode === "recruiter" ? (language === "ar" ? "ابدأ بالدور، والمسؤولية، والنتيجة التجارية التي تريد امتلاكها." : "Start with the role, the mandate, and the commercial result to own.") : (language === "ar" ? "هل تريد تدريب فريق مبيعات، ورشة للشركة، أو تحسين نظام المتابعة والتحويل؟" : "Need sales-team training, a company workshop, or a stronger follow-up and conversion system?")}</p>
               </div>
               <div className="hero-actions">
                 {visitorMode === "recruiter" ? <>
                   <a className="button button--gold" href={asset.cv} target="_blank" rel="noopener noreferrer"><FileText size={17} /> {language === "ar" ? "عرض السيرة الذاتية" : "View CV"}</a>
                   <button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role"} <ArrowUpRight size={17} /></button>
                 </> : <>
-                  <button className="button button--gold" type="button" onClick={() => scrollTo("contact")}><MessageCircle size={17} /> {language === "ar" ? "ابدأ شراكة" : "Start a partnership"}</button>
-                  <button className="button button--ghost" type="button" onClick={() => scrollTo("training")}>{language === "ar" ? "استكشف التدريب والاستشارات" : "See training & consulting"} <ArrowUpRight size={17} /></button>
+                  <button className="button button--gold" type="button" onClick={() => scrollTo("contact")}><MessageCircle size={17} /> {language === "ar" ? "ناقش تحدي المبيعات" : "Discuss your sales challenge"}</button>
+                  <button className="button button--ghost" type="button" onClick={() => scrollTo("training")}>{language === "ar" ? "شاهد تدريب الشركات" : "See company training"} <ArrowUpRight size={17} /></button>
                 </>}
               </div>
               <div className="contact-strip">
@@ -1288,7 +1288,7 @@ export default function Home() {
             <span className="value-snapshot__mode">{visitorMode === "recruiter" ? (language === "ar" ? "مسار التوظيف" : "Recruiter path") : (language === "ar" ? "مسار العميل" : "Client path")}</span>
             <p className="company-kicker">{language === "ar" ? "لقطة القيمة" : "Value snapshot"}</p>
             <h2 id="value-snapshot-title">{visitorMode === "recruiter" ? (language === "ar" ? "ما الذي يمكن أن يضيفه محمد لفريقك؟" : "What can Mohamed add to your team?") : (language === "ar" ? "ما الذي يمكننا تحسينه معًا؟" : "What can we improve together?")}</h2>
-            <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمسؤوليات والمشكلات التجارية التي أستطيع امتلاكها." : "A quick read on the role, mandate, and commercial problems I can own.") : (language === "ar" ? "تشخيص عنق الزجاجة، تمكين الفريق، وترك نظام يستمر بعد انتهاء التدخل." : "Diagnose the bottleneck, equip the team, and leave a system behind.")}</p>
+            <p>{visitorMode === "recruiter" ? (language === "ar" ? "ملخص سريع للدور والمسؤوليات والمشكلات التجارية التي أستطيع امتلاكها." : "A quick read on the role, mandate, and commercial problems I can own.") : (language === "ar" ? "أساعد الشركات وفرق المبيعات على تشخيص عنق الزجاجة، تطوير المهارات، وترك نظام يستمر بعد انتهاء التدريب أو الاستشارة." : "I help companies and sales teams diagnose bottlenecks, build capability, and leave a system behind after the training or consulting engagement.")}</p>
           </div>
           <div className="value-snapshot__items">
             {valueSnapshotItems.map(({ icon: Icon, title, detail }, index) => <article className="value-snapshot__item" key={title.en} style={{ "--snapshot-delay": `${index * 70}ms` } as React.CSSProperties}>
@@ -1296,7 +1296,7 @@ export default function Home() {
               <div><h3>{title[language]}</h3><p>{detail[language]}</p></div>
             </article>)}
             </div>
-            <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "شاهد نموذج التنفيذ" : "See the delivery model")} <ArrowRight size={15} /></a>
+            <a className="value-snapshot__link" href={visitorMode === "recruiter" ? "#companies" : "#training"}>{visitorMode === "recruiter" ? (language === "ar" ? "شاهد الدليل التجاري" : "See the commercial proof") : (language === "ar" ? "شاهد تدريب الشركات" : "See company training")} <ArrowRight size={15} /></a>
           </div>
         </section>
 
@@ -1307,7 +1307,7 @@ export default function Home() {
                 <p className="eyebrow"><span className="eyebrow-dot" /> {language === "ar" ? "من أول يوم" : "From day one"}</p>
                 <h2>{language === "ar" ? "ما الذي أستطيع أن أتولاه معك فورًا؟" : "What I can own from day one"}</h2>
               </div>
-              <p>{visitorMode === "recruiter" ? (language === "ar" ? "دور واضح داخل فريق يبحث عن نمو منظم، متابعة أقوى، وأداء يمكن قياسه." : "A clear role inside a team that needs structured growth, stronger follow-up, and measurable execution.") : (language === "ar" ? "تدخل عملي يبدأ من تشخيص المشكلة وينتهي بتطبيق يستطيع فريقك مواصلته." : "A practical engagement from diagnosis to adoption, designed for your team to continue.")}</p>
+              <p>{visitorMode === "recruiter" ? (language === "ar" ? "دور واضح داخل فريق يبحث عن نمو منظم، متابعة أقوى، وأداء يمكن قياسه." : "A clear role inside a team that needs structured growth, stronger follow-up, and measurable execution.") : (language === "ar" ? "تدريب وورش واستشارات مصممة لفرق الشركات، تبدأ من المشكلة التجارية وتنتهي بتطبيق يستطيع فريقك مواصلته." : "Training, workshops, and consulting for company teams—starting from the commercial problem and ending with adoption your team can continue.")}</p>
             </div>
             <div className="ownership-grid">
               {(visitorMode === "recruiter" ? [
@@ -1320,7 +1320,7 @@ export default function Home() {
                 { number: "03", title: language === "ar" ? "ترك نظام يستمر" : "Leave a system behind", detail: language === "ar" ? "قياس الفهم والتطبيق حتى لا تنتهي القيمة بانتهاء الجلسة." : "Measure understanding and application so the value continues after the session." },
               ]).map((item) => <article className="ownership-card" key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.detail}</p></article>)}
             </div>
-            <a className="ownership-cta" href="#contact">{visitorMode === "recruiter" ? (language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role") : (language === "ar" ? "ابدأ شراكة" : "Start a partnership")} <ArrowUpRight size={16} /></a>
+            <a className="ownership-cta" href="#contact">{visitorMode === "recruiter" ? (language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role") : (language === "ar" ? "ناقش تحدي المبيعات" : "Discuss your sales challenge")} <ArrowUpRight size={16} /></a>
           </div>
         </section>
 
