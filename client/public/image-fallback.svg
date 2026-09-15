@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Mohamed Ali portfolio">
+  <rect width="800" height="500" fill="#0b1120"/>
+  <circle cx="400" cy="250" r="150" fill="none" stroke="#fbbf24" stroke-width="3" opacity=".7"/>
+  <text x="400" y="260" text-anchor="middle" fill="#fbbf24" font-family="Arial, sans-serif" font-size="44" font-weight="700">MOHAMED ALI</text>
+  <text x="400" y="305" text-anchor="middle" fill="#cbd5e1" font-family="Arial, sans-serif" font-size="22">Business Development</text>
+</svg>

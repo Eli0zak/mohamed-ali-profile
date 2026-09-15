@@ -12,6 +12,7 @@ function FieldError({ message }: { message?: string }) {
 }
 
 export default function CareerGateway() {
+  const dashboardUrl = import.meta.env.VITE_CAREERS_DASHBOARD_URL;
   const [lang, setLang] = useLanguage();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -169,10 +170,10 @@ export default function CareerGateway() {
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-            <Link href="/admin/career-roster" aria-label={lang === "en" ? "Admin Roster" : "لوحة المشرف"} className="text-xs font-semibold text-[#d4af37] hover:underline flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151]">
+            {dashboardUrl && <a href={dashboardUrl} aria-label={lang === "en" ? "Admin Roster" : "لوحة المشرف"} className="text-xs font-semibold text-[#d4af37] hover:underline flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#111827] border border-[#374151]">
               <Briefcase className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{lang === "en" ? "Admin Roster" : "لوحة المشرف"}</span>
-            </Link>
+            </a>}
 
             <Link href="/" aria-label={isRtl ? "العودة للرئيسية" : "Back to Portfolio"} className="text-sm font-medium text-[#94a3b8] hover:text-[#d4af37] transition-colors flex items-center gap-1.5 whitespace-nowrap">
               {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}

@@ -25,6 +25,7 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+/** Candidate intake is public-facing; recruiting operations live in mohamed-ali-careers. */
 export const careerSubmissions = mysqlTable("career_submissions", {
   id: int("id").autoincrement().primaryKey(),
   fullName: varchar("fullName", { length: 255 }).notNull(),
@@ -45,21 +46,22 @@ export const careerSubmissions = mysqlTable("career_submissions", {
 export type CareerSubmission = typeof careerSubmissions.$inferSelect;
 export type InsertCareerSubmission = typeof careerSubmissions.$inferInsert;
 
-export const broadcastHistory = mysqlTable("broadcast_history", {
+/** Published career timeline entries managed from the separate careers dashboard. */
+export const careerHistory = mysqlTable("career_history", {
   id: int("id").autoincrement().primaryKey(),
-  jobTitle: varchar("jobTitle", { length: 255 }).notNull(),
-  jobDetails: text("jobDetails").notNull(),
-  contactName: varchar("contactName", { length: 255 }),
-  contactEmail: varchar("contactEmail", { length: 320 }),
-  contactLinkedin: varchar("contactLinkedin", { length: 512 }),
-  otherInstructions: text("otherInstructions"),
-  recipientCount: int("recipientCount").notNull(),
-  successCount: int("successCount").notNull(),
-  failureCount: int("failureCount").notNull(),
-  audienceType: mysqlEnum("audienceType", ["all", "field", "test"]).default("all").notNull(),
-  audienceField: varchar("audienceField", { length: 128 }),
+  company: varchar("company", { length: 255 }).notNull(),
+  role: varchar("role", { length: 255 }).notNull(),
+  year: varchar("year", { length: 64 }).notNull(),
+  copy: text("copy").notNull(),
+  copyAr: text("copyAr"),
+  highlights: text("highlights").notNull(),
+  highlightsAr: text("highlightsAr"),
+  logo: text("logo"),
+  sortOrder: int("sortOrder").default(0).notNull(),
+  published: int("published").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
-export type BroadcastHistory = typeof broadcastHistory.$inferSelect;
-export type InsertBroadcastHistory = typeof broadcastHistory.$inferInsert;
+export type CareerHistory = typeof careerHistory.$inferSelect;
+export type InsertCareerHistory = typeof careerHistory.$inferInsert;

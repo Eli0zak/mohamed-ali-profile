@@ -8,7 +8,6 @@ import {
   ArrowUpRight,
   Award,
   BarChart3,
-  Briefcase,
   BriefcaseBusiness,
   Check,
   Download,
@@ -53,6 +52,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CAREER_ROUTE_D, getCareerRouteGeometry, getCareerRoutePoint, type CareerRouteGeometry } from "@/lib/careerRoute";
 import { getCareerProgressPercent, getNextCareerStationIndex } from "@/lib/careerNavigation";
 import { buildSpeakingInviteHref, getSpeakingInviteCopy, SPEAKING_INVITE_EMAIL } from "@/lib/speakingInvite";
+import { trpc } from "@/lib/trpc";
 
 type CompanyType = "full-time" | "consulting";
 type VisitorMode = "recruiter" | "client";
@@ -77,14 +77,14 @@ type Company = {
 };
 
 const asset = {
-  hero: "/manus-storage/mohamed-ali-space-hero_0ccd748c.jpg",
-  orbit: "/manus-storage/mohamed-ali-orbit-field_3453ad26.jpg",
-  career: "/manus-storage/mohamed-ali-career-texture_8082882e.jpg",
-  contact: "/manus-storage/mohamed-ali-contact-atmosphere_d03246ec.jpg",
-  mark: "/manus-storage/mohamed-ali-mark_3c86176b.png",
-  brandHorizontal: "/manus-storage/H_LOGO_b7811567.svg",
-  brandIcon: "/manus-storage/Icon_69dce70d.svg",
-  profile: "/manus-storage/profile_cb7113aa.jpg",
+  hero: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.29 PM.jpeg",
+  orbit: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.26 PM.jpeg",
+  career: "/training-assets/WhatsApp Image 2026-08-12 at 8.51.03 PM.jpeg",
+  contact: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.25 PM.jpeg",
+  mark: "/brand-mark.svg",
+  brandHorizontal: "/brand-mark.svg",
+  brandIcon: "/brand-mark.svg",
+  profile: "/training-assets/WhatsApp Image 2026-08-12 at 8.15.29 PM (3).jpeg",
   cv: "/manus-storage/Mohamed_Ali_CV_99df027a.pdf",
 };
 
@@ -477,7 +477,7 @@ const timelinePositions = [
   { left: "72%", top: "34%" },
   { left: "93%", top: "36%" },
 ];
-const timeline = [
+const defaultTimeline = [
   {
     year: "2021 — 2023",
     company: "Harvest British College",
@@ -1016,6 +1016,21 @@ export default function Home() {
   const reducedMotion = useReducedMotion();
   const speakingInviteCopy = useMemo(() => getSpeakingInviteCopy({ audience: "sales-teams", kind: "talk", language }), [language]);
   const speakingInviteHref = useMemo(() => buildSpeakingInviteHref({ subject: speakingInviteCopy.subject, body: speakingInviteCopy.body }), [speakingInviteCopy]);
+  const { data: managedHistory } = trpc.career.listHistory.useQuery(undefined, { retry: false });
+  const timeline = useMemo(() => [
+    ...defaultTimeline,
+    ...(managedHistory ?? []).map((entry) => ({
+      year: entry.year,
+      company: entry.company,
+      role: entry.role,
+      logo: entry.logo || "/brand-mark.svg",
+      copy: entry.copy,
+      icon: Zap,
+      highlights: { en: entry.highlights, ar: entry.highlightsAr?.length ? entry.highlightsAr : entry.highlights },
+      impactTags: { en: ["Career milestone"], ar: ["محطة مهنية"] },
+      transition: { en: "A new milestone added from the careers dashboard.", ar: "محطة جديدة تمت إضافتها من لوحة الوظائف." },
+    })),
+  ], [managedHistory]);
   useReveal();
   const trainedCount = useCountUp(750);
   const partnerCount = useCountUp(13, 1100);
@@ -1165,11 +1180,8 @@ export default function Home() {
           <a href="#journey" onClick={() => setMenuOpen(false)}>{language === "en" ? "Journey" : "المسار"}</a>
           <a href="#ownership" onClick={() => setMenuOpen(false)}>{language === "en" ? "Own from day one" : "من أول يوم"}</a>
           <a href="#training" onClick={() => setMenuOpen(false)}>{language === "en" ? "Training" : "التدريب"}</a>
+          <Link href="/career-gateway" onClick={() => setMenuOpen(false)}>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</Link>
           <a href="#contact" onClick={() => setMenuOpen(false)}>{language === "en" ? "Contact" : "التواصل"}</a>
-          <Link href="/career-gateway" className="text-[#d4af37] font-semibold flex items-center gap-1" onClick={() => setMenuOpen(false)}>
-            <Briefcase className="w-3.5 h-3.5" />
-            <span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span>
-          </Link>
         </nav>
         <div className="nav-actions relative flex items-center gap-2">
           {/* Header Share Interactive Dropdown */}
@@ -1259,6 +1271,7 @@ export default function Home() {
               <div className="hero-actions">
                 {visitorMode === "recruiter" ? <>
                   <a className="button button--gold" href={asset.cv} target="_blank" rel="noopener noreferrer"><FileText size={17} /> {language === "ar" ? "عرض السيرة الذاتية" : "View CV"}</a>
+                  <Link className="button button--ghost" href="/career-gateway"><BriefcaseBusiness size={17} /> {language === "ar" ? "قدّم على فرصة" : "Apply through Career Gateway"}</Link>
                   <button className="button button--ghost" type="button" onClick={() => scrollTo("contact")}>{language === "ar" ? "ناقش دورًا مناسبًا" : "Discuss a role"} <ArrowUpRight size={17} /></button>
                 </> : <>
                   <button className="button button--gold" type="button" onClick={() => scrollTo("contact")}><MessageCircle size={17} /> {language === "ar" ? "ناقش تحدي المبيعات" : "Discuss your sales challenge"}</button>
@@ -1391,7 +1404,7 @@ export default function Home() {
                       <span className="career-station__impact-rings" aria-hidden="true"><i /><i /><i /></span>
                       {isDocking && <motion.span className="career-station__docking-ring" aria-hidden="true" initial={{ scale: 0.5, opacity: 0.85 }} animate={{ scale: 1.75, opacity: 0 }} transition={{ duration: reducedMotion ? 0.18 : 0.72, ease: "easeOut" }} />}
                       <span className="career-station__number">0{index + 1}</span>
-                      <span className="career-station__logo"><img src={item.logo} alt="" /></span>
+                      <span className="career-station__logo"><img src={item.logo} alt="" onError={(event) => { event.currentTarget.src = "/brand-mark.svg"; }} /></span>
                       <span className="career-station__label"><strong>{item.company}</strong><small>{localized?.role ?? item.role}</small></span>
                       <span className="career-station__preview" aria-hidden={hoveredTimelineIndex !== index && !active}><span>{language === "ar" ? "هوية المحطة" : "Station identity"}</span><strong>{localized?.role ?? item.role}</strong><small>{item.year} · {impactTags[0]}</small></span>
                       <span className="career-station__impact-labels" aria-hidden="true">{impactTags.map((tag) => <span key={tag}>{tag}</span>)}</span>
@@ -1420,8 +1433,8 @@ export default function Home() {
                   <span className="career-route__next-mission-tag">{nextTimelineItem.impactTags[language][0]}</span>
                 </motion.aside> : <motion.aside key="next-mission-ready" className="career-route__next-mission career-route__next-mission--complete" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: reducedMotion ? 0 : 0.24, ease: "easeOut" }} aria-live="polite"><div className="career-route__next-mission-copy"><span className="career-route__next-mission-kicker"><Sparkles size={12} /> {language === "ar" ? "جاهز للمهمة التالية" : "Ready for the next mission"}</span><strong>{language === "ar" ? "المحطة التالية تبدأ معك" : "The next station starts with you"}</strong><p>{language === "ar" ? "تواصل معي لبناء المسار التجاري القادم." : "Open a conversation about the next commercial mission."}</p></div><span className="career-route__next-mission-tag">100%</span></motion.aside>}
               </AnimatePresence>
-              {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div><button className="career-route__detail-button" type="button" onClick={() => setTimelineModalOpen(true)}>{language === "ar" ? "عرض التفاصيل" : "View details"}<ArrowUpRight size={15} /></button></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
-              {timelineModalOpen && (() => { const item = timeline[selectedTimelineIndex]; const localized = language === "ar" ? timelineArabic[item.company] : undefined; const highlights = language === "ar" ? item.highlights.ar : item.highlights.en; return <div className="career-modal" role="dialog" aria-modal="true" aria-labelledby="career-modal-title" onClick={() => setTimelineModalOpen(false)}><div className="career-modal__panel" onClick={(event) => event.stopPropagation()}><button className="career-modal__close" type="button" onClick={() => setTimelineModalOpen(false)} aria-label={language === "ar" ? "إغلاق التفاصيل" : "Close details"}><X size={18} /></button><div className="career-modal__eyebrow">0{selectedTimelineIndex + 1} / {item.year}</div><div className="career-modal__brand"><img src={item.logo} alt={`${item.company} logo`} /><div><span className="company-kicker">{item.company}</span><h3 id="career-modal-title">{localized?.role ?? item.role}</h3></div></div><p className="career-modal__intro">{localized?.copy ?? item.copy}</p><div className="career-modal__section"><span className="company-kicker">{language === "ar" ? "أبرز ما تم بناؤه" : "Selected proof points"}</span><ul>{highlights.map((highlight) => <li key={highlight}><Check size={15} />{highlight}</li>)}</ul></div><button className="button button--gold" type="button" onClick={() => { setTimelineModalOpen(false); scrollTo("contact"); }}>{language === "ar" ? "ابدأ محادثة حول الدور" : "Start a conversation about this role"}<ArrowUpRight size={16} /></button></div></div>; })()}
+              {(() => { const item = timeline[selectedTimelineIndex]; const Icon = item.icon; const localized = language === "ar" ? timelineArabic[item.company] : undefined; return <article className="career-route__detail" key={`${item.company}-${language}`} aria-live="polite"><div className="career-route__detail-index">0{selectedTimelineIndex + 1}</div><div className="career-route__detail-logo"><img src={item.logo} alt={`${item.company} logo`} onError={(event) => { event.currentTarget.src = "/brand-mark.svg"; }} /></div><div className="career-route__detail-copy"><span className="company-kicker">{item.company}</span><h3>{localized?.role ?? item.role}</h3><p>{localized?.copy ?? item.copy}</p><div className="career-route__detail-meta"><span><Icon size={15} /> {homeCopy[language].journey.trajectory}</span><span>{item.year}</span></div><button className="career-route__detail-button" type="button" onClick={() => setTimelineModalOpen(true)}>{language === "ar" ? "عرض التفاصيل" : "View details"}<ArrowUpRight size={15} /></button></div><span className="career-route__detail-arrow"><ArrowUpRight size={20} /></span></article>; })()}
+              {timelineModalOpen && (() => { const item = timeline[selectedTimelineIndex]; const localized = language === "ar" ? timelineArabic[item.company] : undefined; const highlights = language === "ar" ? item.highlights.ar : item.highlights.en; return <div className="career-modal" role="dialog" aria-modal="true" aria-labelledby="career-modal-title" onClick={() => setTimelineModalOpen(false)}><div className="career-modal__panel" onClick={(event) => event.stopPropagation()}><button className="career-modal__close" type="button" onClick={() => setTimelineModalOpen(false)} aria-label={language === "ar" ? "إغلاق التفاصيل" : "Close details"}><X size={18} /></button><div className="career-modal__eyebrow">0{selectedTimelineIndex + 1} / {item.year}</div><div className="career-modal__brand"><img src={item.logo} alt={`${item.company} logo`} onError={(event) => { event.currentTarget.src = "/brand-mark.svg"; }} /><div><span className="company-kicker">{item.company}</span><h3 id="career-modal-title">{localized?.role ?? item.role}</h3></div></div><p className="career-modal__intro">{localized?.copy ?? item.copy}</p><div className="career-modal__section"><span className="company-kicker">{language === "ar" ? "أبرز ما تم بناؤه" : "Selected proof points"}</span><ul>{highlights.map((highlight) => <li key={highlight}><Check size={15} />{highlight}</li>)}</ul></div><button className="button button--gold" type="button" onClick={() => { setTimelineModalOpen(false); scrollTo("contact"); }}>{language === "ar" ? "ابدأ محادثة حول الدور" : "Start a conversation about this role"}<ArrowUpRight size={16} /></button></div></div>; })()}
               <div id="career-route-keyboard-help" className="career-route__hint" role="note"><span className="hint-ring" /><span>{language === "ar" ? "المؤشر يتحرك مع كل محطة تختارها" : "The marker moves with every station you select"}</span><span className="career-route__keys" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd><span>{language === "ar" ? "للتنقل" : "to navigate"}</span></span></div>
             </div>
           </div>
@@ -1476,12 +1489,12 @@ export default function Home() {
                 const itemCaption = language === "ar" ? (proofItem.captionAr ?? itemTitle) : (proofItem.caption ?? itemTitle);
                 return <div className={`proof-detail__panel ${selectedProofCategory.id === "events" ? "proof-detail__panel--featured" : ""}`} style={{ "--proof-accent": selectedProofCategory.accent } as React.CSSProperties}>
                   <div className="proof-detail__header"><div>{selectedProofCategory.id === "events" && <span className="proof-detail__featured-badge"><Sparkles size={13} /> {language === "ar" ? "فعالية مميزة — متحدث" : "Featured speaking engagement"}</span>}<p className="company-kicker">{categoryKicker}</p><h4>{categoryTitle}</h4><p>{categorySummary}</p></div><button className="proof-detail__close" type="button" onClick={closeProofCategory} aria-label={language === "ar" ? "إغلاق تفاصيل الدليل" : "Close proof details"}><X size={18} /></button></div>
-                  <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
-                  {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
+                  <div className="proof-detail__content"><div className="proof-detail__media"><button type="button" className="proof-detail__image-button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)} aria-label={language === "ar" ? `فتح صورة ${itemTitle}` : `Open image: ${itemTitle}`}><img src={proofItem.image} alt={proofItem.alt} loading="lazy" onError={(event) => { event.currentTarget.src = "/image-fallback.svg"; }} /></button><p className="proof-detail__caption">{itemCaption}</p><button className="proof-detail__zoom" type="button" onClick={() => openProofLightbox(selectedProofCategory, proofItem)}><ZoomIn size={15} /> {language === "ar" ? "تكبير الصورة" : "View larger"}</button></div><div className="proof-detail__copy"><div className="proof-detail__meta"><span>{itemOrganization}</span><span>{itemType}</span></div><h5>{itemTitle}</h5><p>{itemDescription}</p><div className="proof-detail__controls"><button type="button" onClick={() => shiftProofItem(-1)} aria-label={language === "ar" ? "الدليل السابق" : "Previous evidence"}><ChevronLeft size={17} /></button><span>{String(selectedProofIndex + 1).padStart(2, "0")} / {String(selectedProofCategory.items.length).padStart(2, "0")}</span><button type="button" onClick={() => shiftProofItem(1)} aria-label={language === "ar" ? "الدليل التالي" : "Next evidence"}><ChevronRight size={17} /></button></div></div></div>
+                  {selectedProofCategory.items.length > 1 && <div className="proof-detail__rail">{selectedProofCategory.items.map((item, index) => <button key={item.title} type="button" className={index === selectedProofIndex ? "proof-detail__rail-item proof-detail__rail-item--active" : "proof-detail__rail-item"} onClick={() => setSelectedProofIndex(index)}><img src={item.image} alt="" loading="lazy" onError={(event) => { event.currentTarget.src = "/image-fallback.svg"; }} /><span>{language === "ar" ? item.titleAr : item.title}</span></button>)}</div>}
                 </div>;
               })() : <div className="proof-detail__empty"><Sparkles size={17} /><span>{language === "ar" ? "اختر كوكبًا من المدار لفتح قصة الدليل." : "Select a planet to open its proof story."}</span></div>}
             </div>
-            {lightboxItem && <div className="proof-lightbox" role="dialog" aria-modal="true" aria-label={language === "ar" ? "معاينة صورة الفعالية" : "Event image preview"} onClick={(event) => { if (event.target === event.currentTarget) setLightboxItem(null); }}><div className="proof-lightbox__panel"><button type="button" className="proof-lightbox__close" onClick={() => setLightboxItem(null)} aria-label={language === "ar" ? "إغلاق الصورة" : "Close image preview"}><X size={20} /></button><button type="button" className="proof-lightbox__nav proof-lightbox__nav--prev" onClick={() => shiftLightboxItem(-1)} aria-label={language === "ar" ? "الصورة السابقة" : "Previous image"}><ChevronLeft size={22} /></button><img src={lightboxItem.item.image} alt={lightboxItem.item.alt} /><button type="button" className="proof-lightbox__nav proof-lightbox__nav--next" onClick={() => shiftLightboxItem(1)} aria-label={language === "ar" ? "الصورة التالية" : "Next image"}><ChevronRight size={22} /></button><div className="proof-lightbox__copy"><span>{language === "ar" ? lightboxItem.item.organizationAr : lightboxItem.item.organization}</span><h5>{language === "ar" ? lightboxItem.item.titleAr : lightboxItem.item.title}</h5><p>{language === "ar" ? (lightboxItem.item.captionAr ?? lightboxItem.item.descriptionAr) : (lightboxItem.item.caption ?? lightboxItem.item.description)}</p><small>{String(lightboxItem.category.items.findIndex((item) => item.image === lightboxItem.item.image) + 1).padStart(2, "0")} / {String(lightboxItem.category.items.length).padStart(2, "0")}</small></div></div></div>}
+            {lightboxItem && <div className="proof-lightbox" role="dialog" aria-modal="true" aria-label={language === "ar" ? "معاينة صورة الفعالية" : "Event image preview"} onClick={(event) => { if (event.target === event.currentTarget) setLightboxItem(null); }}><div className="proof-lightbox__panel"><button type="button" className="proof-lightbox__close" onClick={() => setLightboxItem(null)} aria-label={language === "ar" ? "إغلاق الصورة" : "Close image preview"}><X size={20} /></button><button type="button" className="proof-lightbox__nav proof-lightbox__nav--prev" onClick={() => shiftLightboxItem(-1)} aria-label={language === "ar" ? "الصورة السابقة" : "Previous image"}><ChevronLeft size={22} /></button><img src={lightboxItem.item.image} alt={lightboxItem.item.alt} onError={(event) => { event.currentTarget.src = "/image-fallback.svg"; }} /><button type="button" className="proof-lightbox__nav proof-lightbox__nav--next" onClick={() => shiftLightboxItem(1)} aria-label={language === "ar" ? "الصورة التالية" : "Next image"}><ChevronRight size={22} /></button><div className="proof-lightbox__copy"><span>{language === "ar" ? lightboxItem.item.organizationAr : lightboxItem.item.organization}</span><h5>{language === "ar" ? lightboxItem.item.titleAr : lightboxItem.item.title}</h5><p>{language === "ar" ? (lightboxItem.item.captionAr ?? lightboxItem.item.descriptionAr) : (lightboxItem.item.caption ?? lightboxItem.item.description)}</p><small>{String(lightboxItem.category.items.findIndex((item) => item.image === lightboxItem.item.image) + 1).padStart(2, "0")} / {String(lightboxItem.category.items.length).padStart(2, "0")}</small></div></div></div>}
           </div>
                 </section>
         <div className={`smart-contact ${smartContactOpen ? "smart-contact--open" : ""}`}>
@@ -1534,7 +1547,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>{homeCopy[language].footer}</small></span></div><div className="flex items-center gap-6"><Link href="/career-gateway" className="text-sm font-semibold text-[#d4af37] hover:underline flex items-center gap-1.5"><Briefcase className="w-4 h-4" /><span>{language === "en" ? "Career Gateway" : "بوابة الوظائف"}</span></Link></div><p>© 2026 Mohamed Ali. {homeCopy[language].hero.role}</p><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></footer>
+      <footer className="site-footer"><div className="container"><div className="footer-brand"><span className="brand-mark"><img src={asset.mark} alt="" /></span><span><strong>Mohamed Ali</strong><small>{homeCopy[language].footer}</small></span></div><p>© 2026 Mohamed Ali. {homeCopy[language].hero.role}</p><div className="flex items-center gap-3"><Link className="text-link" href="/career-gateway">{language === "ar" ? "بوابة الوظائف" : "Career Gateway"}</Link><a href="#top" aria-label="Back to top"><ArrowUpRight size={17} /></a></div></div></footer>
     </div>
   );
 }
